@@ -13,17 +13,17 @@ The page is a git commit graph: each member owns a coloured lane, projects are t
 
 ## Where things live
 
-| Path                         | What                                                                                           |
-| ---------------------------- | ---------------------------------------------------------------------------------------------- |
-| `src/data/site.ts`           | Every word on the page, in English and Vietnamese, plus members and projects. Edit this file.  |
-| `src/pages/index.astro`      | The landing page and its structured data.                                                      |
-| `src/pages/contact.astro`    | The contact page, laid out like a CODEOWNERS file: paths and the people who answer for them.   |
-| `src/components/site/`       | Header, hero, rail (the commit graph), member fields, project commits, footer, language toggle |
-| `src/assets/images/members/` | GitHub avatars and the per-member domain icons.                                                |
-| `src/assets/favicons/`       | The multnelis mark (three lanes merging into one node).                                        |
-| `brand/`                     | Mark concepts, member icon sources, and the social-preview composition (`og.html`).            |
-| `mockups/`                   | The design rounds that led to this page; `b-graph.html` is the chosen direction.               |
-| `PRODUCT.md`, `DESIGN.md`    | Product truth and the visual system, for humans and coding agents.                             |
+| Path                         | What                                                                                          |
+| ---------------------------- | --------------------------------------------------------------------------------------------- |
+| `src/data/site.ts`           | Every word on the page, in English and Vietnamese, plus members and projects. Edit this file. |
+| `src/pages/index.astro`      | The landing page and its structured data.                                                     |
+| `src/pages/contact.astro`    | The contact page: one line and the contact@ address, on a single screen.                      |
+| `src/components/site/`       | Header, hero, rail (the commit graph), member fields, projects list, footer, language toggle  |
+| `src/assets/images/members/` | GitHub avatars and the per-member domain icons.                                               |
+| `src/assets/favicons/`       | The multnelis mark (three lanes merging into one node).                                       |
+| `brand/`                     | Mark concepts, member icon sources, and the social-preview composition (`og.html`).           |
+| `mockups/`                   | The design rounds that led to this page; `b-graph.html` is the chosen direction.              |
+| `PRODUCT.md`, `DESIGN.md`    | Product truth and the visual system, for humans and coding agents.                            |
 
 ## Working on it
 

@@ -5,10 +5,8 @@ import Layout from '~/layouts/Layout.astro';
 import StructuredData from '~/components/common/StructuredData.astro';
 import Rail from '~/components/site/Rail.astro';
 import SiteHeader from '~/components/site/SiteHeader.astro';
-import OwnerRow from '~/components/site/OwnerRow.astro';
-import PathRow from '~/components/site/PathRow.astro';
 import SiteFooter from '~/components/site/SiteFooter.astro';
-import { brand, contact, members, projects } from '~/data/site';
+import { brand, contact } from '~/data/site';
 
 const metadata = {
   title: contact.metaTitle,
@@ -34,10 +32,6 @@ const schema = {
     contactPoint: { '@type': 'ContactPoint', email: brand.email, contactType: 'general' },
   },
 };
-
-/* Every lane exists once the owners have forked; the path rows and the
-   "Paths" heading see them all passing through. */
-const allLanes = members.map((m) => m.lane).join(',');
 ---
 
 <Layout metadata={metadata}>
@@ -49,7 +43,6 @@ const allLanes = members.map((m) => m.lane).join(',');
       <SiteHeader current="contact" />
       <div class="hero-body col">
         <h1 data-i18n="contact.title">{contact.title.en}</h1>
-        <p class="lead" data-i18n="contact.lead">{contact.lead.en}</p>
         <div class="actions" data-anchor>
           <a class="action action-solid" href={`mailto:${brand.email}`} data-i18n="contact.action">
             {contact.action.en}
@@ -58,28 +51,25 @@ const allLanes = members.map((m) => m.lane).join(',');
         </div>
       </div>
     </section>
-
-    <section class="gs group" data-kind="through" aria-labelledby="owners">
-      <Rail />
-      <div class="col">
-        <h2 id="owners" data-i18n="contact.owners">{contact.owners.en}</h2>
-      </div>
-    </section>
-    {members.map((member) => <OwnerRow member={member} />)}
-
-    <section class="gs group" data-kind="through" data-through={allLanes} aria-labelledby="paths">
-      <Rail />
-      <div class="col">
-        <h2 id="paths" data-i18n="contact.paths">{contact.paths.en}</h2>
-      </div>
-    </section>
-    {projects.map((project) => <PathRow project={project} />)}
   </main>
 
   <SiteFooter />
 </Layout>
 
 <style>
+  /* One screen: the hero stretches so the footer closes the viewport. */
+  :global(body) {
+    display: flex;
+    flex-direction: column;
+  }
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .hero {
+    flex: 1;
+  }
   .hero-body {
     padding-top: 112px;
     padding-bottom: 136px;
@@ -90,18 +80,12 @@ const allLanes = members.map((m) => m.lane).join(',');
     line-height: 0.98;
     max-width: 1140px;
   }
-  .lead {
-    margin-top: 36px;
-    font-size: 1.25rem;
-    line-height: 1.5;
-    max-width: 62ch;
-  }
   .actions {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 12px 24px;
-    margin-top: 44px;
+    margin-top: 48px;
   }
   .action {
     display: inline-flex;
@@ -139,15 +123,6 @@ const allLanes = members.map((m) => m.lane).join(',');
   .addr:hover {
     text-decoration-color: currentColor;
   }
-  .group .col {
-    padding-top: 72px;
-    padding-bottom: 28px;
-  }
-  .group h2 {
-    font-weight: 800;
-    font-size: clamp(2.125rem, 1.4rem + 2.2vw, 3.25rem);
-    line-height: 1;
-  }
 
   @media (width <= 720px) {
     .hero-body {
@@ -159,10 +134,6 @@ const allLanes = members.map((m) => m.lane).join(',');
       line-height: 1;
       text-wrap: pretty;
     }
-    .lead {
-      margin-top: 26px;
-      font-size: 1.125rem;
-    }
     .actions {
       flex-direction: column;
       align-items: stretch;
@@ -173,10 +144,6 @@ const allLanes = members.map((m) => m.lane).join(',');
     }
     .addr {
       text-align: center;
-    }
-    .group .col {
-      padding-top: 48px;
-      padding-bottom: 20px;
     }
   }
 </style>

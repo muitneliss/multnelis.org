@@ -5,18 +5,21 @@ import Layout from '~/layouts/Layout.astro';
 import StructuredData from '~/components/common/StructuredData.astro';
 import Hero from '~/components/site/Hero.astro';
 import MemberField from '~/components/site/MemberField.astro';
-import ProjectCommit from '~/components/site/ProjectCommit.astro';
+import Projects from '~/components/site/Projects.astro';
 import SiteFooter from '~/components/site/SiteFooter.astro';
 import { brand, members, projects, statement } from '~/data/site';
 
 const metadata = {
-  title: 'multnelis — a small collective in Ho Chi Minh City building tools for the coding-agent era',
+  title: 'multnelis — open-source tools for the coding-agent era',
   ignoreTitleTemplate: true,
+  description:
+    'multnelis is a small open-source collective in Ho Chi Minh City building tools for the coding-agent era: Undercroft, Ymir, Symphony, and Text Transporter.',
   openGraph: { type: 'website' },
 };
 
-// WebSite + Organization from config.yaml, plus the three members as Person
-// entries pointing at their GitHub profiles. Nothing here that is not on the page.
+// WebSite + Organization from config.yaml, the three members as Person entries
+// pointing at their GitHub profiles, and each public project with its
+// repository. Nothing here that is not on the page.
 const siteUrl = SITE.site ?? 'https://multnelis.org';
 const orgId = `${siteUrl}/#organization`;
 const schema = {
@@ -36,6 +39,8 @@ const schema = {
       '@id': orgId,
       name: SITE.name,
       url: siteUrl,
+      description: statement.en,
+      email: brand.email,
       sameAs: [brand.github],
       location: { '@type': 'Place', name: 'Ho Chi Minh City, Vietnam' },
     },
@@ -47,6 +52,19 @@ const schema = {
       sameAs: m.site ? [m.site] : undefined,
       memberOf: { '@id': orgId },
     })),
+    ...projects.flatMap((p) =>
+      p.repo
+        ? [
+            {
+              '@type': 'SoftwareSourceCode',
+              name: p.name,
+              description: p.tagline.en,
+              codeRepository: p.repo.url,
+              author: { '@id': orgId },
+            },
+          ]
+        : []
+    ),
   ],
 };
 ---
@@ -59,9 +77,7 @@ const schema = {
 
     {members.map((member, i) => <MemberField member={member} id={i === 0 ? 'members' : undefined} />)}
 
-    <div id="projects" role="region" aria-label="Projects" data-i18n-aria="ui.projects">
-      {projects.map((project) => <ProjectCommit project={project} />)}
-    </div>
+    <Projects />
   </main>
 
   <SiteFooter />

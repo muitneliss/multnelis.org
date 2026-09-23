@@ -21,7 +21,7 @@ THESIS: The collective is a git history. Members are branches, projects are merg
 
 OWN-WORLD: White ground, ink #101214. Three lane colours owning whole regions: vermilion #C9461F (cuongtranba), cobalt #2457F5 (thanh-dong), jade #168459 (yanmad27); main lane ink. A left rail SVG with 6px round-capped lanes and 16px ringed nodes runs the full page. Anybody (wide, heavy) for display, Hanken Grotesk body, JetBrains Mono for refs, dates, handles only. Ghost buttons hairline; primary solid ink. Recognisable with all copy removed: the rail plus three full-bleed colour fields.
 
-STORY: A visitor sees three lanes converge into one node beside the statement, understands "three engineers, shared work", scrolls through each member's colour field, then sees which lanes merge into each project, and leaves for GitHub.
+STORY: A visitor sees three lanes converge into one node beside the statement, understands "three engineers, shared work", scrolls through each member's colour field, then sees every lane merge into the projects the three ship together, each one line with its repository, and leaves for GitHub.
 
 FIRST VIEWPORT: Header row: wordmark left, `main` chip, EN/VI branch switcher right. Rail on the left edge (~120px desktop, 48px mobile) with the three lanes descending from the top and merging into a large ink node vertically centred on the headline. Headline ~5.5rem Anybody wide, four lines; supporting line; primary ink button and ghost button beneath. Nothing else above the fold.
 
