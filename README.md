@@ -40,4 +40,4 @@ Node 22 or newer (`.nvmrc`).
 
 1. Edit `src/data/site.ts`. Keep both languages filled and keep every claim backed by a repository or a profile.
 2. For a new member, add a 400px avatar and a 512px domain icon under `src/assets/images/members/`, and give them a lane in `src/components/site/Rail.astro`.
-3. Run `npm run build && npm run check`, look at the page at 390px and 1440px, and open a pull request.
+3. Run `npm run build && npm run check`, look at the page at 390px and 1440px, and open a pull request. `main` is protected: the CI checks must be green before the pull request can merge, and merging deploys the site.
