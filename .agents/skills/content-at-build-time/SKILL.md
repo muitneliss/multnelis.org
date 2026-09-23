@@ -1,3 +1,8 @@
+---
+name: content-at-build-time
+description: Explains that Astro content collections are compiled at build time and never re-read at runtime (Docker, SSR, mounted volumes). This repository defines no collections and ships no Dockerfile; relevant only if a collection is added.
+---
+
 # Content Is Read at Build Time (Docker, SSR, volumes)
 
 Blog posts are an Astro **Content Collection** (`src/content.config.ts`, `glob()` loader over `src/data/post`). The collection is compiled during `astro build` and baked into `dist/`. Nothing re-reads `src/data/post` afterwards — not the static output, and not SSR either.

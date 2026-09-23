@@ -1,3 +1,8 @@
+---
+name: customize-header
+description: Customise the AstroWind Header widget (navigation, sticky header, breakpoints, dropdowns, active link). The multnelis pages use src/components/site/SiteHeader.astro instead, which this skill does not cover.
+---
+
 # Customize the Header
 
 Files: `src/components/widgets/Header.astro` (markup + `aw-header` web component), `src/navigation.ts` (links and actions), `src/components/common/ToggleMenu.astro`, `src/components/common/ToggleTheme.astro`, `src/components/Logo.astro`, header rules in `src/assets/styles/tailwind.css`.

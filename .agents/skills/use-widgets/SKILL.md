@@ -1,3 +1,8 @@
+---
+name: use-widgets
+description: Catalogue and props of the AstroWind widgets in src/components/widgets/. The multnelis pages do not use these widgets and the demo routes listed in the tables were removed; use when deliberately composing a page from widgets.
+---
+
 # Use the Widgets
 
 Every section of a page is a widget from `src/components/widgets/`. Widgets take props (typed in `src/types.d.ts`), share the same base (`WidgetWrapper` + `Headline`) and therefore accept the same base props:
@@ -60,12 +65,12 @@ Images accept `{ src, alt }` where `src` is a local import (`~/assets/images/...
 
 ### Conversion
 
-| Widget         | Use it for                           | Key props                                                                                                                        | Demo                                   |
-| -------------- | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
-| `CallToAction` | Closing call to action               | `actions`, `layout` (`card` \| `banner`)                                                                                         | every page                             |
-| `Contact`      | Full form in a card                  | `inputs`, `textarea`, `disclaimer`, `button`, `description`. The form has no backend by default; see `configure-contact-form.md` | `/contact`, `/landing/lead-generation` |
-| `Newsletter`   | One-field signup band                | `placeholder`, `button`, `disclaimer`, `action`, `method`, `layout` (`band` \| `card`). No backend by default                    | `/landing/subscription`, blog list     |
-| `StickyCTA`    | Bottom bar on phones after scrolling | `text`, `href`, `label`, `showAfter` (px), `mobileOnly`                                                                          | `/landing/click-through`               |
+| Widget         | Use it for                           | Key props                                                                                                                               | Demo                                   |
+| -------------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| `CallToAction` | Closing call to action               | `actions`, `layout` (`card` \| `banner`)                                                                                                | every page                             |
+| `Contact`      | Full form in a card                  | `inputs`, `textarea`, `disclaimer`, `button`, `description`. The form has no backend by default; see the `configure-contact-form` skill | `/contact`, `/landing/lead-generation` |
+| `Newsletter`   | One-field signup band                | `placeholder`, `button`, `disclaimer`, `action`, `method`, `layout` (`band` \| `card`). No backend by default                           | `/landing/subscription`, blog list     |
+| `StickyCTA`    | Bottom bar on phones after scrolling | `text`, `href`, `label`, `showAfter` (px), `mobileOnly`                                                                                 | `/landing/click-through`               |
 
 ### Blog
 
