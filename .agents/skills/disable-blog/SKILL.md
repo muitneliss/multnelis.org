@@ -1,3 +1,8 @@
+---
+name: disable-blog
+description: Disable or partially disable the AstroWind blog through apps.blog in src/config.yaml. Already applied in this repository, where the blog routes and utilities have also been removed; use only to understand or reverse that change.
+---
+
 # Disable the Blog
 
 Use this when the site does not need a blog (corporate site, landing page, portfolio).

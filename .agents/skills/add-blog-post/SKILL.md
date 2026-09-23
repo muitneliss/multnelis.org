@@ -1,3 +1,8 @@
+---
+name: add-blog-post
+description: AstroWind template guide for adding a Markdown or MDX blog post under src/data/post/. Use only when re-enabling the blog; the blog is disabled in this repository and src/data/post/, the blog routes and src/utils/blog.ts do not exist.
+---
+
 # Add a Blog Post
 
 ## Steps

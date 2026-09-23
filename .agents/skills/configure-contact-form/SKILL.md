@@ -1,3 +1,8 @@
+---
+name: configure-contact-form
+description: Connect the AstroWind contact form (src/components/ui/Form.astro, src/components/widgets/Contact.astro) to a submission backend. The /contact page of this site is a CODEOWNERS-style page and does not use that form.
+---
+
 # Configure the Contact Form
 
 `src/components/ui/Form.astro` (used by `src/components/widgets/Contact.astro` on `/contact`) renders the markup only. It ships **without** `action`/`method` on purpose: the template does not know where your submissions should go, so until you configure it the browser performs a GET to the same page and nothing is stored.

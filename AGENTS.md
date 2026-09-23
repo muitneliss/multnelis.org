@@ -2,7 +2,7 @@
 
 ## This project
 
-This repository is the landing page of **multnelis** (https://multnelis.org), built on the AstroWind template. Read `README.md` for the layout, `PRODUCT.md` for product truth (who the members are, which projects are shown, what must never be claimed), and `DESIGN.md` for the visual system. All page copy, in English and Vietnamese, lives in `src/data/site.ts`; the page is `src/pages/index.astro` with components under `src/components/site/`. The blog is disabled and the template's demo pages are removed; the rest of this file documents the template conventions that still apply.
+This repository is the landing page of **multnelis** (https://multnelis.org), built on the AstroWind template. Read `README.md` for the layout, `PRODUCT.md` for product truth (who the members are, which projects are shown, what must never be claimed), and `DESIGN.md` for the visual system. All page copy, in English and Vietnamese, lives in `src/data/site.ts`; the pages are `src/pages/index.astro` and `src/pages/contact.astro` (plus `404.astro`), built from `src/layouts/Layout.astro` and the components under `src/components/site/`. The blog is disabled and the template's demo pages are removed; the rest of this file documents the template conventions that still apply.
 
 ## Shipping changes
 
@@ -16,7 +16,15 @@ AstroWind is a free, open-source website template built with **Astro v7** and **
 
 ## Skills
 
-Before implementing a project-specific task (disabling the blog, Open Graph images, base paths, CMS, deployments, header customisation…), check `.agents/skills/` for an existing skill and follow it.
+Before implementing a project-specific task (Open Graph images, structured data, styling, base paths, deployments, header customisation…), check `.agents/skills/<name>/SKILL.md` for an existing skill and follow it. Most skills were written for the AstroWind template: several describe files this repository has removed (blog, landing demos, Decap CMS, Cloudflare and Docker configs), and each skill's `description` says how far it applies here. Confirm the files a skill names exist before following it.
+
+## Agent configuration
+
+This file is the single source of instructions for every coding agent. Codex reads it directly; `CLAUDE.md` imports it with `@AGENTS.md` for Claude Code.
+
+- Repository-wide rules go here. Do not copy them into `CLAUDE.md`.
+- Reusable task workflows are skills: `.agents/skills/<name>/SKILL.md`, with `name` and `description` frontmatter. Codex discovers them there; `.claude/skills` is a relative symlink to `../.agents/skills`, so Claude Code discovers the same files. Always edit the files under `.agents/skills/`, never a copy under `.claude/`.
+- Only Claude Code runtime behaviour belongs in `CLAUDE.md` or `.claude/`.
 
 ## Quick Reference
 
@@ -36,18 +44,18 @@ Before implementing a project-specific task (disabling the blog, Open Graph imag
 
 ```
 src/
-  assets/styles/tailwind.css   # Tailwind v4 config (themes, utilities, plugins)
+  assets/styles/tailwind.css   # Tailwind v4 config (themes, utilities, plugins); imports shadcn.css and site.css
   components/
-    common/        # Shared: Image, Metadata, Analytics, ToggleTheme
-    ui/            # Primitives: Button, Form, Headline, Timeline, WidgetWrapper
-    widgets/       # Page sections: Hero, Features, Bento, Pricing, Comparison, FAQs, Team, Gallery…
-    blog/          # Blog: SinglePost, List, Pagination, Tags
+    site/          # The multnelis page: SiteHeader, Hero, Rail, MemberField, ProjectCommit, SiteFooter, LanguageToggle…
+    common/        # Shared: Image, Metadata, StructuredData, Analytics, ApplyColorMode
+    ui/            # Template primitives: Button, Form, Headline, Timeline, WidgetWrapper (not used by the current pages)
+    widgets/       # Template page sections: Hero, Features, Bento, Pricing, FAQs… (not used by the current pages)
     CustomStyles.astro  # CSS variables for colors and fonts
-  content.config.ts    # Content Collections schema (Astro 5+ location)
-  data/post/           # Blog posts (.md, .mdx)
-  layouts/             # Layout.astro, PageLayout.astro, MarkdownLayout.astro
-  pages/               # File-based routing
-  utils/               # blog.ts, images.ts, permalinks.ts, frontmatter.ts
+  content.config.ts    # Content Collections (currently empty; Astro requires the file)
+  data/site.ts         # All page copy (English and Vietnamese), members and projects
+  layouts/             # Layout.astro (used by every page); PageLayout, LandingLayout, MarkdownLayout are template leftovers
+  pages/               # File-based routing: index.astro, contact.astro, 404.astro
+  utils/               # images.ts, permalinks.ts, frontmatter.ts, utils.ts
   config.yaml          # Site configuration (loaded as virtual module)
   navigation.ts        # Navigation structure
   types.d.ts           # TypeScript type definitions
@@ -73,11 +81,11 @@ Configuration is CSS-first in `src/assets/styles/tailwind.css`:
 
 - **Theme tokens:** `@theme { --color-primary: var(--aw-color-primary); ... }`
 - **Custom utilities:** `@utility bg-page { ... }`
-- **Dark mode:** Class-based via `@variant dark (&:where(.dark, .dark *))`
+- **Dark mode:** Class-based via `@variant dark (&:where(.dark, .dark *))`, but this site is light only (`ui.theme: 'light:only'` in `src/config.yaml`) and has no dark palette
 - **Plugins:** `@plugin "@tailwindcss/typography"`
 - **Custom variant:** `@custom-variant intersect (&:not([no-intersect]))`
 
-CSS variables for colors/fonts are defined in `src/components/CustomStyles.astro` with light/dark theme variants.
+CSS variables for colors/fonts are defined in `src/components/CustomStyles.astro` (light theme only, by design).
 
 The Vite plugin `@tailwindcss/vite` is configured in `astro.config.ts` (not as an Astro integration).
 
@@ -87,9 +95,7 @@ Components use `twMerge` from `tailwind-merge` v3 for conditional class composit
 
 ## Content Collections
 
-Defined in `src/content.config.ts` using Astro's Content Layer API with `glob()` loader. Posts are in `src/data/post/` as `.md` or `.mdx` files.
-
-Post frontmatter: `title` (required), `publishDate`, `updateDate`, `draft`, `excerpt`, `image`, `category`, `tags`, `author`, `metadata`.
+`src/content.config.ts` exports an empty `collections` object: the landing page has no content collections, and there are no posts. Astro requires the file to exist; add a collection there (Content Layer API with a `glob()` loader) only when one is actually needed.
 
 ## Component Patterns
 
@@ -105,7 +111,7 @@ Post frontmatter: `title` (required), `publishDate`, `updateDate`, `draft`, `exc
 
 - Local images via `astro:assets` (optimized by Sharp)
 - Remote images via Unpic CDN
-- Allowed domains (for providers Unpic can't detect, processed by Sharp): `cdn.pixabay.com`
+- Allowed domains (for providers Unpic can't detect, processed by Sharp): `cdn.pixabay.com`, `images.unsplash.com` (`image.domains` in `astro.config.ts`)
 
 Hero images use `loading="eager"` and `fetchpriority="high"`.
 
@@ -119,7 +125,7 @@ Fonts are handled by Astro's native **Fonts API**, configured in `astro.config.t
 
 ## Content Security Policy
 
-Astro's native CSP is intentionally **not** enabled in this version: it is incompatible with `<ClientRouter />` view transitions (shipped on by default) and would break the arbitrary third-party scripts a template user typically adds. CSP is deferred to AstroWind v2, where the component model (and optional SSR) make it clean and opt-in.
+Astro's native CSP is **not** enabled. The template left it off because it conflicts with `<ClientRouter />` view transitions and arbitrary third-party scripts. This site uses neither: `src/layouts/Layout.astro` deliberately has no `ClientRouter`, because the rail is measured from the live layout, and `hasExternalScripts` is `false`. Enabling CSP is therefore an open decision, not a technical blocker.
 
 ## Verification Checklist
 
@@ -127,5 +133,5 @@ After changes, always verify:
 
 1. `npm run build` succeeds
 2. `npm run check` passes (astro check + ESLint + Prettier)
-3. Visual check in browser: homepage, blog, dark mode, mobile menu
-4. Structured data describes the site it is on: the `WebSite` / `Organization` block in `src/pages/index.astro` is built only from `config.yaml`; anything you add there must be true for your site
+3. Visual check in browser: `/` and `/contact`, in English and Vietnamese (`?lang=vi`), at 390px and 1440px
+4. Structured data describes the site it is on: the JSON-LD in `src/pages/index.astro` and `src/pages/contact.astro` is built from `src/config.yaml` and `src/data/site.ts`; anything you add there must be true and visible on the page

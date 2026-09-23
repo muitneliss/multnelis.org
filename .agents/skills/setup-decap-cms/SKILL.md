@@ -1,3 +1,8 @@
+---
+name: setup-decap-cms
+description: Set up the Decap CMS admin with Netlify Identity and Git Gateway. This repository ships no Decap admin, no blog and no Netlify config, so the files it names do not exist; use only if a CMS is deliberately added.
+---
+
 # Set Up Decap CMS (Netlify)
 
 The template ships a Decap CMS admin at `/decapcms/` (`public/decapcms/index.html` + `config.yml`). It needs a Git-based backend; the shipped config uses Netlify's `git-gateway`.
@@ -40,6 +45,6 @@ The `fields` in `config.yml` must match the schema in `src/content.config.ts` (`
 
 ## Notes
 
-- Posts saved by Decap are committed to the repository; Netlify rebuilds the site. Content is read at build time (see `content-at-build-time.md`).
+- Posts saved by Decap are committed to the repository; Netlify rebuilds the site. Content is read at build time (see the `content-at-build-time` skill).
 - `image` is a string in the schema; with `media_folder: src/assets/images` Decap writes `/_astro/...`. Prefer writing `~/assets/images/<file>` so `findImage()` optimises it, or change `public_folder` to `~/assets/images`.
 - For other hosts use a different backend (`github`, `gitlab`, `gitea`) in `config.yml`; see the Decap docs.

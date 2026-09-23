@@ -1,3 +1,8 @@
+---
+name: use-shadcn-tokens
+description: Use the shadcn/ui CSS variables defined in src/assets/styles/shadcn.css, or add shadcn/ui React components to the project. Use when a change needs shadcn-style semantic tokens or components.
+---
+
 # Use shadcn/ui Tokens and Components
 
 AstroWind ships the CSS variables shadcn/ui components rely on, derived from the theme in `src/components/CustomStyles.astro`. File: `src/assets/styles/shadcn.css` (imported by `src/assets/styles/tailwind.css`).

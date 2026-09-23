@@ -1,3 +1,8 @@
+---
+name: write-landing-page
+description: AstroWind guide for writing a conversion landing page by copying the template's landing examples. Those examples (src/pages/landing/) were removed from this repository, so only the copy and section advice still applies.
+---
+
 # Write a Landing Page
 
 The six pages in `src/pages/landing/` are worked examples of the six common landing page types. Copy the closest one rather than starting from a blank file.
@@ -18,8 +23,8 @@ The six pages in `src/pages/landing/` are worked examples of the six common land
 3. Keep the layout `LandingLayout` (light header with the "Landing" menu) or switch to `PageLayout` for the full site header.
 4. Replace the copy section by section. Keep one `<h1>` (the hero) and give every section an `id` so buttons can link to it (`href: '#pricing'`).
 5. Point every button at a real destination: an anchor, a page, the repository. No `href="#"`.
-6. If the page has a form (`Contact` or `Newsletter`), connect it: see `configure-contact-form.md`.
-7. Add structured data where it earns a rich result: `schema` on `FAQs`; `add-structured-data.md` for anything else.
+6. If the page has a form (`Contact` or `Newsletter`), connect it: see the `configure-contact-form` skill.
+7. Add structured data where it earns a rich result: `schema` on `FAQs`; the `add-structured-data` skill for anything else.
 8. Run `npm run build && npm run check`, then look at the page at 375 px and 1280 px in light and dark mode.
 
 ## Choosing sections
@@ -32,7 +37,7 @@ The six pages in `src/pages/landing/` are worked examples of the six common land
 - Objections: `FAQs` with `schema`.
 - Close: `CallToAction` (`layout="banner"` for a strong finish), `StickyCTA` on pages whose only job is a click.
 
-Do not repeat the same sequence on every page: a reader who has seen one landing page should not recognise the skeleton on the next. See `use-widgets.md` for the full catalogue and props.
+Do not repeat the same sequence on every page: a reader who has seen one landing page should not recognise the skeleton on the next. See the `use-widgets` skill for the full catalogue and props.
 
 ## Copy rules that convert
 

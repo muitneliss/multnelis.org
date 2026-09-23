@@ -1,3 +1,8 @@
+---
+name: add-structured-data
+description: Add or extend JSON-LD structured data (WebSite, Organization, Person, FAQPage, Article) through src/components/common/StructuredData.astro and the layout head slot. The blog-post sections describe template files that this repository no longer has.
+---
+
 # Add Structured Data (JSON-LD)
 
 Out of the box the template emits `BlogPosting` and `BreadcrumbList` on every blog post (`src/pages/[...blog]/index.astro`, `src/components/common/Breadcrumbs.astro`) and `FAQPage` from the `FAQs` widget when it receives `schema`. `src/components/common/Metadata.astro` handles title, description, canonical, robots, Open Graph (including `article:*`) and Twitter through `astro-seo`. Anything else (Organization, Product, HowTo…) is added as described below.

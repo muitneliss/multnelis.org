@@ -1,6 +1,11 @@
+---
+name: add-component
+description: Add a new AstroWind widget under src/components/widgets/ with a typed props interface in src/types.d.ts. The multnelis pages are built from src/components/site/, not from these widgets, so check that a widget is really wanted first.
+---
+
 # Add a Widget Component
 
-Before writing a new widget, check `use-widgets.md`: the catalogue covers most marketing sections, and a prop or a variant on an existing widget is usually enough.
+Before writing a new widget, check the `use-widgets` skill: the catalogue covers most marketing sections, and a prop or a variant on an existing widget is usually enough.
 
 ## Steps
 
@@ -60,4 +65,4 @@ const columnsClass = getColumnsClass(columns, 'sm:grid-cols-2');
 - Items with a link render an `<a>` (`const Card = href ? 'a' : 'div'`) rather than a nested button.
 - Animations use the `intersect-*` classes and are wrapped in `motion-safe:`.
 - Interaction, when unavoidable, is a small web component (`<aw-my-widget>` with a `<script>` in the same file, ≤ 40 lines) with a static fallback: `FAQs` uses `<details>`, `Gallery` a `<dialog>`, `Countdown`/`Video`/`StickyCTA` a custom element. Register it with `if (!customElements.get(...))` so view transitions do not redefine it.
-- Add a row to the catalogue in `use-widgets.md`.
+- Add a row to the catalogue in the `use-widgets` skill.

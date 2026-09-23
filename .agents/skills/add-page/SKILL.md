@@ -1,3 +1,8 @@
+---
+name: add-page
+description: Add a new routed page in src/pages/ with the AstroWind PageLayout and widgets. The existing pages (index, contact, 404) use src/layouts/Layout.astro with components from src/components/site/ instead; follow them for pages of this site.
+---
+
 # Add a Page
 
 ## Steps

@@ -1,3 +1,8 @@
+---
+name: styling
+description: Tailwind CSS v4 styling reference for this codebase - theme tokens, custom utilities, the shadcn token layer, colours and fonts. This site is light-only (ui.theme in src/config.yaml) and DESIGN.md defines its visual system; the dark-mode sections are template guidance.
+---
+
 # Styling Guide
 
 ## Tailwind CSS v4 Configuration
@@ -62,7 +67,7 @@ Custom `intersect` variant for IntersectionObserver animations:
 | `text-primary-foreground`, `text-secondary-foreground`, `text-accent-foreground` | white                                           |
 | `bg-chart-1..5`, `bg-sidebar*`                                                   | derived from primary / secondary / accent       |
 
-Differences from a stock shadcn theme (kept on purpose): `bg-primary`, `bg-secondary`, `bg-accent` are AstroWind brand colours (shadcn uses `secondary`/`accent` as subtle surfaces), `text-muted` is a text colour and `bg-muted` is **not** defined as a surface, and the `rounded-*` scale is Tailwind's default (shadcn's `--radius` is defined but not mapped). See `use-shadcn-tokens.md`.
+Differences from a stock shadcn theme (kept on purpose): `bg-primary`, `bg-secondary`, `bg-accent` are AstroWind brand colours (shadcn uses `secondary`/`accent` as subtle surfaces), `text-muted` is a text colour and `bg-muted` is **not** defined as a surface, and the `rounded-*` scale is Tailwind's default (shadcn's `--radius` is defined but not mapped). See the `use-shadcn-tokens` skill.
 
 ## Changing Colors
 

@@ -1,3 +1,8 @@
+---
+name: set-open-graph-image
+description: Set the site-wide or per-page Open Graph and Twitter share image through metadata.openGraph.images in src/config.yaml or in a page's metadata. Use when changing the social preview image.
+---
+
 # Set the Open Graph / Social Share Image
 
 Controls the image shown when a page is shared on social networks (`og:image`, Twitter card).

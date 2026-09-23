@@ -1,3 +1,8 @@
+---
+name: deploy-cloudflare
+description: Deploy the static build to Cloudflare Workers or Pages, with or without the Astro adapter. This repository deploys to GitHub Pages through .github/workflows/deploy.yml and ships no wrangler config; use only when moving hosts.
+---
+
 # Deploy to Cloudflare (Workers / Pages)
 
 The template is fully static (`output: 'static'`), so it can be uploaded to Cloudflare as plain assets or built with the official adapter.

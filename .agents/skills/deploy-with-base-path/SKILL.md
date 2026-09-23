@@ -1,3 +1,8 @@
+---
+name: deploy-with-base-path
+description: Serve the site under a base path (GitHub Pages project sites, sub-folders) or change trailing-slash behaviour through src/config.yaml and src/utils/permalinks.ts. multnelis.org is served at the domain root with base '/'.
+---
+
 # Deploy Under a Base Path (GitHub Pages, sub-folders) and Trailing Slashes
 
 Use this when the site lives at `https://example.com/my-site/` instead of the domain root, or when you need URLs to end with `/`.
