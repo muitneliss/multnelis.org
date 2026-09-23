@@ -1,0 +1,130 @@
+---
+// EN / VI switch. English is server-rendered; the Vietnamese strings are
+// emitted here as JSON (built from src/data/site.ts, so content has one
+// owner) and swapped into every `[data-i18n]` node on click. The choice is
+// remembered in localStorage and `?lang=vi` selects it on arrival.
+import { Icon } from 'astro-icon/components';
+import { viDictionary } from '~/data/site';
+---
+
+<div class="switch" role="group" aria-label="Language" data-i18n-aria="ui.language">
+  <span class="lbl mono" aria-hidden="true"><Icon name="branch" size={13} />lang</span>
+  <span class="seg">
+    <button type="button" data-lang="en" aria-pressed="true" lang="en">EN</button>
+    <button type="button" data-lang="vi" aria-pressed="false" lang="vi">VI</button>
+  </span>
+</div>
+
+<script is:inline type="application/json" id="i18n-vi" set:html={JSON.stringify(viDictionary())} />
+
+<script>
+  type Lang = 'en' | 'vi';
+
+  const html = document.documentElement;
+  const nodes = Array.from(document.querySelectorAll<HTMLElement>('[data-i18n]'));
+  /* Images carry their translation in `alt`, keyed by `data-i18n-alt`. */
+  const altNodes = Array.from(document.querySelectorAll<HTMLImageElement>('img[data-i18n-alt]'));
+  /* Landmarks carry their name in `aria-label`, keyed by `data-i18n-aria`. */
+  const ariaNodes = Array.from(document.querySelectorAll<HTMLElement>('[data-i18n-aria]'));
+  const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('.seg button[data-lang]'));
+
+  /* English is what the server rendered; remember it before anything swaps. */
+  const en: Record<string, string> = {};
+  for (const el of nodes) en[el.dataset.i18n!] = el.textContent ?? '';
+  for (const img of altNodes) en[img.dataset.i18nAlt!] = img.alt;
+  for (const el of ariaNodes) en[el.dataset.i18nAria!] = el.getAttribute('aria-label') ?? '';
+  const viJson = document.getElementById('i18n-vi')?.textContent;
+  const vi: Record<string, string> = viJson ? JSON.parse(viJson) : {};
+  const dict: Record<Lang, Record<string, string>> = { en, vi };
+
+  function setLang(lang: Lang, persist = true) {
+    html.lang = lang;
+    for (const el of nodes) {
+      const key = el.dataset.i18n!;
+      const value = dict[lang][key] ?? en[key];
+      if (value != null && el.textContent !== value) el.textContent = value;
+    }
+    for (const img of altNodes) {
+      const key = img.dataset.i18nAlt!;
+      const value = dict[lang][key] ?? en[key];
+      if (value != null && img.alt !== value) img.alt = value;
+    }
+    for (const el of ariaNodes) {
+      const key = el.dataset.i18nAria!;
+      const value = dict[lang][key] ?? en[key];
+      if (value != null && el.getAttribute('aria-label') !== value) el.setAttribute('aria-label', value);
+    }
+    for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.lang === lang));
+    if (persist) {
+      try {
+        localStorage.setItem('muitnelis:lang', lang);
+      } catch {
+        /* private mode: the choice lasts for this page only */
+      }
+    }
+    document.dispatchEvent(new CustomEvent('muitnelis:lang', { detail: lang }));
+  }
+
+  for (const b of buttons) b.addEventListener('click', () => setLang(b.dataset.lang as Lang));
+
+  const fromQuery = new URLSearchParams(location.search).get('lang');
+  let stored: string | null = null;
+  try {
+    stored = localStorage.getItem('muitnelis:lang');
+  } catch {
+    /* ignore */
+  }
+  const initial = fromQuery === 'vi' || fromQuery === 'en' ? fromQuery : stored === 'vi' ? 'vi' : 'en';
+  if (initial !== 'en') setLang(initial, fromQuery != null);
+</script>
+
+<style>
+  .switch {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .lbl {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: var(--ink-2);
+  }
+  .seg {
+    display: inline-flex;
+    border: 1px solid var(--ink);
+    border-radius: 6px;
+    padding: 2px;
+    gap: 2px;
+  }
+  .seg button {
+    font: 500 0.8125rem/1 var(--mono);
+    letter-spacing: 0.02em;
+    padding: 7px 11px;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    transition:
+      background 160ms ease,
+      color 160ms ease;
+  }
+  .seg button:hover {
+    background: rgb(16 18 20 / 7%);
+  }
+  .seg button[aria-pressed='true'] {
+    background: var(--ink);
+    color: #fff;
+  }
+  .seg button:focus-visible {
+    outline-offset: 1px;
+  }
+  @media (width <= 720px) {
+    .lbl {
+      display: none;
+    }
+  }
+</style>

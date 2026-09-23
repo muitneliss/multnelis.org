@@ -1,0 +1,110 @@
+---
+// The opening: three lanes converge into the first commit on main, which is
+// the statement itself. The header sits inside this section so the rail runs
+// from the very top of the page.
+import Rail from '~/components/site/Rail.astro';
+import SiteHeader from '~/components/site/SiteHeader.astro';
+import { actions, statement, supporting } from '~/data/site';
+---
+
+<section class="gs hero" id="top" data-kind="hero" aria-label="Introduction" data-i18n-aria="ui.introduction">
+  <Rail />
+  <SiteHeader />
+  <div class="hero-body col">
+    <h1 data-anchor data-i18n="hero.statement">{statement.en}</h1>
+    <p class="lead" data-i18n="hero.supporting">{supporting.en}</p>
+    <div class="actions">
+      <a class="action action-solid" href={actions.primary.href} data-i18n="actions.primary">
+        {actions.primary.label.en}
+      </a>
+      <a class="action action-ghost" href={actions.secondary.href} data-i18n="actions.secondary">
+        {actions.secondary.label.en}
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-body {
+    padding-top: 112px;
+    padding-bottom: 136px;
+  }
+  h1 {
+    font-weight: 800;
+    font-size: clamp(2.75rem, 1.1rem + 5.4vw, 5.5rem);
+    line-height: 0.98;
+    max-width: 1140px;
+  }
+  .lead {
+    margin-top: 36px;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    max-width: 62ch;
+    color: var(--ink);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 44px;
+  }
+  .action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font: 600 1rem/1 var(--body);
+    padding: 15px 22px;
+    border-radius: 7px;
+    text-decoration: none;
+    border: 1px solid var(--ink);
+    transition:
+      background 180ms ease,
+      color 180ms ease,
+      transform 300ms var(--ease);
+  }
+  .action-solid {
+    background: var(--ink);
+    color: #fff;
+  }
+  .action-solid:hover {
+    background: #262a2f;
+    border-color: #262a2f;
+  }
+  .action-ghost {
+    background: transparent;
+    color: var(--ink);
+  }
+  .action-ghost:hover {
+    background: var(--ink);
+    color: #fff;
+  }
+  .action:active {
+    transform: translateY(1px);
+  }
+
+  @media (width <= 720px) {
+    .hero-body {
+      padding-top: 56px;
+      padding-bottom: 88px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      line-height: 1;
+      hyphens: manual;
+      /* Past balance's line limit on a phone: pretty keeps the last line full. */
+      text-wrap: pretty;
+    }
+    .lead {
+      margin-top: 26px;
+      font-size: 1.125rem;
+    }
+    .actions {
+      flex-direction: column;
+      margin-top: 32px;
+    }
+    .action {
+      width: 100%;
+    }
+  }
+</style>

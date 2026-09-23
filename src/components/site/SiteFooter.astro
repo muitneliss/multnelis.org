@@ -1,0 +1,55 @@
+---
+// The last commit: every lane merges into main one final time.
+import Rail from '~/components/site/Rail.astro';
+import { brand, footer, members } from '~/data/site';
+
+const merges = members.map((m) => m.lane).join(',');
+---
+
+<footer class="gs end" data-kind="end" data-merge={merges}>
+  <Rail />
+  <div class="col">
+    <p class="line mono" data-anchor>
+      {brand.name} · <span data-i18n="footer.place">{footer.place.en}</span> ·{' '}
+      <a href={brand.github}><span>{brand.githubLabel}</span></a>
+    </p>
+    <p class="sub mono">{footer.domain}</p>
+  </div>
+</footer>
+
+<style>
+  .end {
+    border-top: 1px solid var(--hair);
+  }
+  .col {
+    padding-top: 128px;
+    padding-bottom: 120px;
+  }
+  .line {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+  .line a {
+    text-decoration: none;
+  }
+  .line a span {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+    transition: text-decoration-color 160ms ease;
+  }
+  .line a:hover span {
+    text-decoration-color: currentColor;
+  }
+  .sub {
+    margin-top: 10px;
+    font-size: 0.8125rem;
+    color: var(--ink-2);
+  }
+  @media (width <= 720px) {
+    .col {
+      padding-top: 72px;
+      padding-bottom: 80px;
+    }
+  }
+</style>

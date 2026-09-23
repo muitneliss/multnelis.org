@@ -1,0 +1,72 @@
+site:
+  name: muitnelis
+  site: 'https://muitnelis.org'
+  base: '/'
+  trailingSlash: false
+
+  googleSiteVerificationId: null
+
+# Default SEO metadata
+metadata:
+  title:
+    default: muitnelis
+    template: '%s — muitnelis'
+  description: 'A small collective in Ho Chi Minh City building tools for the coding-agent era: Undercroft, Ymir, Symphony, and more.'
+  robots:
+    index: true
+    follow: true
+  openGraph:
+    site_name: muitnelis
+    images:
+      - url: '~/assets/images/og.png'
+        width: 1200
+        height: 630
+    type: website
+  twitter:
+    handle: null
+    site: null
+    cardType: summary_large_image
+
+i18n:
+  language: en
+  textDirection: ltr
+
+apps:
+  blog:
+    isEnabled: false
+    postsPerPage: 8
+
+    post:
+      isEnabled: false
+      permalink: '/%slug%'
+      robots:
+        index: false
+
+    list:
+      isEnabled: false
+      pathname: 'blog'
+      robots:
+        index: false
+
+    category:
+      isEnabled: false
+      pathname: 'category'
+      robots:
+        index: false
+
+    tag:
+      isEnabled: false
+      pathname: 'tag'
+      robots:
+        index: false
+
+    isRelatedPostsEnabled: false
+    relatedPostsCount: 0
+
+analytics:
+  vendors:
+    googleAnalytics:
+      id: null
+
+ui:
+  theme: 'light:only'

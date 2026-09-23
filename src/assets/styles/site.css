@@ -1,0 +1,218 @@
+/*
+  The landing page world: a commit graph. A rail of lanes runs down the left
+  edge; the main lane is ink, and each member owns a colour. Everything here is
+  global on purpose: the rail is drawn by script (so it cannot carry scoped
+  styles), and the layout variables are shared by every section.
+*/
+
+:root {
+  --ink: var(--aw-color-ink);
+  --ink-2: var(--aw-color-ink-2);
+  --hair: var(--aw-color-hair);
+  --paper: var(--aw-color-paper);
+  --c: var(--aw-color-lane-vermilion); /* cuongtranba */
+  --t: var(--aw-color-lane-cobalt); /* thanh-dong */
+  --y: var(--aw-color-lane-jade); /* yanmad27 */
+
+  --rail: 120px;
+  --gutter: 64px;
+  --sw: 6px;
+  --ease: cubic-bezier(0.19, 1, 0.22, 1);
+  --focus: var(--ink);
+
+  --display: var(--font-display);
+  --body: var(--font-sans);
+  --mono: var(--font-mono);
+}
+
+@media (width <= 720px) {
+  :root {
+    --rail: 48px;
+    --gutter: 20px;
+    --sw: 4px;
+  }
+}
+
+/* Base ------------------------------------------------------------------- */
+
+html {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scrollbar-color: var(--ink) var(--paper);
+  scrollbar-width: thin;
+  caret-color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 11px;
+}
+::-webkit-scrollbar-track {
+  background: var(--paper);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--ink);
+  border: 3px solid var(--paper);
+  border-radius: 8px;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--ink);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+  transition: text-decoration-color 160ms ease;
+}
+a:hover {
+  text-decoration-color: currentColor;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+p {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--display);
+  font-stretch: 125%;
+  font-variation-settings: 'wdth' 125;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.mono {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'calt' 0;
+}
+
+/* Column: everything sits to the right of the rail. */
+.col {
+  padding-left: calc(var(--rail) + var(--gutter));
+  padding-right: var(--gutter);
+}
+
+/* The rail ---------------------------------------------------------------- */
+
+.gs {
+  position: relative;
+}
+
+.rail {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--rail);
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 2;
+  display: block;
+}
+
+.rail path {
+  fill: none;
+  stroke-width: var(--sw);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition:
+    stroke-dashoffset 600ms var(--ease),
+    stroke-width 220ms ease;
+}
+.gs.drawn .rail path {
+  stroke-dashoffset: 0;
+}
+
+.rail .node {
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0.6);
+  opacity: 0;
+  transition:
+    transform 600ms var(--ease) 220ms,
+    opacity 240ms ease 220ms;
+}
+.gs.drawn .rail .node,
+html.is-static .rail .node {
+  transform: none;
+  opacity: 1;
+}
+html.is-static .rail path {
+  stroke-dasharray: none;
+  stroke-dashoffset: 0;
+  transition: stroke-width 220ms ease;
+}
+
+.lane-m {
+  stroke: var(--ink);
+}
+.lane-c {
+  stroke: var(--c);
+}
+.lane-t {
+  stroke: var(--t);
+}
+.lane-y {
+  stroke: var(--y);
+}
+
+/* Hovering a member's avatar pulses their lane along the whole page. */
+@keyframes lane-pulse {
+  50% {
+    stroke-width: calc(var(--sw) * 1.75);
+  }
+}
+body[data-pulse='c'] .lane-c,
+body[data-pulse='t'] .lane-t,
+body[data-pulse='y'] .lane-y {
+  animation: lane-pulse 900ms ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  body[data-pulse='c'] .lane-c,
+  body[data-pulse='t'] .lane-t,
+  body[data-pulse='y'] .lane-y {
+    animation: none;
+    stroke-width: calc(var(--sw) * 1.75);
+  }
+}
+html.is-static body[data-pulse='c'] .lane-c,
+html.is-static body[data-pulse='t'] .lane-t,
+html.is-static body[data-pulse='y'] .lane-y {
+  animation: none;
+  stroke-width: calc(var(--sw) * 1.75);
+}

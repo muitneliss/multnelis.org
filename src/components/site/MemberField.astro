@@ -1,0 +1,287 @@
+---
+// One member, one branch. The section is a full-bleed field in the member's
+// lane colour; the rail forks off main above the avatar and the avatar sits
+// on the commit node.
+import { Image } from 'astro:assets';
+import Rail from '~/components/site/Rail.astro';
+import { type Member, members } from '~/data/site';
+
+export interface Props {
+  member: Member;
+  id?: string;
+}
+
+const { member, id } = Astro.props;
+const { handle, name, role, intro, facts, quote, repos, github, site, avatar, icon, iconAlt, lane } = member;
+
+/* Lanes that already forked above this member keep running through. */
+const through = members
+  .slice(0, members.indexOf(member))
+  .map((m) => m.lane)
+  .join(',');
+const headingId = `member-${handle}`;
+const hostname = (url: string) => url.replace(/^https?:\/\//, '');
+---
+
+<section
+  class:list={['gs', 'member', `m-${lane}`]}
+  id={id}
+  data-kind="member"
+  data-lane={lane}
+  data-through={through || undefined}
+  aria-labelledby={headingId}
+>
+  <Rail />
+  <div class="field">
+    <div class="member-grid">
+      <Image
+        class="avatar"
+        src={avatar}
+        width={200}
+        height={200}
+        densities={[1, 2]}
+        loading="eager"
+        alt={name}
+        data-anchor
+        data-avatar
+        data-lane={lane}
+      />
+      <div>
+        <div class="head">
+          <div>
+            <h2 id={headingId}>{name}</h2>
+            {handle !== name && <span class="handle mono">{handle}</span>}
+          </div>
+          <Image
+            class="domain"
+            src={icon}
+            width={72}
+            height={72}
+            densities={[1, 2]}
+            loading="eager"
+            alt={iconAlt.en}
+            data-i18n-alt={`member.${handle}.iconAlt`}
+          />
+        </div>
+        <p class="role" data-i18n={`member.${handle}.role`}>{role.en}</p>
+        <p class="intro" data-i18n={`member.${handle}.intro`}>{intro.en}</p>
+        {quote && <p class="quote">“{quote}”</p>}
+        <p class="facts mono" data-i18n={`member.${handle}.facts`}>{facts.en}</p>
+        <ul class="repos">
+          {
+            repos.map((r) => (
+              <li>
+                <a href={r.url}>{r.name}</a>
+              </li>
+            ))
+          }
+        </ul>
+        <div class="links mono">
+          <a href={github}><span class="k">github →</span><span>{hostname(github)}</span></a>
+          {
+            site && (
+              <a href={site}>
+                <span class="k">site →</span>
+                <span>{hostname(site)}</span>
+              </a>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .member {
+    color: #fff;
+  }
+  .field {
+    --focus: #fff;
+    margin-left: var(--rail);
+    padding: 104px var(--gutter) 112px;
+    color: #fff;
+  }
+  .m-c .field {
+    background: var(--c);
+  }
+  .m-t .field {
+    background: var(--t);
+  }
+  .m-y .field {
+    background: var(--y);
+  }
+  .m-c .field ::selection {
+    background: #fff;
+    color: var(--c);
+  }
+  .m-t .field ::selection {
+    background: #fff;
+    color: var(--t);
+  }
+  .m-y .field ::selection {
+    background: #fff;
+    color: var(--y);
+  }
+
+  .member-grid {
+    display: grid;
+    grid-template-columns: 212px minmax(0, 1fr);
+    gap: 20px 60px;
+    align-items: start;
+    max-width: 1180px;
+  }
+  .avatar {
+    width: 212px;
+    height: 212px;
+    border-radius: 50%;
+    border: 6px solid #fff;
+    object-fit: cover;
+    background: #fff;
+    transition: transform 500ms var(--ease);
+  }
+  .avatar:hover {
+    transform: scale(1.03);
+  }
+  .head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  /* The domain icon is drawn in the lane colour, so it needs the page's white
+     under it to read against its own field. */
+  .domain {
+    flex: none;
+    width: 88px;
+    height: 88px;
+    padding: 8px;
+    border-radius: 18px;
+    background: #fff;
+  }
+  h2 {
+    font-weight: 800;
+    font-size: clamp(2.125rem, 1.4rem + 2.2vw, 3.25rem);
+    line-height: 1;
+    color: #fff;
+  }
+  .handle {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 0.875rem;
+    line-height: 1;
+    padding: 6px 9px;
+    border: 1px solid rgb(255 255 255 / 70%);
+    border-radius: 5px;
+    color: #fff;
+  }
+  .role {
+    margin-top: 22px;
+    font-size: 1.375rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .intro {
+    margin-top: 16px;
+    font-size: 1.125rem;
+    line-height: 1.55;
+    max-width: 62ch;
+    font-weight: 400;
+  }
+  .quote {
+    margin-top: 12px;
+    font-size: 1.0625rem;
+    font-style: italic;
+  }
+  .facts {
+    margin-top: 30px;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .facts::-webkit-scrollbar {
+    display: none;
+  }
+  .repos {
+    margin: 26px 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 22px;
+    font-size: 1.0625rem;
+    font-weight: 500;
+  }
+  .links {
+    margin-top: 26px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 32px;
+    font-size: 0.875rem;
+  }
+  .links a {
+    text-decoration: none;
+    display: inline-flex;
+    gap: 0.6em;
+  }
+  .links a span:not(.k) {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+    transition: text-decoration-color 160ms ease;
+  }
+  .links a:hover span:not(.k) {
+    text-decoration-color: currentColor;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .avatar {
+      transition: none;
+    }
+    .avatar:hover {
+      transform: none;
+    }
+  }
+
+  @media (width <= 720px) {
+    .field {
+      padding: 56px var(--gutter) 64px;
+    }
+    .member-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 24px;
+    }
+    .member-grid > div {
+      min-width: 0;
+    }
+    .facts {
+      white-space: normal;
+      overflow: visible;
+    }
+    .avatar {
+      width: 132px;
+      height: 132px;
+      border-width: 5px;
+    }
+    .domain {
+      width: 64px;
+      height: 64px;
+      padding: 6px;
+      border-radius: 14px;
+    }
+    .role {
+      font-size: 1.1875rem;
+      margin-top: 18px;
+    }
+    .intro {
+      font-size: 1.0625rem;
+    }
+    .repos {
+      font-size: 1rem;
+      gap: 6px 18px;
+    }
+  }
+</style>

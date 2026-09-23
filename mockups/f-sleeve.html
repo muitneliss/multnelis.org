@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>muitnelis · a small collective in Ho Chi Minh City</title>
+<meta name="description" content="A small collective in Ho Chi Minh City building tools for the coding-agent era.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Manrope:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --peach: #FFB88C;
+    --rose: #FF7EB3;
+    --powder: #9FCBFF;
+    --aqua: #2FC4C4;
+    --sea-2: #29B9C0;
+    --sea-3: #24AEBA;
+    --deep: #1FA3B5;
+    --navy: #0B1F3A;
+    --ink-2: #0B2A3F;
+    --gold: #FFD166;
+    --chrome: linear-gradient(180deg, #FFFFFF 0%, #E4EBF1 20%, #C9D6E3 40%, #5E6E80 51%, #7C8C9F 60%, #E6ECF2 82%, #FFFFFF 100%);
+    --sky: 62vh;
+    --gutter: clamp(20px, 4.5vw, 64px);
+    --content-left: clamp(20px, 12vw, 172px);
+    --measure: 68ch;
+    --pill-h: 54px;
+    --ease-out: cubic-bezier(.16, 1, .3, 1);
+    --flare: 8px 14px 34px -4px rgba(255, 209, 102, .75);
+    --lift: 0 10px 30px -10px rgba(11, 31, 58, .45);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scrollbar-color: var(--navy) var(--aqua); }
+  body {
+    margin: 0;
+    font-family: "Manrope", "Be Vietnam Pro", system-ui, sans-serif;
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    color: var(--navy);
+    background: var(--deep);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection { background: var(--gold); color: var(--navy); }
+  :focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; border-radius: 4px; }
+  ::-webkit-scrollbar { width: 12px; height: 12px; }
+  ::-webkit-scrollbar-track { background: var(--aqua); }
+  ::-webkit-scrollbar-thumb { background: var(--navy); border-radius: 999px; border: 3px solid var(--aqua); }
+
+  a { color: inherit; text-decoration-color: currentColor; text-underline-offset: .18em; text-decoration-thickness: 1.5px; }
+  a:hover { text-decoration-color: var(--gold); text-decoration-thickness: 2px; }
+  p { margin: 0; }
+  img { display: block; }
+
+  /* ---------- bilingual machinery ---------- */
+  .band { display: flex; flex-direction: column; gap: .18em; margin: 0; font-family: "Archivo", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; line-height: 1.12; text-wrap: balance; }
+  .band .en { font-size: var(--p); order: 1; }
+  .band .vi { font-size: var(--s); order: 2; font-weight: 600; }
+  html[lang="vi"] .band .en { font-size: var(--s); order: 2; font-weight: 600; }
+  html[lang="vi"] .band .vi { font-size: var(--p); order: 1; font-weight: 700; }
+  .t[lang="vi"] { display: none; }
+  html[lang="vi"] .t[lang="vi"] { display: block; }
+  html[lang="vi"] .t[lang="en"] { display: none; }
+  .band .en, .band .vi { transition: font-size .45s var(--ease-out); }
+
+  /* ---------- header ---------- */
+  .top {
+    position: absolute; inset: 0 0 auto 0; z-index: 6;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px var(--gutter);
+    font-family: "Archivo", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; font-size: .78rem;
+  }
+  .top .org { text-decoration: none; padding: 6px 0; border-bottom: 2px solid transparent; }
+  .top .org:hover { border-bottom-color: var(--navy); }
+  .toggle { display: flex; gap: 6px; padding: 0; margin: 0; list-style: none; }
+  .toggle button {
+    font: inherit; letter-spacing: inherit; text-transform: inherit; color: var(--navy);
+    height: 34px; min-width: 52px; padding: 0 14px; border-radius: 999px; cursor: pointer;
+    border: 3px solid transparent;
+    background: linear-gradient(rgba(255,255,255,.35), rgba(255,255,255,.35)) padding-box, rgba(11,31,58,.55) border-box;
+    transition: box-shadow .35s var(--ease-out), transform .35s var(--ease-out), background .3s;
+  }
+  .toggle button:hover { box-shadow: var(--flare); transform: translateY(-1px); }
+  .toggle button[aria-pressed="true"] {
+    background: linear-gradient(var(--gold), var(--gold)) padding-box, var(--chrome) border-box;
+    box-shadow: 0 6px 18px -6px rgba(11,31,58,.5);
+  }
+
+  /* ---------- the sleeve front ---------- */
+  .sleeve { position: relative; }
+  .sky {
+    position: relative; overflow: hidden; min-height: var(--sky);
+    background:
+      radial-gradient(60% 40% at 74% 100%, rgba(255,209,102,.55) 0%, rgba(255,209,102,0) 70%),
+      linear-gradient(180deg, var(--peach) 0%, #FFA398 26%, var(--rose) 54%, #D9A6D8 76%, var(--powder) 100%);
+    display: flex; flex-direction: column; justify-content: flex-end;
+  }
+  .hero {
+    position: relative; z-index: 3;
+    padding: 92px var(--gutter) 48px var(--content-left);
+    max-width: calc(var(--content-left) + 1060px);
+  }
+  .logo {
+    position: relative; display: inline-block;
+    font-family: "Pacifico", cursive; font-weight: 400;
+    font-size: clamp(3.6rem, 1.5rem + 7vw, 7rem); line-height: 1.12;
+    padding: 0 .12em 0 .04em; margin: 0 0 .02em -.04em;
+    transform: rotate(-3deg); transform-origin: left bottom;
+  }
+  .logo > span { display: block; white-space: nowrap; }
+  .logo .stroke {
+    position: absolute; inset: 0; padding: inherit; color: #2B3A4E;
+    -webkit-text-stroke: 3px #2B3A4E; paint-order: stroke fill;
+    text-shadow: 0 3px 0 #1E2B3E, 0 16px 34px rgba(11,31,58,.35);
+  }
+  .logo .chrome { position: relative; background: var(--chrome); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .logo .flare {
+    position: absolute; inset: 0; padding: inherit; color: transparent; pointer-events: none;
+    background: linear-gradient(105deg, transparent 38%, rgba(255,255,255,.0) 44%, rgba(255,255,255,1) 50%, rgba(255,209,102,.9) 53%, transparent 60%);
+    background-size: 240% 100%; background-position: 130% 0;
+    -webkit-background-clip: text; background-clip: text;
+    opacity: 0;
+    animation: sweep 900ms var(--ease-out) 700ms 1 forwards;
+  }
+  @keyframes sweep {
+    0% { background-position: 130% 0; opacity: 1; }
+    80% { opacity: 1; }
+    100% { background-position: -40% 0; opacity: 0; }
+  }
+  .headline { --p: clamp(1.6rem, .9rem + 2.2vw, 2.6rem); --s: clamp(1.1rem, .7rem + 1.2vw, 1.6rem); margin-top: 2px; max-width: 38ch; }
+  .support { margin-top: 20px; max-width: var(--measure); font-size: clamp(1rem, .95rem + .3vw, 1.125rem); line-height: 1.45; font-weight: 500; }
+
+  .actions {
+    position: relative; z-index: 4; display: flex; flex-wrap: wrap; gap: 14px;
+    padding: 0 var(--gutter) 0 var(--content-left); margin-top: calc(var(--pill-h) / -2);
+  }
+  .pill {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    height: var(--pill-h); padding: 0 28px; border-radius: 999px;
+    font-family: "Archivo", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; font-size: .86rem;
+    text-decoration: none; white-space: nowrap;
+    transition: box-shadow .4s var(--ease-out), transform .4s var(--ease-out);
+    box-shadow: var(--lift);
+  }
+  .pill:hover, .pill:focus-visible { box-shadow: var(--flare), var(--lift); transform: translateY(-3px); }
+  .pill.solid { color: #fff; background: linear-gradient(180deg, #1B3358 0%, var(--navy) 55%, #071528 100%); }
+  .pill.ghost { color: var(--navy); border: 2px solid var(--navy); background: rgba(255,255,255,.22); backdrop-filter: blur(6px); box-shadow: none; }
+  .pill svg { width: 18px; height: 18px; flex: none; }
+
+  .reflection {
+    position: absolute; right: var(--gutter); top: calc(var(--pill-h) / 2 + 3px);
+    height: 34px; min-width: 52px; padding: 0 14px; border-radius: 999px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Archivo", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; font-size: .78rem; color: var(--navy);
+    background: linear-gradient(var(--gold), var(--gold)) padding-box, var(--chrome) border-box; border: 3px solid transparent;
+    transform: scaleY(-1) scaleX(1.02); transform-origin: top; opacity: .55; filter: blur(1.5px);
+    -webkit-mask-image: linear-gradient(to top, #000 20%, transparent 100%); mask-image: linear-gradient(to top, #000 20%, transparent 100%);
+    pointer-events: none;
+  }
+
+  .horizon { position: relative; z-index: 2; height: 2px; background: var(--navy); box-shadow: 0 -8px 26px rgba(255,209,102,.55), 0 4px 22px rgba(255,255,255,.35); }
+
+  /* skyline + palms */
+  .skyline { position: absolute; right: 0; bottom: -1px; z-index: 1; width: clamp(240px, 44vw, 640px); height: auto; will-change: transform; color: var(--navy); }
+  .palm { position: absolute; z-index: 2; color: var(--navy); height: auto; }
+  .palm.hero-palm { left: -22px; bottom: -4px; width: clamp(120px, 12vw, 170px); }
+  .palm.far { opacity: .55; }
+
+  /* ---------- the sea ---------- */
+  .station { position: relative; }
+  .station.one { background: linear-gradient(180deg, var(--aqua) 0%, var(--sea-2) 100%); }
+  .station.two { background: linear-gradient(180deg, var(--sea-2) 0%, var(--sea-3) 100%); }
+  .station.three { background: linear-gradient(180deg, var(--sea-3) 0%, var(--deep) 100%); }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: clamp(72px, 9vw, 120px) var(--gutter) clamp(80px, 9vw, 128px); position: relative; }
+  .station .band.title { --p: clamp(1.9rem, 1.2rem + 2.2vw, 3.2rem); --s: clamp(1.15rem, .8rem + 1.3vw, 2rem); margin-bottom: clamp(36px, 5vw, 64px); }
+  .palm.station-palm { right: var(--gutter); top: 0; transform: translateY(-96%); width: clamp(96px, 10vw, 150px); }
+  .station.two .palm.station-palm { right: auto; left: calc(var(--gutter) + 8vw); }
+  .station.three .palm.station-palm { right: calc(var(--gutter) + 10vw); }
+
+  /* the band */
+  .members { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(28px, 4vw, 56px); list-style: none; margin: 0; padding: 0; }
+  .member { display: flex; flex-direction: column; }
+  .ring {
+    width: 200px; height: 200px; border-radius: 50%; padding: 7px;
+    border: 0; background: var(--chrome); box-shadow: var(--lift);
+    transition: box-shadow .4s var(--ease-out), transform .4s var(--ease-out);
+  }
+  .ring img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid var(--navy); }
+  .ring:hover { box-shadow: var(--flare), var(--lift); transform: translateY(-4px); }
+  .member .name { margin: 26px 0 0; font-family: "Archivo", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; font-size: 1.45rem; line-height: 1.1; }
+  .member .handle { font-size: .9rem; font-weight: 600; color: var(--ink-2); margin-top: 4px; }
+  .member .role { --p: 1.2rem; --s: .75rem; margin-top: 16px; }
+  .member .intro { margin-top: 16px; max-width: 42ch; }
+  .facts { margin-top: 14px; font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-2); line-height: 1.7; }
+  .repos { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .92rem; font-weight: 600; line-height: 1.6; }
+  .out { margin-top: 18px; display: flex; gap: 8px; }
+  .out a {
+    display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 16px; border-radius: 999px; text-decoration: none;
+    border: 2px solid var(--navy); font-family: "Archivo", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; font-size: .74rem;
+    transition: box-shadow .4s var(--ease-out), transform .4s var(--ease-out);
+  }
+  .out a:hover { box-shadow: var(--flare); transform: translateY(-2px); }
+  .out svg { width: 16px; height: 16px; }
+  .quote { margin-top: 12px; font-style: italic; font-weight: 500; color: var(--ink-2); }
+
+  /* the track list */
+  .tracks { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--navy); }
+  .side { display: flex; align-items: baseline; gap: 18px; padding: 24px 0 14px; font-family: "Archivo", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; font-size: .82rem; }
+  .side::after { content: ""; flex: 1; height: 1px; background: rgba(11,31,58,.35); }
+  .track {
+    display: grid; grid-template-columns: 56px 72px minmax(0, 1fr) auto; column-gap: clamp(16px, 2.5vw, 36px); align-items: start;
+    padding: 30px 0 34px; border-bottom: 1.5px solid rgba(11,31,58,.35);
+  }
+  .track:last-child { border-bottom-width: 2px; border-bottom-color: var(--navy); }
+  .no { font-family: "Archivo", sans-serif; font-weight: 700; font-size: 2rem; line-height: 1; letter-spacing: 0; font-variant-numeric: tabular-nums; padding-top: 4px; }
+  .medal {
+    width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; overflow: hidden;
+    background: linear-gradient(rgba(255,255,255,.55), rgba(255,255,255,.55)) padding-box, var(--chrome) border-box; border: 3px solid transparent;
+    box-shadow: 0 8px 20px -6px rgba(11,31,58,.5), 0 0 0 10px rgba(255,209,102,.22), 0 0 36px 6px rgba(255,209,102,.35);
+    color: var(--navy);
+  }
+  .medal svg { width: 34px; height: 34px; }
+  .medal img { width: 40px; height: 40px; border-radius: 8px; }
+  .medal.empty { background: rgba(255,255,255,.18); border: 2px dashed rgba(11,31,58,.45); box-shadow: none; }
+  .track .tagline { --p: clamp(1.15rem, 1rem + .6vw, 1.5rem); --s: clamp(.8rem, .7rem + .3vw, .94rem); }
+  .track .detail { margin-top: 14px; max-width: var(--measure); }
+  .tags { margin-top: 12px; font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-2); }
+  .track .go { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; padding-top: 6px; white-space: nowrap; }
+  .track .go a { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; border-radius: 999px; border: 2px solid var(--navy); text-decoration: none; font-family: "Archivo", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; font-size: .74rem; transition: box-shadow .4s var(--ease-out), transform .4s var(--ease-out); }
+  .track .go a:hover { box-shadow: var(--flare); transform: translateY(-2px); }
+  .track .go a.primary { background: var(--navy); color: #fff; }
+  .track .go svg { width: 15px; height: 15px; }
+  .track.private { position: relative; }
+  .track.private::before { content: ""; position: absolute; inset: 0 -16px; background: rgba(255,255,255,.28); border-radius: 18px; pointer-events: none; }
+  .track.private > * { position: relative; }
+  .track.private .name-row { color: var(--ink-2); }
+  .private-tag { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border-radius: 999px; border: 2px dashed rgba(11,31,58,.6); font-family: "Archivo", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; font-size: .74rem; }
+  .private-tag svg { width: 14px; height: 14px; }
+
+  /* closing: the second horizon */
+  .closing .sky2 {
+    position: relative; overflow: hidden; height: clamp(200px, 26vw, 300px);
+    background:
+      radial-gradient(40% 60% at 50% 100%, rgba(255,209,102,.45) 0%, rgba(255,209,102,0) 70%),
+      linear-gradient(180deg, var(--peach) 0%, var(--rose) 58%, var(--powder) 100%);
+  }
+  .sun {
+    position: absolute; left: 50%; bottom: 0; width: clamp(150px, 22vw, 250px); aspect-ratio: 1; border-radius: 50%;
+    background: radial-gradient(circle at 50% 30%, #FFF1C2 0%, var(--gold) 45%, #FFB03A 100%);
+    transform: translate(-50%, calc(50% + var(--sink, 0) * 44%));
+    box-shadow: 0 0 70px 14px rgba(255,209,102,.75);
+    will-change: transform;
+  }
+  .closing .sky2 .palm { bottom: -3px; }
+  .closing .sky2 .palm.l { left: 6%; width: clamp(80px, 9vw, 140px); }
+  .closing .sky2 .palm.r { right: 8%; width: clamp(64px, 7vw, 110px); transform: scaleX(-1); }
+  .closing .sea-foot { background: linear-gradient(180deg, var(--aqua) 0%, var(--deep) 100%); }
+  .foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 32px; max-width: 1240px; margin: 0 auto; padding: 40px var(--gutter) 48px; font-family: "Archivo", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; font-size: .8rem; }
+  .foot a { text-decoration: none; border-bottom: 2px solid transparent; }
+  .foot a:hover { border-bottom-color: var(--navy); }
+  .foot .sep { margin: 0 .25em; opacity: .7; }
+  .foot p { overflow-wrap: anywhere; }
+  .foot .mini-logo { font-family: "Pacifico", cursive; text-transform: none; letter-spacing: 0; font-weight: 400; font-size: 1.7rem; background: var(--chrome); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 2px 0 #2B3A4E); }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 1100px) {
+    .members { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 760px) {
+    :root { --pill-h: 50px; --content-left: 20px; }
+    .top { padding: 16px var(--gutter); font-size: .7rem; }
+    .hero { padding-top: 84px; padding-bottom: 124px; }
+    .headline { max-width: none; }
+    .support { font-size: 1rem; }
+    .palm.hero-palm { display: none; }
+    .skyline { width: 224px; }
+    .members { grid-template-columns: 1fr; gap: 56px; }
+    .ring { width: 160px; height: 160px; padding: 6px; }
+    .track { grid-template-columns: 44px minmax(0, 1fr); row-gap: 14px; padding: 26px 0 30px; }
+    .track .medal { grid-column: 2; order: -1; }
+    .no { grid-row: 1; }
+    .track .body { grid-column: 1 / -1; }
+    .track .go { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; justify-content: flex-start; align-items: center; padding-top: 4px; }
+    .track.private::before { inset: 0 -10px; }
+    .reflection { right: var(--gutter); }
+    .palm.station-palm { width: 84px; }
+    .station.two .palm.station-palm { left: auto; right: var(--gutter); }
+    .station.three .palm.station-palm { right: var(--gutter); }
+    .foot { justify-content: center; text-align: center; }
+  }
+  @media (max-width: 420px) {
+    .actions .pill { padding: 0 20px; font-size: .78rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .logo .flare { animation: none; opacity: 0; }
+    .skyline, .sun { transform: none !important; will-change: auto; }
+    .sun { transform: translate(-50%, 50%) !important; }
+    .pill, .ring, .toggle button, .out a, .track .go a, .band .en, .band .vi { transition: none; }
+  }
+  html.settled .logo .flare { animation: none; opacity: 0; }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- one palm: tapered trunk plus a fan of arc-bounded fronds -->
+    <symbol id="palm" viewBox="0 0 140 200">
+      <path d="M58 200 C62 156 64 122 71 86 L79 88 C75 124 74 158 82 200 Z"/>
+      <g transform="translate(74 82)">
+        <g id="frond">
+          <path d="M0 0 A64 64 0 0 0 62 -12 A38 38 0 0 1 0 0 Z"/>
+        </g>
+        <use href="#frond" transform="rotate(-24)"/>
+        <use href="#frond" transform="rotate(-52)"/>
+        <use href="#frond" transform="rotate(-84)"/>
+        <use href="#frond" transform="rotate(-112)"/>
+        <use href="#frond" transform="rotate(-142)"/>
+        <use href="#frond" transform="rotate(-170)"/>
+        <use href="#frond" transform="rotate(14) scale(1 -1)"/>
+        <use href="#frond" transform="rotate(-196) scale(1 -1)"/>
+        <circle r="7"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ============ THE SLEEVE FRONT ============ -->
+<section class="sleeve" aria-label="muitnelis">
+  <div class="sky">
+    <header class="top">
+      <a class="org" href="https://github.com/muitneliss">github.com/muitneliss</a>
+      <ul class="toggle" role="group" aria-label="Language">
+        <li><button type="button" data-lang="en" aria-pressed="true" lang="en">EN</button></li>
+        <li><button type="button" data-lang="vi" aria-pressed="false" lang="vi">VI</button></li>
+      </ul>
+    </header>
+
+    <div class="hero">
+      <p class="logo" aria-label="muitnelis">
+        <span class="stroke" aria-hidden="true">muitnelis</span>
+        <span class="chrome">muitnelis</span>
+        <span class="flare" aria-hidden="true">muitnelis</span>
+      </p>
+      <h1 class="band headline">
+        <span class="en" lang="en">A small collective in Ho Chi Minh City building tools for the coding-agent era.</span>
+        <span class="vi" lang="vi">Một nhóm nhỏ ở Sài Gòn làm công cụ cho kỷ nguyên coding agent.</span>
+      </h1>
+      <p class="support t" lang="en">We publish what we build for ourselves: agent harnesses, autonomous implementation runs, a self-hostable data lake, and small utilities that make life easier.</p>
+      <p class="support t" lang="vi">Chúng tôi công bố những gì tự làm cho mình: harness cho agent, các lượt triển khai tự động, một data lake tự host, và những tiện ích nhỏ giúp cuộc sống dễ hơn.</p>
+    </div>
+
+    <!-- glass-tower skyline: rectangles with window grids, near at 100%, far at 55% -->
+    <svg class="skyline" viewBox="0 0 640 300" aria-hidden="true" focusable="false">
+      <defs>
+        <pattern id="win" width="12" height="16" patternUnits="userSpaceOnUse">
+          <rect x="3" y="5" width="5" height="7" fill="#FFD166" opacity=".62"/>
+        </pattern>
+        <g id="near">
+          <rect x="230" y="200" width="44" height="100"/>
+          <rect x="300" y="170" width="64" height="130"/>
+          <rect x="392" y="40" width="54" height="260"/>
+          <rect x="416" y="8" width="6" height="34"/>
+          <rect x="456" y="90" width="70" height="210"/>
+          <rect x="470" y="70" width="42" height="22"/>
+          <rect x="536" y="130" width="46" height="170"/>
+          <rect x="590" y="60" width="50" height="240"/>
+          <rect x="611" y="30" width="8" height="32"/>
+        </g>
+        <clipPath id="nearClip"><use href="#near"/></clipPath>
+      </defs>
+      <g fill="currentColor" opacity=".55">
+        <rect x="0" y="200" width="44" height="100"/>
+        <rect x="52" y="170" width="30" height="130"/>
+        <rect x="90" y="215" width="60" height="85"/>
+        <rect x="160" y="185" width="26" height="115"/>
+        <rect x="195" y="225" width="70" height="75"/>
+        <rect x="275" y="190" width="40" height="110"/>
+        <rect x="325" y="210" width="56" height="90"/>
+        <rect x="378" y="160" width="34" height="140"/>
+        <rect x="432" y="205" width="48" height="95"/>
+        <rect x="490" y="175" width="30" height="125"/>
+        <rect x="530" y="195" width="60" height="105"/>
+        <rect x="600" y="180" width="40" height="120"/>
+      </g>
+      <use href="#near" fill="currentColor"/>
+      <rect width="640" height="300" fill="url(#win)" clip-path="url(#nearClip)"/>
+    </svg>
+    <svg class="palm hero-palm" aria-hidden="true" focusable="false" viewBox="0 0 140 200"><use href="#palm" fill="currentColor"/></svg>
+  </div>
+
+  <div class="horizon" aria-hidden="true"></div>
+
+  <div class="actions">
+    <a class="pill solid" href="https://github.com/muitneliss">
+      <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+      <span class="t" lang="en">See the code on GitHub</span><span class="t" lang="vi">Xem code trên GitHub</span>
+    </a>
+    <a class="pill ghost" href="#band"><span class="t" lang="en">Meet the team</span><span class="t" lang="vi">Gặp cả nhóm</span></a>
+    <div class="reflection" aria-hidden="true">EN</div>
+  </div>
+</section>
+
+<!-- ============ STATION 1 · THE BAND ============ -->
+<section class="station one" id="band" aria-labelledby="band-title">
+  <div class="wrap">
+    <h2 class="band title" id="band-title">
+      <span class="en" lang="en">The band</span>
+      <span class="vi" lang="vi">Ban nhạc</span>
+    </h2>
+    <ul class="members">
+
+      <li class="member">
+        <div class="ring"><img src="../research/avatars/cuongtranba.png" width="400" height="400" alt="Cuong Tran"></div>
+        <h3 class="name">Cuong Tran</h3>
+        <p class="handle">cuongtranba</p>
+        <p class="band role"><span class="en" lang="en">Backend and agent tooling</span><span class="vi" lang="vi">Backend và công cụ cho agent</span></p>
+        <p class="intro t" lang="en">Builds Go and Rust services with clean architecture, and the tooling around Claude Code and Codex: parallel agent teams, skill stacks, session resume, and a web UI for both CLIs.</p>
+        <p class="intro t" lang="vi">Xây dịch vụ Go và Rust theo clean architecture, cùng bộ công cụ quanh Claude Code và Codex: đội agent song song, skill stack, resume phiên, và web UI cho cả hai CLI.</p>
+        <p class="facts">Go · Rust · C# · TypeScript · on GitHub since 2013 · 124 public repos</p>
+        <p class="repos">
+          <a href="https://github.com/cuongtranba/agent-teams-setup">agent-teams-setup</a>
+          <a href="https://github.com/cuongtranba/go-scaffolding">go-scaffolding</a>
+          <a href="https://github.com/cuongtranba/tinkaria">tinkaria</a>
+          <a href="https://github.com/cuongtranba/wtguard">wtguard</a>
+          <a href="https://github.com/cuongtranba/narrated-video">narrated-video</a>
+        </p>
+        <p class="out">
+          <a href="https://github.com/cuongtranba"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a>
+          <a href="https://trancuong.me"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M1.5 8h13M8 1.5c2 2 2 11 0 13M8 1.5c-2 2-2 11 0 13"/></svg>trancuong.me</a>
+        </p>
+      </li>
+
+      <li class="member">
+        <div class="ring"><img src="../research/avatars/thanh-dong.png" width="400" height="400" alt="thanh-dong"></div>
+        <h3 class="name">thanh-dong</h3>
+        <p class="handle">thanh-dong</p>
+        <p class="band role"><span class="en" lang="en">Agent harnesses and orchestration</span><span class="vi" lang="vi">Harness và điều phối agent</span></p>
+        <p class="intro t" lang="en">Turns any repo into an agent-ready workspace, optimises how Claude Code routes to plugins, previews what an agent touched, and runs Symphony's autonomous implementation runs.</p>
+        <p class="intro t" lang="vi">Biến bất kỳ repo nào thành workspace sẵn sàng cho agent, tối ưu cách Claude Code định tuyến plugin, xem trước những gì agent đã chạm vào, và vận hành các lượt triển khai tự động của Symphony.</p>
+        <p class="facts">Rust · TypeScript · Go · Python · on GitHub since 2015</p>
+        <p class="repos">
+          <a href="https://github.com/thanh-dong/harness-repository-cc">harness-repository-cc</a>
+          <a href="https://github.com/thanh-dong/claude-routing-optimizer">claude-routing-optimizer</a>
+          <a href="https://github.com/thanh-dong/herdr-rich-preview">herdr-rich-preview</a>
+          <a href="https://github.com/thanh-dong/magikarp_skill">magikarp_skill</a>
+          <a href="https://github.com/thanh-dong/read-things">read-things</a>
+        </p>
+        <p class="out">
+          <a href="https://github.com/thanh-dong"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a>
+        </p>
+      </li>
+
+      <li class="member">
+        <div class="ring"><img src="../research/avatars/yanmad27.png" width="400" height="400" alt="Doan Phan"></div>
+        <h3 class="name">Doan Phan</h3>
+        <p class="handle">yanmad27 · Yan</p>
+        <p class="band role"><span class="en" lang="en">Full-stack and small tools</span><span class="vi" lang="vi">Full-stack và công cụ nhỏ</span></p>
+        <p class="intro t" lang="en">Full-stack engineer who ships web apps end to end and small tools that scratch an itch: a Rust window manager for Windows, a Telegram expense bot, and a Claude Code plugin that answers questions from context.</p>
+        <p class="intro t" lang="vi">Kỹ sư full-stack làm web app trọn gói và những công cụ nhỏ giải quyết nhu cầu của chính mình: window manager viết bằng Rust cho Windows, bot Telegram ghi chi tiêu, và plugin Claude Code tự trả lời câu hỏi từ ngữ cảnh.</p>
+        <p class="quote">“Make life easy”</p>
+        <p class="facts">TypeScript · Go · Rust · React · NestJS · on GitHub since 2018</p>
+        <p class="repos">
+          <a href="https://github.com/yanmad27/windows-rectangle">windows-rectangle</a>
+          <a href="https://github.com/yanmad27/ask-jev">ask-jev</a>
+          <a href="https://github.com/yanmad27/money-note-bot">money-note-bot</a>
+          <a href="https://github.com/yanmad27/text-transporter">text-transporter</a>
+        </p>
+        <p class="out">
+          <a href="https://github.com/yanmad27"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a>
+          <a href="https://doanphan.com"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M1.5 8h13M8 1.5c2 2 2 11 0 13M8 1.5c-2 2-2 11 0 13"/></svg>doanphan.com</a>
+        </p>
+      </li>
+
+    </ul>
+  </div>
+</section>
+
+<!-- ============ STATION 2 · SIDE A / SIDE B ============ -->
+<section class="station two" id="tracks" aria-labelledby="tracks-title">
+  <svg class="palm station-palm far" aria-hidden="true" focusable="false" viewBox="0 0 140 200"><use href="#palm" fill="currentColor"/></svg>
+  <div class="wrap">
+    <h2 class="band title" id="tracks-title">
+      <span class="en" lang="en">Side A / Side B</span>
+      <span class="vi" lang="vi">Mặt A / Mặt B</span>
+    </h2>
+    <ol class="tracks">
+      <li class="side" aria-hidden="true">Side A</li>
+
+      <li class="track">
+        <span class="no">1</span>
+        <span class="medal" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="currentColor" fill-rule="evenodd"><path d="M3 0h26a3 3 0 0 1 3 3v26a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V3a3 3 0 0 1 3-3ZM5 27.5V15.5a11 11 0 0 1 22 0V27.5ZM9 27.5V15.5a7 7 0 0 1 14 0V27.5ZM12.5 27.5V15.5a3.5 3.5 0 0 1 7 0V27.5ZM5 15.5h4v1.5H5ZM23 15.5h4v1.5h-4Z"/></svg>
+        </span>
+        <div class="body">
+          <h3 class="band tagline name-row">
+            <span class="en" lang="en">Undercroft — an immutable raw lake, declarative connectors, and a schema you define yourself.</span>
+            <span class="vi" lang="vi">Undercroft — hồ dữ liệu thô bất biến, connector khai báo, và schema do bạn tự định nghĩa.</span>
+          </h3>
+          <p class="detail t" lang="en">Content-addressed raw storage on S3 or MinIO, YAML connectors instead of code, one generic Postgres table, and dbt models you write. Self-hostable, MIT. Pre-alpha.</p>
+          <p class="detail t" lang="vi">Lưu trữ thô định danh theo nội dung trên S3 hoặc MinIO, connector bằng YAML thay vì code, một bảng Postgres chung, và các model dbt bạn tự viết. Tự host, MIT. Pre-alpha.</p>
+          <p class="tags">TypeScript · Bun · Postgres · dbt · MinIO</p>
+        </div>
+        <div class="go">
+          <a class="primary" href="https://github.com/muitneliss/undercroft">muitneliss/undercroft</a>
+          <a href="https://undercroft.lowbit.link">undercroft.lowbit.link</a>
+        </div>
+      </li>
+
+      <li class="track">
+        <span class="no">2</span>
+        <span class="medal" aria-hidden="true"><img src="../research/refs/ymir-minimal.svg" width="40" height="40" alt=""></span>
+        <div class="body">
+          <h3 class="band tagline name-row">
+            <span class="en" lang="en">Ymir — a harness spec for any repo, from a Socratic interview.</span>
+            <span class="vi" lang="vi">Ymir — harness spec cho bất kỳ repo nào, từ một cuộc phỏng vấn Socratic.</span>
+          </h3>
+          <p class="detail t" lang="en">Explores your codebase, interviews you per concern, and emits rules, lint, CI, wiki context, and CLAUDE.md or AGENT.md. Works with Claude Code, Cursor, and Codex via skills.sh.</p>
+          <p class="detail t" lang="vi">Khám phá codebase, phỏng vấn bạn theo từng mối quan tâm, rồi sinh rules, lint, CI, wiki context, và CLAUDE.md hoặc AGENT.md. Dùng được với Claude Code, Cursor và Codex qua skills.sh.</p>
+          <p class="tags">TypeScript · Rust CLI · agent skill</p>
+        </div>
+        <div class="go">
+          <a class="primary" href="https://github.com/muitneliss/ymir">muitneliss/ymir</a>
+        </div>
+      </li>
+
+      <li class="side" aria-hidden="true">Side B</li>
+
+      <li class="track">
+        <span class="no">3</span>
+        <span class="medal" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 20V12M11 25V7M16 22V10M21 27V5M26 19V13"/></svg>
+        </span>
+        <div class="body">
+          <h3 class="band tagline name-row">
+            <span class="en" lang="en">Symphony — manage the work, not the coding sessions.</span>
+            <span class="vi" lang="vi">Symphony — quản lý công việc, không phải các phiên code.</span>
+          </h3>
+          <p class="detail t" lang="en">Turns tracker issues into isolated, autonomous implementation runs with proof of work: CI status, PR review, walkthrough videos. Adds Claude support, GitHub Issues, and live agent logs on top of openai/symphony. Apache 2.0.</p>
+          <p class="detail t" lang="vi">Biến issue trên tracker thành các lượt triển khai tự động, cô lập, kèm bằng chứng: trạng thái CI, review PR, video walkthrough. Bổ sung Claude, GitHub Issues và log agent trực tiếp trên nền openai/symphony. Apache 2.0.</p>
+          <p class="tags">Elixir · Phoenix · Codex · Claude</p>
+        </div>
+        <div class="go">
+          <a class="primary" href="https://github.com/muitneliss/symphony-its-everdred">muitneliss/symphony-its-everdred</a>
+        </div>
+      </li>
+
+      <li class="track private">
+        <span class="no">4</span>
+        <span class="medal empty" aria-hidden="true"></span>
+        <div class="body">
+          <h3 class="band tagline name-row">
+            <span class="en" lang="en">Text Transporter — quickly share text between devices.</span>
+            <span class="vi" lang="vi">Text Transporter — chia sẻ nhanh văn bản giữa các thiết bị.</span>
+          </h3>
+          <p class="detail t" lang="en">Paste on one device, read on another. A small utility, kept private while it settles.</p>
+          <p class="detail t" lang="vi">Dán ở thiết bị này, đọc ở thiết bị kia. Một tiện ích nhỏ, còn để riêng tư trong lúc hoàn thiện.</p>
+          <p class="tags">TypeScript</p>
+        </div>
+        <div class="go">
+          <span class="private-tag"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg><span class="t" lang="en">Private</span><span class="t" lang="vi">Riêng tư</span></span>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ STATION 3 · SUNSET ============ -->
+<section class="station three closing" aria-label="Footer">
+  <svg class="palm station-palm" aria-hidden="true" focusable="false" viewBox="0 0 140 200"><use href="#palm" fill="currentColor"/></svg>
+  <div class="wrap" style="padding-bottom: clamp(48px, 6vw, 80px)"></div>
+  <div class="sky2" aria-hidden="true">
+    <div class="sun"></div>
+    <svg class="palm l" aria-hidden="true" focusable="false" viewBox="0 0 140 200"><use href="#palm" fill="currentColor"/></svg>
+    <svg class="palm r far" aria-hidden="true" focusable="false" viewBox="0 0 140 200"><use href="#palm" fill="currentColor"/></svg>
+  </div>
+  <div class="horizon" aria-hidden="true"></div>
+  <footer class="sea-foot">
+    <div class="foot">
+      <span class="mini-logo" aria-hidden="true">muitnelis</span>
+      <p>muitnelis <span class="sep">·</span> Ho Chi Minh City <span class="sep">·</span> <a href="https://github.com/muitneliss">github.com/muitneliss</a></p>
+    </div>
+  </footer>
+</section>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var params = new URLSearchParams(location.search);
+  var settled = params.get('settle') === '1';
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (settled) root.classList.add('settled');
+
+  /* EN / VI: swap which language is primary, update lang, mirror the active pill under the horizon */
+  var buttons = Array.prototype.slice.call(document.querySelectorAll('.toggle button'));
+  var reflection = document.querySelector('.reflection');
+  function setLang(lang) {
+    root.lang = lang;
+    buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.lang === lang)); });
+    if (reflection) reflection.textContent = lang.toUpperCase();
+    document.title = lang === 'vi' ? 'muitnelis · một nhóm nhỏ ở Sài Gòn' : 'muitnelis · a small collective in Ho Chi Minh City';
+  }
+  buttons.forEach(function (b) { b.addEventListener('click', function () { setLang(b.dataset.lang); }); });
+  var initial = params.get('lang');
+  if (initial === 'vi' || initial === 'en') setLang(initial);
+
+  /* the drive toward sunset: skyline drifts, sun sinks */
+  var skyline = document.querySelector('.skyline');
+  var sun = document.querySelector('.sun');
+  if (reduced) return;
+  if (settled) { if (sun) sun.style.setProperty('--sink', '0.3'); return; }
+  var ticking = false;
+  function frame() {
+    ticking = false;
+    var y = window.scrollY || 0;
+    var max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    var p = Math.min(1, y / max);
+    if (skyline) skyline.style.transform = 'translate3d(' + (-y * 0.15).toFixed(1) + 'px,' + (y * 0.15 * 0.45).toFixed(1) + 'px,0)';
+    if (sun) sun.style.setProperty('--sink', p.toFixed(3));
+  }
+  window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(frame); } }, { passive: true });
+  frame();
+})();
+</script>
+</body>
+</html>

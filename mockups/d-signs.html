@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>muitnelis — a small collective in Ho Chi Minh City</title>
+<meta name="description" content="A small collective in Ho Chi Minh City building tools for the coding-agent era.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Oswald:wght@700&family=Pacifico&display=swap" rel="stylesheet">
+<style>
+/* ---------- tokens ---------- */
+:root{
+  --asphalt:#07080A;
+  --asphalt-2:#0C0D11;
+  --panel:#F5F1E6;
+  --ink:#0B0B0D;
+  --neon:#FF2D55;
+  --neon-core:#FF6B81;
+  --verm:#E8471C;
+  --verm-core:#FF7A4D;
+  --cyan:#4CF0FF;
+  --cyan-core:#B9FBFF;
+  --off-panel:#1C1D22;
+  --off-line:#4A4B52;
+  --off-type:#8A8B94;
+  --off-type-lg:#6E6F78;
+  --body:#C9C4B6;
+  --dim:#8F8A7E;
+  --pole:#26272D;
+  --k:0;                       /* glow boost 0..1 */
+  --ease:cubic-bezier(.16,1,.3,1);
+  --gothic:"Oswald","Be Vietnam Pro",Impact,sans-serif;
+  --script:"Pacifico","Be Vietnam Pro",cursive;
+  --sans:"Be Vietnam Pro",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--asphalt);color:var(--body);font-family:var(--sans);font-size:16px;line-height:1.55;scrollbar-color:var(--verm) var(--asphalt-2);-webkit-text-size-adjust:100%}
+body{min-height:100vh;overflow-x:hidden}
+::selection{background:var(--verm);color:var(--ink)}
+::-webkit-scrollbar{width:12px;height:12px}
+::-webkit-scrollbar-track{background:var(--asphalt-2)}
+::-webkit-scrollbar-thumb{background:var(--verm);border:3px solid var(--asphalt-2);border-radius:8px}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;box-shadow:0 0 0 5px rgba(76,240,255,.18),0 0 18px rgba(76,240,255,.55)}
+a{color:var(--cyan);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.22em;text-decoration-color:rgba(76,240,255,.55)}
+a:hover{text-decoration-color:var(--cyan)}
+img{display:block;max-width:100%}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.skip{position:absolute;left:1rem;top:-4rem;z-index:50;background:var(--panel);color:var(--ink);padding:.5rem .9rem;border-radius:6px;font-weight:600}
+.skip:focus{top:1rem}
+
+.wrap{width:min(100% - 3rem, 1400px);margin-inline:auto}
+@media (max-width:640px){.wrap{width:min(100% - 1.5rem, 1400px)}}
+
+/* ---------- signs: the shared object ---------- */
+.sign{position:relative;border-radius:6px;transition:none}
+html.lit-done .sign,html.lit-done .sign *{transition:box-shadow .5s var(--ease),text-shadow .5s var(--ease),color .4s var(--ease),background-color .4s var(--ease),border-color .4s var(--ease),filter .4s var(--ease)}
+.sign:hover,.sign:focus-within,.sign.hot{--k:1}
+
+/* backlit white panel */
+.s-panel{background:var(--panel);color:var(--ink);
+  background-image:radial-gradient(120% 90% at 50% 0%,#FFFDF6 0%,var(--panel)55%,#EBE5D4 100%);
+  box-shadow:0 8px 30px -8px rgba(245,241,230,.42),0 18px 60px -12px rgba(245,241,230,.28),0 2px 0 -1px rgba(255,255,255,.5) inset,0 0 0 1px rgba(255,255,255,.35) inset}
+.s-panel:hover,.s-panel:focus-within,.s-panel.hot{box-shadow:0 10px 38px -8px rgba(245,241,230,.62),0 24px 90px -10px rgba(245,241,230,.42),0 2px 0 -1px rgba(255,255,255,.6) inset,0 0 0 1px rgba(255,255,255,.4) inset;filter:brightness(1.05)}
+
+/* neon red script tube on dark glass */
+.s-neon{background:#111116;color:var(--neon-core);border:1px solid rgba(255,45,85,.38);
+  text-shadow:0 0 5px rgba(255,107,129,.85),0 0 14px rgba(255,45,85,.75),0 0 34px rgba(255,45,85,.45),0 2px 26px rgba(255,45,85,.35);
+  box-shadow:0 6px 26px -8px rgba(255,45,85,.55),0 14px 50px -14px rgba(255,45,85,.45),0 0 18px -6px rgba(255,45,85,.5) inset}
+.s-neon:hover,.s-neon:focus-within,.s-neon.hot{color:#FF9FB0;border-color:rgba(255,107,129,.7);
+  text-shadow:0 0 6px #FF9FB0,0 0 18px rgba(255,45,85,.9),0 0 48px rgba(255,45,85,.65),0 2px 40px rgba(255,45,85,.5);
+  box-shadow:0 8px 34px -8px rgba(255,45,85,.8),0 20px 70px -12px rgba(255,45,85,.6),0 0 24px -6px rgba(255,45,85,.65) inset}
+
+/* plain lit strip: warm tube along the top edge */
+.s-strip{background:#15140F;color:var(--panel);border:1px solid rgba(245,241,230,.28);border-top:2px solid rgba(245,241,230,.9);
+  box-shadow:0 5px 22px -8px rgba(245,241,230,.35),0 12px 40px -14px rgba(245,241,230,.22),0 8px 20px -10px rgba(245,241,230,.35) inset;
+  text-shadow:0 0 8px rgba(245,241,230,.35)}
+.s-strip:hover,.s-strip:focus-within,.s-strip.hot{color:#fff;border-color:rgba(245,241,230,.55);border-top-color:#fff;
+  box-shadow:0 8px 30px -8px rgba(245,241,230,.55),0 18px 60px -14px rgba(245,241,230,.35),0 10px 26px -10px rgba(245,241,230,.5) inset;text-shadow:0 0 12px rgba(245,241,230,.6)}
+
+/* vermilion: whatever is open / active */
+.s-verm{background:var(--verm);color:var(--ink);
+  background-image:radial-gradient(120% 100% at 50% 0%,#FF6A3C 0%,var(--verm) 60%,#C93A15 100%);
+  box-shadow:0 8px 30px -8px rgba(232,71,28,.6),0 18px 64px -12px rgba(232,71,28,.45),0 1px 0 rgba(255,255,255,.35) inset}
+.s-verm:hover,.s-verm:focus-within,.s-verm.hot{background-image:radial-gradient(120% 100% at 50% 0%,#FF7F55 0%,#F0532A 60%,#D2411A 100%);
+  box-shadow:0 10px 40px -8px rgba(232,71,28,.85),0 26px 100px -12px rgba(232,71,28,.6),0 1px 0 rgba(255,255,255,.45) inset}
+
+/* white outlined tube */
+.s-tube{background:transparent;color:var(--panel);border:2px solid rgba(245,241,230,.85);
+  text-shadow:0 0 8px rgba(245,241,230,.55),0 0 20px rgba(245,241,230,.3);
+  box-shadow:0 6px 24px -8px rgba(245,241,230,.45),0 0 16px -4px rgba(245,241,230,.45),0 0 14px -6px rgba(245,241,230,.55) inset}
+.s-tube:hover,.s-tube:focus-within,.s-tube.hot{border-color:#fff;color:#fff;
+  text-shadow:0 0 10px rgba(255,255,255,.8),0 0 28px rgba(245,241,230,.5);
+  box-shadow:0 8px 34px -8px rgba(245,241,230,.7),0 0 26px -4px rgba(245,241,230,.7),0 0 18px -6px rgba(245,241,230,.75) inset}
+
+/* cyan tube: links read as a different tube */
+.s-cyan,.tube-link{color:var(--cyan);text-shadow:0 0 6px rgba(76,240,255,.75),0 0 16px rgba(76,240,255,.45)}
+.tube-link:hover,.tube-link:focus-visible{color:var(--cyan-core);text-shadow:0 0 8px rgba(76,240,255,1),0 0 24px rgba(76,240,255,.7)}
+
+/* switched off */
+.s-off,.s-off *{color:var(--off-type)!important;text-shadow:none!important}
+.s-off{background:var(--off-panel)!important;background-image:none!important;border:1px solid var(--off-line)!important;box-shadow:0 6px 18px -10px rgba(0,0,0,.8)!important;filter:none!important}
+
+/* unlit state (JS-only): every sign starts dark, snaps on */
+html.js .sign:not(.on){background:var(--off-panel);background-image:none;color:var(--off-line);border-color:#2A2B31;box-shadow:0 6px 18px -10px rgba(0,0,0,.8);text-shadow:none;filter:none}
+html.js .sign:not(.on) *{color:var(--off-line);text-shadow:none}
+html.js .sign:not(.on) img,html.js .sign:not(.on) .lantern-img{filter:brightness(.35) saturate(.4)}
+html.js .sign:not(.on) svg{color:var(--off-line)}
+.sign.blink{animation:blink .36s steps(1,end) 1}
+@keyframes blink{0%{filter:brightness(.25)}22%{filter:brightness(1)}40%{filter:brightness(.4)}55%{filter:brightness(1.1)}100%{filter:brightness(1)}}
+
+/* ---------- header ---------- */
+.top{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.1rem 0 .4rem}
+.wordmark{font-family:var(--script);font-size:1.5rem;line-height:1;padding:.55rem .95rem .7rem;border-radius:999px;text-decoration:none;color:var(--neon-core)}
+.lang{display:flex;padding:4px;gap:4px;border-radius:8px;background:#111116;border:1px solid #2A2B31;box-shadow:0 8px 24px -10px rgba(0,0,0,.9)}
+.lang button{font-family:var(--gothic);font-weight:700;font-size:.95rem;letter-spacing:.06em;padding:.35rem .8rem;border-radius:5px;color:var(--off-type);background:var(--off-panel);border:1px solid #2A2B31;transition:all .3s var(--ease)}
+.lang button[aria-pressed="true"]{background:var(--panel);color:var(--ink);border-color:#fff;box-shadow:0 4px 14px -4px rgba(245,241,230,.6),0 0 22px -4px rgba(245,241,230,.55)}
+html.js .lang:not(.on) button[aria-pressed="true"]{background:var(--off-panel);color:var(--off-line);border-color:#2A2B31;box-shadow:none}
+
+/* ---------- the street ---------- */
+.street{position:relative;padding:1.2rem 0 0}
+.street::before{content:"";position:absolute;inset:auto 0 0 0;height:70%;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(40% 60% at 16% 100%,rgba(255,45,85,.22),transparent 70%),
+    radial-gradient(40% 60% at 50% 100%,rgba(245,241,230,.10),transparent 70%),
+    radial-gradient(40% 60% at 84% 100%,rgba(232,71,28,.22),transparent 70%)}
+.street>*{position:relative;z-index:1}
+
+.banner{padding:clamp(1.4rem,3vw,2.6rem) clamp(1.2rem,3vw,3rem);border-radius:8px}
+.banner h1{font-family:var(--gothic);font-weight:700;text-transform:uppercase;letter-spacing:-.02em;line-height:.98;font-size:clamp(2.75rem,1.1rem + 4.6vw,5rem);text-wrap:balance;max-width:24ch}
+.banner-mount{display:flex;justify-content:space-between;padding:0 8%;height:18px}
+.banner-mount span{width:3px;height:100%;background:var(--pole);box-shadow:1px 0 0 #3a3b42}
+
+.under{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1.5rem 2rem;align-items:center;margin-top:1.1rem}
+.support{padding:1rem 1.35rem;font-size:1.0625rem;line-height:1.55;max-width:68ch;font-weight:500}
+.cta{display:flex;gap:.9rem;flex-wrap:wrap;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:.6rem;font-family:var(--gothic);font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:1.2rem;line-height:1;padding:.95rem 1.4rem;border-radius:6px;text-decoration:none;color:inherit;white-space:nowrap}
+.btn svg{width:18px;height:18px;flex:none}
+.btn.s-tube{padding:calc(.95rem - 2px) calc(1.4rem - 2px)}
+html.js .btn:not(.on){color:var(--off-line)}
+
+/* houses */
+.houses{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2rem;margin-top:2.4rem;align-items:start}
+.house{position:relative}
+.spine{position:relative;display:flex;flex-direction:column;align-items:stretch;gap:12px;padding-top:.4rem}
+.spine::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:4px;margin-left:-2px;background:linear-gradient(#2A2B31,#1a1b20);box-shadow:1px 0 0 #34363E,-1px 0 0 #101115;z-index:0}
+.spine>*{position:relative;z-index:1}
+.lantern{align-self:center;width:96px;height:96px;border-radius:50%;padding:0;overflow:visible;background:transparent;
+  box-shadow:0 0 0 3px var(--verm),0 8px 26px -4px rgba(232,71,28,.75),0 0 34px 2px rgba(232,71,28,.5),0 0 0 8px rgba(232,71,28,.12)}
+.lantern:hover,.lantern.hot,.lantern:focus-within{box-shadow:0 0 0 3px var(--verm-core),0 10px 34px -4px rgba(232,71,28,.95),0 0 52px 6px rgba(232,71,28,.65),0 0 0 10px rgba(232,71,28,.18)}
+.lantern img{width:96px;height:96px;border-radius:50%;object-fit:cover}
+html.js .lantern:not(.on){box-shadow:0 0 0 3px #2A2B31,0 6px 18px -10px rgba(0,0,0,.9)}
+.name{padding:.7rem 1rem .8rem;text-align:center;font-family:var(--gothic);font-weight:700;text-transform:uppercase;letter-spacing:-.02em;font-size:clamp(1.9rem,1rem + 1.7vw,2.6rem);line-height:1}
+.name a{color:inherit;text-decoration:none}
+.role{padding:.55rem 1rem .8rem;text-align:center;font-family:var(--script);font-size:clamp(1.35rem,1rem + .8vw,1.7rem);line-height:1.3}
+.intro{padding:.9rem 1.1rem 1rem;font-size:.9375rem;line-height:1.6;font-weight:400}
+.floor{text-align:center;line-height:1.1}
+.floor.s-panel{padding:.55rem .9rem .62rem;font-family:var(--gothic);font-weight:700;text-transform:uppercase;letter-spacing:-.01em;font-size:1.5rem}
+.floor.s-neon{padding:.45rem .9rem .7rem;font-family:var(--script);font-size:1.25rem}
+.floor.s-strip{padding:.6rem .9rem .62rem;font-family:var(--sans);font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-size:.85rem}
+.ground{padding:.55rem .85rem .6rem;font-size:.75rem;line-height:1.5;text-align:center;color:var(--body);border:1px solid rgba(76,240,255,.22);background:#0F1114;box-shadow:0 4px 16px -8px rgba(76,240,255,.4)}
+.ground:hover,.ground.hot,.ground:focus-within{border-color:rgba(76,240,255,.5);box-shadow:0 6px 22px -8px rgba(76,240,255,.7)}
+.ground .facts{display:block;color:var(--body);margin-top:.15rem}
+.ground .handle{font-weight:600}
+.ground .sep{color:var(--dim);margin:0 .25em}
+
+/* reflection: the wet street */
+.reflection{position:relative;height:240px;overflow:hidden;margin-top:6px;transform:scaleY(-1);pointer-events:none;
+  -webkit-mask-image:linear-gradient(to top,rgba(0,0,0,.62) 0%,rgba(0,0,0,.28) 45%,transparent 100%);mask-image:linear-gradient(to top,rgba(0,0,0,.62) 0%,rgba(0,0,0,.28) 45%,transparent 100%)}
+.reflection .spine{position:absolute;left:0;right:0;bottom:0;filter:blur(2.5px) saturate(1.15)}
+.reflection .spine::before{opacity:.5}
+.reflection::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,rgba(7,8,10,0) 0 5px,rgba(7,8,10,.32) 5px 7px);
+  animation:ripple 7s linear infinite}
+@keyframes ripple{from{transform:translateY(0)}to{transform:translateY(-14px)}}
+.reflection .lantern{visibility:hidden}
+
+/* ---------- cross-street banners ---------- */
+.banners{position:relative;padding:2.6rem 0 3rem}
+.banners .wrap{position:relative;padding:0 26px}
+.post{position:absolute;top:0;bottom:0;width:10px;background:linear-gradient(90deg,#1C1D22,#2C2D34 50%,#141519);box-shadow:0 0 0 1px #0a0b0e;z-index:2;border-radius:2px}
+.post.l{left:0}.post.r{right:0}
+.post::before{content:"";position:absolute;top:-6px;left:1px;right:1px;height:6px;border-radius:3px 3px 0 0;background:var(--verm);box-shadow:0 0 14px 2px rgba(232,71,28,.6)}
+.section-sign{position:relative;z-index:3;display:table;margin:0 auto 0;padding:.5rem 1.4rem .7rem;font-family:var(--script);font-size:1.35rem;line-height:1.3}
+.row{position:relative;margin-top:2.6rem}
+.row:first-of-type{margin-top:1.4rem}
+.cables{display:block;width:100%;height:58px;overflow:visible}
+.cables path{fill:none;stroke:#3A3C45;stroke-width:2;vector-effect:non-scaling-stroke}
+.cables path+path{stroke:#2A2B31}
+.straps{position:absolute;left:0;right:0;top:20px;height:44px;pointer-events:none}
+.straps span{position:absolute;top:0;bottom:0;width:3px;background:#3A3C45;box-shadow:1px 0 0 #1a1b20}
+.straps span:first-child{left:9%}.straps span:last-child{right:9%}
+.cross{display:grid;grid-template-columns:minmax(140px,max-content) minmax(0,1fr);gap:1.6rem 2.2rem;padding:clamp(1.4rem,3vw,2.4rem) clamp(1.2rem,3vw,2.6rem);border-radius:8px;align-items:start}
+.cross.s-dark{background:#111116;color:var(--panel);border:1px solid rgba(245,241,230,.28);
+  box-shadow:0 8px 30px -8px rgba(245,241,230,.28),0 18px 60px -12px rgba(245,241,230,.16),0 0 40px -18px rgba(245,241,230,.35) inset}
+.cross.s-dark:hover,.cross.s-dark:focus-within,.cross.s-dark.hot{border-color:rgba(245,241,230,.5);box-shadow:0 10px 38px -8px rgba(245,241,230,.45),0 24px 90px -10px rgba(245,241,230,.3),0 0 50px -18px rgba(245,241,230,.5) inset}
+.medal{display:flex;flex-direction:column;align-items:center;gap:.9rem}
+.medallion{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;background:var(--panel);color:var(--ink);
+  box-shadow:0 0 0 3px var(--verm),0 8px 26px -6px rgba(232,71,28,.7),0 0 30px 2px rgba(232,71,28,.45)}
+.medallion svg{width:48px;height:48px;fill:currentColor}
+.medallion.tile{background:transparent;border-radius:18px;box-shadow:0 0 0 3px #8FD8F7,0 8px 26px -6px rgba(143,216,247,.7),0 0 30px 2px rgba(143,216,247,.45)}
+.medallion.tile img{width:84px;height:84px;border-radius:18px}
+.medallion.blank{background:#111116;color:var(--panel);border:2px solid rgba(245,241,230,.85);box-shadow:0 0 0 3px transparent,0 8px 26px -6px rgba(245,241,230,.5),0 0 30px 2px rgba(245,241,230,.3)}
+.medallion.blank svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;width:44px;height:44px}
+.medallion.dark{background:var(--off-panel);color:var(--off-type);border:1px solid var(--off-line);box-shadow:none}
+.medallion.dark svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;width:44px;height:44px}
+.pname{font-family:var(--script);font-size:1.25rem;line-height:1.3;text-align:center;padding:.35rem .9rem .5rem;border-radius:6px;white-space:nowrap}
+.cross.s-panel .pname{background:#111116;color:var(--neon-core);border:1px solid rgba(255,45,85,.38);text-shadow:0 0 5px rgba(255,107,129,.85),0 0 14px rgba(255,45,85,.75),0 0 34px rgba(255,45,85,.45)}
+.cross.s-dark .pname{color:var(--neon-core);border:1px solid rgba(255,45,85,.38);text-shadow:0 0 5px rgba(255,107,129,.85),0 0 14px rgba(255,45,85,.75),0 0 34px rgba(255,45,85,.45)}
+.cross h2{font-family:var(--gothic);font-weight:700;text-transform:uppercase;letter-spacing:-.02em;line-height:1;font-size:clamp(2rem,1.1rem + 2.6vw,3.5rem);text-wrap:balance;max-width:22ch}
+.cross.s-dark h2{color:var(--panel);text-shadow:0 0 8px rgba(245,241,230,.55),0 0 24px rgba(245,241,230,.35),0 0 60px rgba(245,241,230,.2)}
+.cross .detail{margin-top:1.1rem;font-size:1.0625rem;line-height:1.6;max-width:68ch}
+.cross.s-panel .detail{color:#2A2822}
+.cross.s-dark .detail{color:var(--body)}
+.meta{display:flex;flex-wrap:wrap;align-items:center;gap:.7rem 1.4rem;margin-top:1.4rem}
+.tags{display:flex;flex-wrap:wrap;gap:.45rem;list-style:none;margin:0;padding:0}
+.tags li{display:block}
+.tag{font-family:var(--sans);font-weight:600;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;padding:.32rem .6rem .34rem;border-radius:4px;line-height:1}
+.cross.s-panel .tag{background:#111116;color:var(--panel);border-top:2px solid rgba(245,241,230,.9);box-shadow:0 4px 14px -6px rgba(245,241,230,.45)}
+.cross.s-dark .tag{background:#1A1812;color:var(--panel);border:1px solid rgba(245,241,230,.3);border-top:2px solid rgba(245,241,230,.9);box-shadow:0 4px 14px -6px rgba(245,241,230,.45)}
+.links{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;margin-left:auto}
+.cross.s-panel .tube-link{background:#0F1114;padding:.42rem .8rem;border-radius:5px;border:1px solid rgba(76,240,255,.35);text-decoration:none;font-weight:600;font-size:.9rem;box-shadow:0 4px 16px -6px rgba(76,240,255,.6)}
+.cross.s-dark .tube-link{padding:.42rem .8rem;border-radius:5px;border:1px solid rgba(76,240,255,.35);text-decoration:none;font-weight:600;font-size:.9rem;box-shadow:0 4px 16px -6px rgba(76,240,255,.6)}
+.tube-link:hover{border-color:var(--cyan)}
+.tube-link svg{width:14px;height:14px;vertical-align:-2px;margin-right:.35rem;fill:currentColor}
+.cross.s-off h2{color:var(--off-type-lg)!important}
+.cross.s-off .detail{color:var(--off-type)!important}
+.cross.s-off .tag{background:#16171B;border:1px solid #33343B;color:var(--off-type)!important}
+.cross.s-off .pname{border:1px solid #33343B;background:#16171B}
+.off-sign{font-family:var(--gothic);font-weight:700;text-transform:uppercase;letter-spacing:.1em;font-size:.85rem;padding:.42rem .8rem;border-radius:5px;border:1px solid #33343B;background:#16171B;color:var(--off-type)!important;display:inline-flex;align-items:center;gap:.4rem}
+.off-sign i{width:8px;height:8px;border-radius:50%;background:#33343B;display:inline-block}
+
+/* ---------- footer ---------- */
+footer{padding:1.5rem 0 3rem;display:flex;justify-content:center}
+.low{font-size:.85rem;padding:.6rem 1.2rem .65rem;border-radius:6px;text-align:center;line-height:1.5}
+.low .sep{margin:0 .4em;color:var(--dim)}
+.low a{text-decoration:none;font-weight:600}
+
+/* ---------- responsive ---------- */
+@media (max-width:1100px){
+  .cross{grid-template-columns:minmax(110px,max-content) minmax(0,1fr)}
+}
+@media (max-width:900px){
+  .houses{grid-template-columns:1fr;gap:2.6rem}
+  .under{grid-template-columns:1fr}
+  .reflection{height:200px}
+  .cross{grid-template-columns:1fr;gap:1.2rem}
+  .medal{flex-direction:row;justify-content:flex-start}
+  .links{margin-left:0}
+}
+@media (max-width:640px){
+  .banner{padding:1.2rem 1.1rem 1.35rem}
+  .banner h1{font-size:2.75rem;max-width:none}
+  .btn{font-size:1.05rem;padding:.85rem 1.1rem}
+  .btn.s-tube{padding:calc(.85rem - 2px) calc(1.1rem - 2px)}
+  .cta{width:100%}
+  .cta .btn{flex:1 1 auto;justify-content:center}
+  .reflection{height:160px}
+  .banners{padding-top:3.2rem}
+  .banners .wrap{padding:0 16px}
+  .cables{height:44px}
+  .straps{top:12px;height:36px}
+  .cross{padding:1.2rem 1.1rem 1.4rem}
+  .medallion,.medallion.tile img{width:64px;height:64px}
+  .medallion svg{width:36px;height:36px}
+  .top{padding-top:.9rem}
+  .wordmark{font-size:1.3rem}
+}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion:reduce){
+  .reflection::after{animation:none}
+  .sign.blink{animation:none}
+  html.lit-done .sign,html.lit-done .sign *{transition-duration:.01ms}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#houses" data-t="skip">Skip to the team</a>
+
+<header class="wrap top">
+  <a class="sign wordmark s-neon" href="#" aria-label="muitnelis">muitnelis</a>
+  <div class="sign lang" role="group" aria-label="Language" data-t-aria="langGroup">
+    <button type="button" id="lang-en" aria-pressed="true" lang="en" aria-label="English">EN</button>
+    <button type="button" id="lang-vi" aria-pressed="false" lang="vi" aria-label="Tiếng Việt">VI</button>
+  </div>
+</header>
+
+<main class="street">
+  <div class="wrap">
+    <div class="banner-mount" aria-hidden="true"><span></span><span></span></div>
+    <div class="sign banner s-panel">
+      <h1 data-t="headline">A small collective in Ho&nbsp;Chi&nbsp;Minh&nbsp;City building tools for the coding-agent era.</h1>
+    </div>
+
+    <div class="under">
+      <p class="sign support s-strip" data-t="support">We publish what we build for ourselves: agent harnesses, autonomous implementation runs, a self-hostable data lake, and small utilities that make life easier.</p>
+      <nav class="cta" aria-label="Primary">
+        <a class="sign btn s-verm" href="https://github.com/muitneliss">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+          <span data-t="ctaPrimary">See the code on GitHub</span>
+        </a>
+        <a class="sign btn s-tube" href="#houses"><span data-t="ctaSecondary">Meet the team</span></a>
+      </nav>
+    </div>
+
+    <section id="houses" class="houses" aria-label="Members">
+      <!-- house 1 -->
+      <article class="house" id="cuongtranba">
+        <div class="spine">
+          <div class="sign lantern"><img class="lantern-img" src="../research/avatars/cuongtranba.png" width="96" height="96" alt="Cuong Tran"></div>
+          <h2 class="sign name s-panel"><a href="https://github.com/cuongtranba">Cuong Tran</a></h2>
+          <p class="sign role s-neon" data-t="role0">Backend and agent tooling</p>
+          <p class="sign intro s-strip" data-t="intro0">Builds Go and Rust services with clean architecture, and the tooling around Claude Code and Codex: parallel agent teams, skill stacks, session resume, and a web UI for both CLIs.</p>
+          <div class="sign floor s-panel">agent-teams-setup</div>
+          <div class="sign floor s-neon">go-scaffolding</div>
+          <div class="sign floor s-strip">tinkaria</div>
+          <div class="sign floor s-panel">wtguard</div>
+          <div class="sign floor s-neon">narrated-video</div>
+          <p class="sign ground">
+            <a class="tube-link handle" href="https://github.com/cuongtranba">@cuongtranba</a><span class="sep">·</span><a class="tube-link" href="https://trancuong.me">trancuong.me</a>
+            <span class="facts" data-t="facts0">Go · Rust · C# · TypeScript · on GitHub since 2013 · 124 public repos</span>
+          </p>
+        </div>
+      </article>
+
+      <!-- house 2 -->
+      <article class="house" id="thanh-dong">
+        <div class="spine">
+          <div class="sign lantern"><img class="lantern-img" src="../research/avatars/thanh-dong.png" width="96" height="96" alt="thanh-dong"></div>
+          <h2 class="sign name s-panel"><a href="https://github.com/thanh-dong">thanh-dong</a></h2>
+          <p class="sign role s-neon" data-t="role1">Agent harnesses and orchestration</p>
+          <p class="sign intro s-strip" data-t="intro1">Turns any repo into an agent-ready workspace, optimises how Claude Code routes to plugins, previews what an agent touched, and runs Symphony's autonomous implementation runs.</p>
+          <div class="sign floor s-panel">harness-repository-cc</div>
+          <div class="sign floor s-neon">claude-routing-optimizer</div>
+          <div class="sign floor s-strip">herdr-rich-preview</div>
+          <div class="sign floor s-panel">magikarp_skill</div>
+          <div class="sign floor s-neon">read-things</div>
+          <p class="sign ground">
+            <a class="tube-link handle" href="https://github.com/thanh-dong">@thanh-dong</a>
+            <span class="facts" data-t="facts1">Rust · TypeScript · Go · Python · on GitHub since 2015</span>
+          </p>
+        </div>
+      </article>
+
+      <!-- house 3 -->
+      <article class="house" id="yanmad27">
+        <div class="spine">
+          <div class="sign lantern"><img class="lantern-img" src="../research/avatars/yanmad27.png" width="96" height="96" alt="Doan Phan"></div>
+          <h2 class="sign name s-panel"><a href="https://github.com/yanmad27">Doan Phan</a></h2>
+          <p class="sign role s-neon" data-t="role2">Full-stack and small tools</p>
+          <p class="sign intro s-strip" data-t="intro2">Full-stack engineer who ships web apps end to end and small tools that scratch an itch: a Rust window manager for Windows, a Telegram expense bot, and a Claude Code plugin that answers questions from context.</p>
+          <div class="sign floor s-panel">windows-rectangle</div>
+          <div class="sign floor s-neon">ask-jev</div>
+          <div class="sign floor s-strip">money-note-bot</div>
+          <div class="sign floor s-panel">text-transporter</div>
+          <div class="sign floor s-neon">“Make life easy”</div>
+          <p class="sign ground">
+            <a class="tube-link handle" href="https://github.com/yanmad27">@yanmad27</a><span class="sep">·</span><a class="tube-link" href="https://doanphan.com">doanphan.com</a>
+            <span class="facts" data-t="facts2">TypeScript · Go · Rust · React · NestJS · on GitHub since 2018</span>
+          </p>
+        </div>
+      </article>
+    </section>
+  </div>
+
+  <!-- cross-street banners -->
+  <section class="banners" aria-label="Projects">
+    <div class="wrap">
+      <div class="post l" aria-hidden="true"></div>
+      <div class="post r" aria-hidden="true"></div>
+      <p class="sign section-sign s-neon" data-t="projects">Projects</p>
+
+      <!-- Undercroft -->
+      <div class="row">
+        <div class="straps" aria-hidden="true"><span></span><span></span></div>
+        <svg class="cables" viewBox="0 0 1000 58" preserveAspectRatio="none" aria-hidden="true"><path d="M0 8 Q500 66 1000 8"/><path d="M0 18 Q500 76 1000 18"/></svg>
+        <article class="sign cross s-panel">
+          <div class="medal">
+            <div class="medallion" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="currentColor" fill-rule="evenodd"><path d="M3 0h26a3 3 0 0 1 3 3v26a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V3a3 3 0 0 1 3-3ZM5 27.5V15.5a11 11 0 0 1 22 0V27.5ZM9 27.5V15.5a7 7 0 0 1 14 0V27.5ZM12.5 27.5V15.5a3.5 3.5 0 0 1 7 0V27.5ZM5 15.5h4v1.5H5ZM23 15.5h4v1.5h-4Z"/></svg>
+            </div>
+            <p class="pname">Undercroft</p>
+          </div>
+          <div>
+            <h2>An immutable raw lake, declarative connectors, and a schema you define yourself.</h2>
+            <p class="detail" data-t="pd0">Content-addressed raw storage on S3 or MinIO, YAML connectors instead of code, one generic Postgres table, and dbt models you write. Self-hostable, MIT. Pre-alpha.</p>
+            <div class="meta">
+              <ul class="tags" aria-label="Stack"><li class="tag">TypeScript</li><li class="tag">Bun</li><li class="tag">Postgres</li><li class="tag">dbt</li><li class="tag">MinIO</li></ul>
+              <div class="links">
+                <a class="tube-link" href="https://github.com/muitneliss/undercroft"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>muitneliss/undercroft</a>
+                <a class="tube-link" href="https://undercroft.lowbit.link">undercroft.lowbit.link</a>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Ymir -->
+      <div class="row">
+        <div class="straps" aria-hidden="true"><span></span><span></span></div>
+        <svg class="cables" viewBox="0 0 1000 58" preserveAspectRatio="none" aria-hidden="true"><path d="M0 8 Q500 66 1000 8"/><path d="M0 18 Q500 76 1000 18"/></svg>
+        <article class="sign cross s-dark">
+          <div class="medal">
+            <div class="medallion tile" aria-hidden="true"><img src="../research/refs/ymir-minimal.svg" width="84" height="84" alt=""></div>
+            <p class="pname">Ymir</p>
+          </div>
+          <div>
+            <h2>A harness spec for any repo, from a Socratic interview.</h2>
+            <p class="detail" data-t="pd1">Explores your codebase, interviews you per concern, and emits rules, lint, CI, wiki context, and CLAUDE.md or AGENT.md. Works with Claude Code, Cursor, and Codex via skills.sh.</p>
+            <div class="meta">
+              <ul class="tags" aria-label="Stack"><li class="tag">TypeScript</li><li class="tag">Rust CLI</li><li class="tag">agent skill</li></ul>
+              <div class="links">
+                <a class="tube-link" href="https://github.com/muitneliss/ymir"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>muitneliss/ymir</a>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Symphony -->
+      <div class="row">
+        <div class="straps" aria-hidden="true"><span></span><span></span></div>
+        <svg class="cables" viewBox="0 0 1000 58" preserveAspectRatio="none" aria-hidden="true"><path d="M0 8 Q500 66 1000 8"/><path d="M0 18 Q500 76 1000 18"/></svg>
+        <article class="sign cross s-panel">
+          <div class="medal">
+            <div class="medallion blank" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="18" cy="18" r="2"/></svg>
+            </div>
+            <p class="pname">Symphony</p>
+          </div>
+          <div>
+            <h2>Manage the work, not the coding sessions.</h2>
+            <p class="detail" data-t="pd2">Turns tracker issues into isolated, autonomous implementation runs with proof of work: CI status, PR review, walkthrough videos. Adds Claude support, GitHub Issues, and live agent logs on top of openai/symphony. Apache 2.0.</p>
+            <div class="meta">
+              <ul class="tags" aria-label="Stack"><li class="tag">Elixir</li><li class="tag">Phoenix</li><li class="tag">Codex</li><li class="tag">Claude</li></ul>
+              <div class="links">
+                <a class="tube-link" href="https://github.com/muitneliss/symphony-its-everdred"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>muitneliss/symphony-its-everdred</a>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Text Transporter: switched off -->
+      <div class="row">
+        <div class="straps" aria-hidden="true"><span></span><span></span></div>
+        <svg class="cables" viewBox="0 0 1000 58" preserveAspectRatio="none" aria-hidden="true"><path d="M0 8 Q500 66 1000 8"/><path d="M0 18 Q500 76 1000 18"/></svg>
+        <article class="sign cross s-off">
+          <div class="medal">
+            <div class="medallion dark" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><rect x="3" y="5" width="8" height="14" rx="1.5"/><rect x="13" y="5" width="8" height="14" rx="1.5"/><path d="M11 12h2"/></svg>
+            </div>
+            <p class="pname">Text Transporter</p>
+          </div>
+          <div>
+            <h2>Quickly share text between devices.</h2>
+            <p class="detail" data-t="pd3">Paste on one device, read on another. A small utility, kept private while it settles.</p>
+            <div class="meta">
+              <ul class="tags" aria-label="Stack"><li class="tag">TypeScript</li></ul>
+              <div class="links"><span class="off-sign"><i aria-hidden="true"></i><span data-t="private">private</span></span></div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <p class="sign low s-strip">muitnelis<span class="sep">·</span><span data-t="city">Ho Chi Minh City</span><span class="sep">·</span><a class="tube-link" href="https://github.com/muitneliss">github.com/muitneliss</a></p>
+</footer>
+
+<script>
+(function(){
+  var html=document.documentElement;
+  html.classList.add('js');
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var settle=/[?&]settle=1/.test(location.search);
+
+  /* ---------- i18n ---------- */
+  var T={
+    en:{
+      skip:"Skip to the team",
+      headline:"A small collective in Ho\u00a0Chi\u00a0Minh\u00a0City building tools for the coding-agent era.",
+      support:"We publish what we build for ourselves: agent harnesses, autonomous implementation runs, a self-hostable data lake, and small utilities that make life easier.",
+      ctaPrimary:"See the code on GitHub", ctaSecondary:"Meet the team",
+      role0:"Backend and agent tooling",
+      intro0:"Builds Go and Rust services with clean architecture, and the tooling around Claude Code and Codex: parallel agent teams, skill stacks, session resume, and a web UI for both CLIs.",
+      facts0:"Go · Rust · C# · TypeScript · on GitHub since 2013 · 124 public repos",
+      role1:"Agent harnesses and orchestration",
+      intro1:"Turns any repo into an agent-ready workspace, optimises how Claude Code routes to plugins, previews what an agent touched, and runs Symphony's autonomous implementation runs.",
+      facts1:"Rust · TypeScript · Go · Python · on GitHub since 2015",
+      role2:"Full-stack and small tools",
+      intro2:"Full-stack engineer who ships web apps end to end and small tools that scratch an itch: a Rust window manager for Windows, a Telegram expense bot, and a Claude Code plugin that answers questions from context.",
+      facts2:"TypeScript · Go · Rust · React · NestJS · on GitHub since 2018",
+      projects:"Projects",
+      pd0:"Content-addressed raw storage on S3 or MinIO, YAML connectors instead of code, one generic Postgres table, and dbt models you write. Self-hostable, MIT. Pre-alpha.",
+      pd1:"Explores your codebase, interviews you per concern, and emits rules, lint, CI, wiki context, and CLAUDE.md or AGENT.md. Works with Claude Code, Cursor, and Codex via skills.sh.",
+      pd2:"Turns tracker issues into isolated, autonomous implementation runs with proof of work: CI status, PR review, walkthrough videos. Adds Claude support, GitHub Issues, and live agent logs on top of openai/symphony. Apache 2.0.",
+      pd3:"Paste on one device, read on another. A small utility, kept private while it settles.",
+      private:"private", city:"Ho Chi Minh City",
+      title:"muitnelis — a small collective in Ho Chi Minh City"
+    },
+    vi:{
+      skip:"Tới phần nhóm",
+      headline:"Một nhóm nhỏ ở Sài\u00a0Gòn làm công cụ cho kỷ nguyên coding\u00a0agent.",
+      support:"Chúng tôi công bố những gì tự làm cho mình: harness cho agent, các lượt triển khai tự động, một data lake tự host, và những tiện ích nhỏ giúp cuộc sống dễ hơn.",
+      ctaPrimary:"Xem code trên GitHub", ctaSecondary:"Gặp nhóm",
+      role0:"Backend và công cụ cho agent",
+      intro0:"Xây dịch vụ Go và Rust theo clean architecture, cùng bộ công cụ quanh Claude Code và Codex: đội agent song song, skill stack, resume phiên, và web UI cho cả hai CLI.",
+      facts0:"Go · Rust · C# · TypeScript · trên GitHub từ 2013 · 124 repo công khai",
+      role1:"Harness và điều phối agent",
+      intro1:"Biến bất kỳ repo nào thành workspace sẵn sàng cho agent, tối ưu cách Claude Code định tuyến plugin, xem trước những gì agent đã chạm vào, và vận hành các lượt triển khai tự động của Symphony.",
+      facts1:"Rust · TypeScript · Go · Python · trên GitHub từ 2015",
+      role2:"Full-stack và công cụ nhỏ",
+      intro2:"Kỹ sư full-stack làm web app trọn gói và những công cụ nhỏ giải quyết nhu cầu của chính mình: window manager viết bằng Rust cho Windows, bot Telegram ghi chi tiêu, và plugin Claude Code tự trả lời câu hỏi từ ngữ cảnh.",
+      facts2:"TypeScript · Go · Rust · React · NestJS · trên GitHub từ 2018",
+      projects:"Dự án",
+      pd0:"Lưu trữ thô định danh theo nội dung trên S3 hoặc MinIO, connector bằng YAML thay vì code, một bảng Postgres chung, và các model dbt bạn tự viết. Tự host, MIT. Pre-alpha.",
+      pd1:"Khám phá codebase, phỏng vấn bạn theo từng mối quan tâm, rồi sinh rules, lint, CI, wiki context, và CLAUDE.md hoặc AGENT.md. Dùng được với Claude Code, Cursor và Codex qua skills.sh.",
+      pd2:"Biến issue trên tracker thành các lượt triển khai tự động, cô lập, kèm bằng chứng: trạng thái CI, review PR, video walkthrough. Bổ sung Claude, GitHub Issues và log agent trực tiếp trên nền openai/symphony. Apache 2.0.",
+      pd3:"Dán ở thiết bị này, đọc ở thiết bị kia. Một tiện ích nhỏ, còn để riêng tư trong lúc hoàn thiện.",
+      private:"riêng tư", city:"Sài Gòn",
+      title:"muitnelis — một nhóm nhỏ ở Sài Gòn"
+    }
+  };
+  function setLang(l){
+    var d=T[l]; if(!d) return;
+    document.querySelectorAll('[data-t]').forEach(function(el){var k=el.getAttribute('data-t'); if(d[k]!=null) el.textContent=d[k];});
+    html.lang=l; document.title=d.title;
+    document.getElementById('lang-en').setAttribute('aria-pressed',String(l==='en'));
+    document.getElementById('lang-vi').setAttribute('aria-pressed',String(l==='vi'));
+    try{localStorage.setItem('muitnelis-lang',l)}catch(e){}
+  }
+  document.getElementById('lang-en').addEventListener('click',function(){setLang('en')});
+  document.getElementById('lang-vi').addEventListener('click',function(){setLang('vi')});
+  var saved=null; try{saved=localStorage.getItem('muitnelis-lang')}catch(e){}
+  if(saved==='vi') setLang('vi');
+
+  /* ---------- reflections: clone each spine into the wet street ---------- */
+  document.querySelectorAll('.house').forEach(function(h){
+    var spine=h.querySelector('.spine');
+    var r=document.createElement('div'); r.className='reflection'; r.setAttribute('aria-hidden','true'); r.inert=true;
+    var c=spine.cloneNode(true);
+    c.querySelectorAll('[id]').forEach(function(e){e.removeAttribute('id')});
+    c.querySelectorAll('a,button').forEach(function(e){e.setAttribute('tabindex','-1')});
+    r.appendChild(c); h.appendChild(r);
+    var src=spine.querySelectorAll('.sign'), dst=c.querySelectorAll('.sign');
+    src.forEach(function(s,i){ s._mirror=dst[i]; });
+  });
+
+  /* ---------- illumination is state ---------- */
+  var signs=Array.prototype.slice.call(document.querySelectorAll('.sign')).filter(function(s){return !s.closest('.reflection') && !s.classList.contains('s-off')});
+  function set(s,cls,on){ s.classList.toggle(cls,on); if(s._mirror) s._mirror.classList.toggle(cls,on); }
+  function lightAll(){ signs.forEach(function(s){set(s,'on',true)}); html.classList.add('lit-done'); }
+
+  if(reduce||settle){ lightAll(); }
+  else{
+    signs.forEach(function(s,i){
+      var t=140+i*60;
+      setTimeout(function(){set(s,'on',true)},t);
+      setTimeout(function(){set(s,'on',false)},t+40);
+      setTimeout(function(){set(s,'on',true)},t+80);
+    });
+    setTimeout(function(){html.classList.add('lit-done')},140+signs.length*60+200);
+  }
+
+  /* hover / focus: brighten sign and its reflection */
+  signs.forEach(function(s){
+    if(!s._mirror) return;
+    s.addEventListener('pointerenter',function(){s._mirror.classList.add('hot')});
+    s.addEventListener('pointerleave',function(){s._mirror.classList.remove('hot')});
+    s.addEventListener('focusin',function(){s._mirror.classList.add('hot')});
+    s.addEventListener('focusout',function(){s._mirror.classList.remove('hot')});
+  });
+
+  /* rare flicker: one sign, every 8–12 s */
+  if(!reduce){
+    (function tick(){
+      setTimeout(function(){
+        var lit=signs.filter(function(s){return s.classList.contains('on')});
+        if(lit.length){
+          var s=lit[Math.floor(Math.random()*lit.length)];
+          set(s,'blink',true);
+          setTimeout(function(){set(s,'blink',false)},400);
+        }
+        tick();
+      },8000+Math.random()*4000);
+    })();
+  }
+})();
+</script>
+</body>
+</html>

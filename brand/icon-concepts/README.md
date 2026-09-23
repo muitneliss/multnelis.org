@@ -1,0 +1,3 @@
+- Concept 1 — Three upright lanes curve into a lower commit node and continue as one main lane.
+- Concept 2 — A three-spoke fan meets a central commit node and continues horizontally to the right.
+- Concept 3 — Three horizontal lanes merge inside a rounded tile outline with a transparent interior.

@@ -1,0 +1,85 @@
+---
+// The header is a branch switcher: the wordmark, the current branch, and the
+// language toggle. It sits inside the hero's graph section so the rail runs
+// through it.
+import { Icon } from 'astro-icon/components';
+import LanguageToggle from '~/components/site/LanguageToggle.astro';
+import { brand } from '~/data/site';
+---
+
+<header class="top col">
+  <a class="wordmark" href="#top"><Icon name="mark" size={28} class="mark" aria-hidden="true" />{brand.name}</a>
+  <span class="chip mono"><Icon name="branch" size={14} />main</span>
+  <LanguageToggle />
+</header>
+
+<style>
+  .top {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-top: 22px;
+    padding-bottom: 22px;
+    position: relative;
+  }
+  .top::after {
+    content: '';
+    position: absolute;
+    left: var(--rail);
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--hair);
+  }
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--display);
+    font-stretch: 125%;
+    font-variation-settings: 'wdth' 125;
+    font-weight: 800;
+    font-size: 1.375rem;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    text-decoration: none;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.8125rem;
+    line-height: 1;
+    padding: 7px 10px 7px 8px;
+    border: 1px solid var(--hair);
+    border-radius: 6px;
+    color: var(--ink);
+  }
+  .chip :global(svg) {
+    flex: none;
+  }
+  .wordmark :global(.mark) {
+    flex: none;
+  }
+  @media (width <= 720px) {
+    .top {
+      gap: 12px;
+      padding-top: 16px;
+      padding-bottom: 16px;
+    }
+    .wordmark {
+      font-size: 1.25rem;
+      gap: 8px;
+    }
+    .wordmark :global(.mark) {
+      width: 24px;
+      height: 24px;
+    }
+  }
+  /* On narrow phones the branch chip is the one thing the row can spare. */
+  @media (width <= 440px) {
+    .chip {
+      display: none;
+    }
+  }
+</style>

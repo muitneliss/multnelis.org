@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>muitnelis.live</title>
+<meta name="description" content="A small collective in Ho Chi Minh City building tools for the coding-agent era.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ground: #050607;
+    --gutter-ground: #090b0d;
+    --green: #39FF7A;
+    --green-idle: #2EC466;
+    --green-bar: #1B5A33;
+    --comment: #8FE3A8;
+    --magenta: #FF3DBE;
+    --field: #2A0A1F;
+    --amber: #FFB020;
+    --punct: #A7ADB3;
+    --num: #7A8783;
+    --hair: #16211B;
+
+    --fs: 1.5rem;
+    --lhr: 1.5;
+    --gutter: 5rem;
+    --bar-w: 6px;
+    --pad-x: 2rem;
+    --status-h: 3.25rem;
+    --bar-ms: 2000ms;
+  }
+
+  * { box-sizing: border-box; }
+  html { background: var(--ground); scrollbar-color: var(--green) var(--ground); }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--green-idle);
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: var(--fs);
+    line-height: var(--lhr);
+    letter-spacing: 0;
+    caret-color: var(--green);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  /* Browser surfaces */
+  ::selection { background: var(--magenta); color: var(--ground); }
+  ::-webkit-scrollbar { width: 12px; height: 12px; background: var(--ground); }
+  ::-webkit-scrollbar-thumb { background: var(--green); border: 3px solid var(--ground); }
+  ::-webkit-scrollbar-track { background: var(--ground); }
+  :focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+  a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.22em; text-decoration-color: color-mix(in srgb, currentColor 55%, transparent); }
+  a:hover { text-decoration-color: currentColor; text-decoration-thickness: 2px; }
+  button { font: inherit; letter-spacing: 0; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+
+  /* Status line */
+  .status {
+    position: sticky; top: 0; z-index: 10;
+    min-height: var(--status-h);
+    display: flex; align-items: center; flex-wrap: wrap; gap: 0.25rem 2rem;
+    padding: 0.5rem var(--pad-x);
+    background: var(--ground);
+    border-bottom: 1px solid var(--hair);
+    font-size: 0.95rem; line-height: 1.4;
+    color: var(--punct);
+  }
+  .status .file { color: var(--green); font-weight: 700; }
+  .status .live { display: inline-flex; align-items: center; gap: 0.5ch; color: var(--green); }
+  .status .live svg { width: 0.7em; height: 0.7em; }
+  .status .org { color: var(--comment); }
+  .status .spacer { flex: 1 1 auto; }
+  .status .tp { display: inline-flex; align-items: center; gap: 0.6ch; color: var(--green); }
+  .status .tp svg { width: 0.85em; height: 0.85em; }
+  .status .tp .ic-pause { display: none; }
+  .status .tp[aria-pressed="false"] .ic-play { display: none; }
+  .status .tp[aria-pressed="false"] .ic-pause { display: inline; }
+  .status .barno { color: var(--amber); font-variant-numeric: tabular-nums; min-width: 6ch; }
+  .status .lang { color: var(--green); }
+  .status .lang .s { color: var(--magenta); }
+  .status .lang:hover .s { text-decoration: underline; text-underline-offset: 0.22em; }
+
+  @keyframes livepulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+  .status .live svg { animation: livepulse var(--bar-ms) ease-in-out infinite; }
+
+  /* Buffer */
+  .buffer { padding-bottom: 20vh; counter-reset: line; }
+  .ln {
+    display: grid;
+    grid-template-columns: var(--gutter) minmax(0, 1fr);
+    counter-increment: line;
+    font-size: var(--fs);
+    line-height: calc(var(--fs) * var(--lhr));
+    min-height: calc(var(--fs) * var(--lhr));
+    position: relative;
+  }
+  .ln::before {
+    content: counter(line);
+    grid-column: 1;
+    text-align: right;
+    padding-right: 1.25ch;
+    font-size: 0.8rem;
+    line-height: calc(var(--fs) * var(--lhr));
+    color: var(--num);
+    font-variant-numeric: tabular-nums;
+    user-select: none;
+    background: var(--gutter-ground);
+  }
+  .ln > .t { grid-column: 2; padding-right: var(--pad-x); min-width: 0; overflow-wrap: anywhere; }
+  .ln.in > .t { padding-left: 2ch; }
+  .ln.in2 > .t { padding-left: 4ch; }
+  .ln > .t.c { color: var(--comment); max-width: calc(72ch + 2ch + var(--pad-x)); }
+  .ln > .t.c::before { content: "# "; }
+  .ln.in > .t.c { padding-left: 4ch; text-indent: -2ch; }
+
+  /* Cursor line: the downbeat */
+  .ln.is-cursor::before { color: var(--amber); }
+  .ln.is-cursor::after {
+    content: ""; position: absolute; left: 0.6ch; top: 30%; height: 40%; width: 0.6ch;
+    background: var(--amber);
+  }
+  .ln.is-cursor > .t { box-shadow: inset 0 -2px 0 var(--green); }
+
+  /* Tokens */
+  .kw { color: var(--green); font-weight: 700; }
+  .id { color: var(--green-idle); font-weight: 500; }
+  .k { color: var(--green-idle); }
+  .p { color: var(--punct); }
+  .s { color: var(--magenta); }
+  .s::before, .s::after { content: "\""; color: var(--punct); }
+  .lit { color: var(--amber); }
+  .none { color: var(--punct); font-style: italic; }
+  .c { color: var(--comment); }
+  .trail { color: var(--comment); margin-left: 2ch; }
+
+  .block.is-current .id, .block.is-current .k { color: var(--green); }
+  .block.is-current .kw { color: var(--green); }
+
+  /* Caret */
+  .caret {
+    display: inline-block; width: 0.6ch; height: 1.1em; vertical-align: -0.2em;
+    background: var(--green); margin-left: 1px;
+    animation: blink 1s steps(2, start) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  .caret.rest { background: transparent; box-shadow: inset 0 0 0 2px var(--green-idle); animation: none; }
+
+  /* Blocks of source */
+  .block {
+    --bar: var(--green-bar);
+    --frame: transparent;
+    --bg: transparent;
+    position: relative;
+    padding: 0.75rem 0;
+    margin: 0.75rem 0;
+    border-left: var(--bar-w) solid var(--bar);
+    background: var(--bg);
+    box-shadow: inset 0 0 0 2px var(--frame);
+    scroll-margin-top: calc(var(--status-h) + 1.5rem);
+    transition: background-color 120ms linear;
+  }
+  .block .ln { margin-left: calc(-1 * var(--bar-w)); padding-left: var(--bar-w); }
+  .block.is-current { --bar: var(--magenta); --frame: var(--magenta); --bg: var(--field); }
+  .block.is-current .ln::before { background: color-mix(in srgb, var(--field) 70%, var(--ground)); }
+  .block.is-pre { --bar: var(--amber); --frame: var(--amber); animation: preflash 500ms steps(1, end) infinite; }
+  @keyframes preflash {
+    0% { border-left-color: #FFB020; box-shadow: inset 0 0 0 2px #FFB020; }
+    50% { border-left-color: rgba(255, 176, 32, 0.4); box-shadow: inset 0 0 0 2px rgba(255, 176, 32, 0.4); }
+  }
+  .block.is-pre.is-current { --bg: var(--field); }
+
+  /* Statement: headline bars */
+  .bar-ln { --fs: 4rem; --lhr: 1.15; }
+  .bar-ln > .t { color: var(--magenta); font-weight: 700; white-space: pre; }
+  .bar-ln > .t.typing { white-space: pre; }
+
+  /* Image literals */
+  .img-ln > .t { display: flex; align-items: flex-start; gap: 1ch; flex-wrap: wrap; }
+  .img-lit { display: inline-block; border: 2px solid var(--green); background: var(--ground); line-height: 0; margin: 0.4rem 0; }
+  .img-lit img { display: block; width: 160px; height: 160px; object-fit: cover; image-rendering: auto; }
+  .img-lit svg { display: block; width: 96px; height: 96px; }
+  .img-lit img.tile { width: 96px; height: 96px; }
+  .img-lit .src { display: block; font-size: 0.75rem; line-height: 1.6; color: var(--comment); padding: 0 0.5ch; border-top: 2px solid var(--green); }
+
+  /* Actions as lit lines */
+  .call { color: var(--green); font-weight: 700; text-decoration: none; }
+  .call .s { font-weight: 400; }
+  .call:hover, .call:focus-visible { background: color-mix(in srgb, var(--green) 14%, transparent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--green) 14%, transparent); }
+  .call:hover .s { text-decoration: underline; text-underline-offset: 0.22em; }
+
+  /* Footer */
+  .footer .ln > .t.c { max-width: none; }
+
+  @media (max-width: 720px) {
+    :root { --fs: 1.05rem; --gutter: 2ch; --pad-x: 0.75rem; --bar-w: 5px; --status-h: 2.75rem; }
+    .status { font-size: 0.8rem; gap: 0.15rem 1rem; padding: 0.4rem var(--pad-x); }
+    .status .org { display: none; }
+    .ln::before { font-size: 0.7rem; padding-right: 0.5ch; }
+    .ln.is-cursor::after { left: 0.15ch; width: 0.3ch; }
+    .bar-ln { --fs: 1.75rem; --lhr: 1.2; }
+    .bar-ln > .t { white-space: normal; overflow-wrap: normal; }
+    .img-lit img { width: 96px; height: 96px; }
+    .img-lit svg, .img-lit img.tile { width: 72px; height: 72px; }
+    .ln > .t.c { max-width: none; }
+    .trail { margin-left: 1ch; }
+  }
+  @media (max-width: 420px) {
+    .bar-ln { --fs: 1.6rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .caret, .status .live svg, .block.is-pre { animation: none !important; }
+    .block { transition: none; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="status" role="banner">
+  <span class="file">muitnelis.live</span>
+  <span class="live" aria-label="live">
+    <svg viewBox="0 0 10 10" aria-hidden="true"><circle cx="5" cy="5" r="5" fill="currentColor"/></svg>
+    live
+  </span>
+  <a class="org" href="https://github.com/muitneliss">github.com/muitneliss</a>
+  <span class="spacer"></span>
+  <button class="tp" id="transport" type="button" aria-pressed="true" aria-label="Pause the buffer">
+    <svg class="ic-play" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 1.5v9l8-4.5z" fill="currentColor"/></svg>
+    <svg class="ic-pause" viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1.5" width="3" height="9" fill="currentColor"/><rect x="7" y="1.5" width="3" height="9" fill="currentColor"/></svg>
+    <span id="tp-label" data-en="playing" data-vi="đang phát">playing</span>
+  </button>
+  <span class="barno"><span data-en="bar" data-vi="nhịp">bar</span> <span id="barno">1</span></span>
+  <button class="lang" id="lang" type="button" aria-label="Switch language to Vietnamese">lang <span class="p">=</span> <span class="s" id="lang-lit">en</span></button>
+</header>
+
+<main class="buffer" id="buffer">
+
+  <!-- statement -->
+  <section class="block" id="b-statement" data-block>
+    <div class="ln"><span class="t"><span class="id">team</span><span class="p">.</span><span class="k">statement</span> <span class="p">=</span> <span class="p">"""</span></span></div>
+    <div id="statement-bars"></div>
+    <div class="ln"><span class="t"><span class="p">"""</span></span></div>
+  </section>
+
+  <!-- supporting -->
+  <section class="block" id="b-supporting" data-block>
+    <div class="ln"><span class="t"><span class="id">team</span><span class="p">.</span><span class="k">supporting</span> <span class="p">=</span></span></div>
+    <div class="ln in"><span class="t c" data-en="We publish what we build for ourselves: agent harnesses, autonomous implementation runs, a self-hostable data lake, and small utilities that make life easier." data-vi="Chúng tôi công bố những gì tự làm cho mình: harness cho agent, các lượt triển khai tự động, một data lake tự host, và những tiện ích nhỏ giúp cuộc sống dễ hơn.">We publish what we build for ourselves: agent harnesses, autonomous implementation runs, a self-hostable data lake, and small utilities that make life easier.</span></div>
+  </section>
+
+  <!-- actions -->
+  <section class="block" id="b-actions" data-block>
+    <div class="ln"><span class="t"><a class="call" href="https://github.com/muitneliss">open<span class="p">(</span><span class="s">https://github.com/muitneliss</span><span class="p">)</span></a><span class="trail c" data-en="# See the code on GitHub" data-vi="# Xem code trên GitHub"># See the code on GitHub</span></span></div>
+    <div class="ln"><span class="t"><a class="call" href="#b-cuongtranba">goto<span class="p">(</span>members<span class="p">)</span></a><span class="trail c" data-en="# Meet the team" data-vi="# Gặp đội ngũ"># Meet the team</span></span></div>
+  </section>
+
+  <!-- members -->
+  <section class="block" id="b-cuongtranba" data-block>
+    <div class="ln"><span class="t"><span class="kw">member</span> <span class="id">cuongtranba</span><span class="p">:</span></span></div>
+    <div class="ln in img-ln"><span class="t"><span><span class="k">avatar</span> <span class="p">=</span></span><span class="img-lit"><img src="../research/avatars/cuongtranba.png" alt="cuongtranba avatar" width="160" height="160"><span class="src">avatars/cuongtranba.png</span></span></span></div>
+    <div class="ln in"><span class="t"><span class="k">name</span>   <span class="p">=</span> <span class="s">Cuong Tran</span></span></div>
+    <div class="ln in"><span class="t"><span class="k">role</span>   <span class="p">=</span> <span class="s" data-en="Backend and agent tooling" data-vi="Backend và công cụ cho agent">Backend and agent tooling</span></span></div>
+    <div class="ln in"><span class="t c" data-en="Builds Go and Rust services with clean architecture, and the tooling around Claude Code and Codex: parallel agent teams, skill stacks, session resume, and a web UI for both CLIs." data-vi="Xây dịch vụ Go và Rust theo clean architecture, cùng bộ công cụ quanh Claude Code và Codex: đội agent song song, skill stack, resume phiên, và web UI cho cả hai CLI.">Builds Go and Rust services with clean architecture, and the tooling around Claude Code and Codex: parallel agent teams, skill stacks, session resume, and a web UI for both CLIs.</span></div>
+    <div class="ln in"><span class="t"><span class="k">stack</span>  <span class="p">=</span> <span class="p">[</span><span class="id">Go</span><span class="p">,</span> <span class="id">Rust</span><span class="p">,</span> <span class="id">CSharp</span><span class="p">,</span> <span class="id">TypeScript</span><span class="p">]</span><span class="trail c" data-en="# on GitHub since 2013, 124 public repos" data-vi="# trên GitHub từ 2013, 124 repo công khai"># on GitHub since 2013, 124 public repos</span></span></div>
+    <div class="ln in"><span class="t"><span class="k">repos</span>  <span class="p">=</span> <span class="p">[</span><span class="s">agent-teams-setup</span><span class="p">,</span> <span class="s">go-scaffolding</span><span class="p">,</span> <span class="s">tinkaria</span><span class="p">,</span> <span class="s">wtguard</span><span class="p">,</span> <span class="s">narrated-video</span><span class="p">]</span></span></div>
+    <div class="ln in"><span class="t"><span class="k">github</span> <span class="p">=</span> <a class="s" href="https://github.com/cuongtranba">https://github.com/cuongtranba</a></span></div>
+    <div class="ln in"><span class="t"><span class="k">site</span>   <span class="p">=</span> <a class="s" href="https://trancuong.me">https://trancuong.me</a></span></div>
+  </section>
+
+  <section class="block" id="b-thanh-dong" data-block>
+    <div class="ln"><span class="t"><span class="kw">member</span> <span class="id">thanh_dong</span><span class="p">:</span></span></div>
+    <div class="ln in img-ln"><span class="t"><span><span class="k">avatar</span> <span class="p">=</span></span><span class="img-lit"><img src="../research/avatars/thanh-dong.png" alt="thanh-dong avatar" width="160" height="160"><span class="src">avatars/thanh-dong.png</span></span></span></div>
+    <div class="ln in"><span class="t"><span class="k">name</span>   <span class="p">=</span> <span class="s">thanh-dong</span></span></div>
+    <div class="ln in"><span class="t"><span class="k">role</span>   <span class="p">=</span> <span class="s" data-en="Agent harnesses and orchestration" data-vi="Harness và điều phối agent">Agent harnesses and orchestration</span></span></div>
+    <div class="ln in"><span class="t c" data-en="Turns any repo into an agent-ready workspace, optimises how Claude Code routes to plugins, previews what an agent touched, and runs Symphony's autonomous implementation runs." data-vi="Biến bất kỳ repo nào thành workspace sẵn sàng cho agent, tối ưu cách Claude Code định tuyến plugin, xem trước những gì agent đã chạm vào, và vận hành các lượt triển khai tự động của Symphony.">Turns any repo into an agent-ready workspace, optimises how Claude Code routes to plugins, previews what an agent touched, and runs Symphony's autonomous implementation runs.</span></div>
+    <div class="ln in"><span class="t"><span class="k">stack</span>  <span class="p">=</span> <span class="p">[</span><span class="id">Rust</span><span class="p">,</span> <span class="id">TypeScript</span><span class="p">,</span> <span class="id">Go</span><span class="p">,</span> <span class="id">Python</span><span class="p">]</span><span class="trail c" data-en="# on GitHub since 2015" data-vi="# trên GitHub từ 2015"># on GitHub since 2015</span></span></div>
+    <div class="ln in"><span class="t"><span class="k">repos</span>  <span class="p">=</span> <span class="p">[</span><span class="s">harness-repository-cc</span><span class="p">,</span> <span class="s">claude-routing-optimizer</span><span class="p">,</span> <span class="s">herdr-rich-preview</span><span class="p">,</span> <span class="s">magikarp_skill</span><span class="p">,</span> <span class="s">read-things</span><span class="p">]</span></span></div>
+    <div class="ln in"><span class="t"><span class="k">github</span> <span class="p">=</span> <a class="s" href="https://github.com/thanh-dong">https://github.com/thanh-dong</a></span></div>
+  </section>
+
+  <section class="block" id="b-yanmad27" data-block>
+    <div class="ln"><span class="t"><span class="kw">member</span> <span class="id">yanmad27</span><span class="p">:</span></span></div>
+    <div class="ln in img-ln"><span class="t"><span><span class="k">avatar</span> <span class="p">=</span></span><span class="img-lit"><img src="../research/avatars/yanmad27.png" alt="yanmad27 avatar" width="160" height="160"><span class="src">avatars/yanmad27.png</span></span></span></div>
+    <div class="ln in"><span class="t"><span class="k">name</span>   <span class="p">=</span> <span class="s">Doan Phan (Yan)</span></span></div>
+    <div class="ln in"><span class="t"><span class="k">role</span>   <span class="p">=</span> <span class="s" data-en="Full-stack and small tools" data-vi="Full-stack và công cụ nhỏ">Full-stack and small tools</span></span></div>
+    <div class="ln in"><span class="t"><span class="k">bio</span>    <span class="p">=</span> <span class="s">Make life easy</span></span></div>
+    <div class="ln in"><span class="t c" data-en="Full-stack engineer who ships web apps end to end and small tools that scratch an itch: a Rust window manager for Windows, a Telegram expense bot, and a Claude Code plugin that answers questions from context." data-vi="Kỹ sư full-stack làm web app trọn gói và những công cụ nhỏ giải quyết nhu cầu của chính mình: window manager viết bằng Rust cho Windows, bot Telegram ghi chi tiêu, và plugin Claude Code tự trả lời câu hỏi từ ngữ cảnh.">Full-stack engineer who ships web apps end to end and small tools that scratch an itch: a Rust window manager for Windows, a Telegram expense bot, and a Claude Code plugin that answers questions from context.</span></div>
+    <div class="ln in"><span class="t"><span class="k">stack</span>  <span class="p">=</span> <span class="p">[</span><span class="id">TypeScript</span><span class="p">,</span> <span class="id">Go</span><span class="p">,</span> <span class="id">Rust</span><span class="p">,</span> <span class="id">React</span><span class="p">,</span> <span class="id">NestJS</span><span class="p">]</span><span class="trail c" data-en="# on GitHub since 2018" data-vi="# trên GitHub từ 2018"># on GitHub since 2018</span></span></div>
+    <div class="ln in"><span class="t"><span class="k">repos</span>  <span class="p">=</span> <span class="p">[</span><span class="s">windows-rectangle</span><span class="p">,</span> <span class="s">ask-jev</span><span class="p">,</span> <span class="s">money-note-bot</span><span class="p">,</span> <span class="s">text-transporter</span><span class="p">]</span></span></div>
+    <div class="ln in"><span class="t"><span class="k">github</span> <span class="p">=</span> <a class="s" href="https://github.com/yanmad27">https://github.com/yanmad27</a></span></div>
+    <div class="ln in"><span class="t"><span class="k">site</span>   <span class="p">=</span> <a class="s" href="https://doanphan.com">https://doanphan.com</a></span></div>
+  </section>
+
+  <!-- projects -->
+  <section class="block" id="b-undercroft" data-block>
+    <div class="ln"><span class="t"><span class="kw">project</span> <span class="id">undercroft</span><span class="p">:</span></span></div>
+    <div class="ln in img-ln"><span class="t"><span><span class="k">mark</span> <span class="p">=</span></span><span class="img-lit" style="color: var(--green)"><svg viewBox="0 0 32 32" role="img" aria-label="The Undercroft mark" fill="currentColor" fill-rule="evenodd"><path d="M3 0h26a3 3 0 0 1 3 3v26a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V3a3 3 0 0 1 3-3ZM5 27.5V15.5a11 11 0 0 1 22 0V27.5ZM9 27.5V15.5a7 7 0 0 1 14 0V27.5ZM12.5 27.5V15.5a3.5 3.5 0 0 1 7 0V27.5ZM5 15.5h4v1.5H5ZM23 15.5h4v1.5h-4Z"/></svg><span class="src">refs/undercroft-mark.svg</span></span></span></div>
+    <div class="ln in"><span class="t"><span class="k">tagline</span> <span class="p">=</span> <span class="s">An immutable raw lake, declarative connectors, and a schema you define yourself.</span></span></div>
+    <div class="ln in"><span class="t c" data-en="Content-addressed raw storage on S3 or MinIO, YAML connectors instead of code, one generic Postgres table, and dbt models you write. Self-hostable, MIT. Pre-alpha." data-vi="Lưu trữ thô định danh theo nội dung trên S3 hoặc MinIO, connector bằng YAML thay vì code, một bảng Postgres chung, và các model dbt bạn tự viết. Tự host, MIT. Pre-alpha.">Content-addressed raw storage on S3 or MinIO, YAML connectors instead of code, one generic Postgres table, and dbt models you write. Self-hostable, MIT. Pre-alpha.</span></div>
+    <div class="ln in"><span class="t"><span class="k">tags</span>    <span class="p">=</span> <span class="p">[</span><span class="id">TypeScript</span><span class="p">,</span> <span class="id">Bun</span><span class="p">,</span> <span class="id">Postgres</span><span class="p">,</span> <span class="id">dbt</span><span class="p">,</span> <span class="id">MinIO</span><span class="p">]</span></span></div>
+    <div class="ln in"><span class="t"><span class="k">repo</span>    <span class="p">=</span> <a class="s" href="https://github.com/muitneliss/undercroft">https://github.com/muitneliss/undercroft</a></span></div>
+    <div class="ln in"><span class="t"><span class="k">site</span>    <span class="p">=</span> <a class="s" href="https://undercroft.lowbit.link">https://undercroft.lowbit.link</a></span></div>
+    <div class="ln in"><span class="t"><span class="k">state</span>   <span class="p">=</span> <span class="lit">public</span></span></div>
+  </section>
+
+  <section class="block" id="b-ymir" data-block>
+    <div class="ln"><span class="t"><span class="kw">project</span> <span class="id">ymir</span><span class="p">:</span></span></div>
+    <div class="ln in img-ln"><span class="t"><span><span class="k">mark</span> <span class="p">=</span></span><span class="img-lit"><img class="tile" src="../research/refs/ymir-minimal.svg" alt="Ymir frost-rune tile" width="96" height="96"><span class="src">refs/ymir-minimal.svg</span></span></span></div>
+    <div class="ln in"><span class="t"><span class="k">tagline</span> <span class="p">=</span> <span class="s">A harness spec for any repo, from a Socratic interview.</span></span></div>
+    <div class="ln in"><span class="t c" data-en="Explores your codebase, interviews you per concern, and emits rules, lint, CI, wiki context, and CLAUDE.md or AGENT.md. Works with Claude Code, Cursor, and Codex via skills.sh." data-vi="Khám phá codebase, phỏng vấn bạn theo từng mối quan tâm, rồi sinh rules, lint, CI, wiki context, và CLAUDE.md hoặc AGENT.md. Dùng được với Claude Code, Cursor và Codex qua skills.sh.">Explores your codebase, interviews you per concern, and emits rules, lint, CI, wiki context, and CLAUDE.md or AGENT.md. Works with Claude Code, Cursor, and Codex via skills.sh.</span></div>
+    <div class="ln in"><span class="t"><span class="k">tags</span>    <span class="p">=</span> <span class="p">[</span><span class="id">TypeScript</span><span class="p">,</span> <span class="id">RustCLI</span><span class="p">,</span> <span class="id">agent_skill</span><span class="p">]</span></span></div>
+    <div class="ln in"><span class="t"><span class="k">repo</span>    <span class="p">=</span> <a class="s" href="https://github.com/muitneliss/ymir">https://github.com/muitneliss/ymir</a></span></div>
+    <div class="ln in"><span class="t"><span class="k">state</span>   <span class="p">=</span> <span class="lit">public</span></span></div>
+  </section>
+
+  <section class="block" id="b-symphony" data-block>
+    <div class="ln"><span class="t"><span class="kw">project</span> <span class="id">symphony</span><span class="p">:</span></span></div>
+    <div class="ln in"><span class="t"><span class="k">tagline</span> <span class="p">=</span> <span class="s">Manage the work, not the coding sessions.</span></span></div>
+    <div class="ln in"><span class="t c" data-en="Turns tracker issues into isolated, autonomous implementation runs with proof of work: CI status, PR review, walkthrough videos. Adds Claude support, GitHub Issues, and live agent logs on top of openai/symphony. Apache 2.0." data-vi="Biến issue trên tracker thành các lượt triển khai tự động, cô lập, kèm bằng chứng: trạng thái CI, review PR, video walkthrough. Bổ sung Claude, GitHub Issues và log agent trực tiếp trên nền openai/symphony. Apache 2.0.">Turns tracker issues into isolated, autonomous implementation runs with proof of work: CI status, PR review, walkthrough videos. Adds Claude support, GitHub Issues, and live agent logs on top of openai/symphony. Apache 2.0.</span></div>
+    <div class="ln in"><span class="t"><span class="k">tags</span>    <span class="p">=</span> <span class="p">[</span><span class="id">Elixir</span><span class="p">,</span> <span class="id">Phoenix</span><span class="p">,</span> <span class="id">Codex</span><span class="p">,</span> <span class="id">Claude</span><span class="p">]</span></span></div>
+    <div class="ln in"><span class="t"><span class="k">repo</span>    <span class="p">=</span> <a class="s" href="https://github.com/muitneliss/symphony-its-everdred">https://github.com/muitneliss/symphony-its-everdred</a></span></div>
+    <div class="ln in"><span class="t"><span class="k">state</span>   <span class="p">=</span> <span class="lit">public</span></span></div>
+  </section>
+
+  <section class="block" id="b-text-transporter" data-block>
+    <div class="ln"><span class="t"><span class="kw">project</span> <span class="id">text_transporter</span><span class="p">:</span></span></div>
+    <div class="ln in"><span class="t"><span class="k">tagline</span> <span class="p">=</span> <span class="s">Quickly share text between devices.</span></span></div>
+    <div class="ln in"><span class="t c" data-en="Paste on one device, read on another. A small utility, kept private while it settles." data-vi="Dán ở thiết bị này, đọc ở thiết bị kia. Một tiện ích nhỏ, còn để riêng tư trong lúc hoàn thiện.">Paste on one device, read on another. A small utility, kept private while it settles.</span></div>
+    <div class="ln in"><span class="t"><span class="k">tags</span>    <span class="p">=</span> <span class="p">[</span><span class="id">TypeScript</span><span class="p">]</span></span></div>
+    <div class="ln in"><span class="t"><span class="k">repo</span>    <span class="p">=</span> <span class="none">None</span><span class="trail c"># permission denied</span></span></div>
+    <div class="ln in"><span class="t"><span class="k">state</span>   <span class="p">=</span> <span class="lit">private</span></span></div>
+  </section>
+
+  <!-- footer: last lines of the buffer -->
+  <footer class="block footer" id="b-footer" data-block>
+    <div class="ln"><span class="t c">muitnelis · Ho Chi Minh City · <a href="https://github.com/muitneliss">github.com/muitneliss</a></span></div>
+    <div class="ln" id="rest-ln"><span class="t"><span class="caret rest" id="rest-caret" aria-hidden="true"></span></span></div>
+  </footer>
+
+</main>
+
+<script>
+(function () {
+  'use strict';
+  var params = new URLSearchParams(location.search);
+  var SETTLE = params.get('settle') === '1';
+  var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var BAR = 2000;           // 1 bar = 2 seconds
+  var HOLD = 3;             // bars a block stays current before advancing
+  var TYPE_MS = 60;         // per character
+
+  var DICT = {
+    statement: {
+      en: ['A small collective', 'in Ho Chi Minh City', 'building tools for', 'the coding-agent era.'],
+      vi: ['Một nhóm nhỏ ở Sài Gòn', 'làm công cụ cho', 'kỷ nguyên coding agent.']
+    },
+    langLabel: { en: 'Switch language to Vietnamese', vi: 'Chuyển sang tiếng Anh' },
+    tpLabel: { en: ['Pause the buffer', 'Play the buffer'], vi: ['Tạm dừng', 'Phát tiếp'] }
+  };
+
+  var lang = 'en';
+  var blocks = Array.prototype.slice.call(document.querySelectorAll('[data-block]'));
+  var barsHost = document.getElementById('statement-bars');
+  var caret = document.createElement('span');
+  caret.className = 'caret'; caret.setAttribute('aria-hidden', 'true');
+  var restCaret = document.getElementById('rest-caret');
+  var barNo = document.getElementById('barno');
+  var transport = document.getElementById('transport');
+  var tpLabel = document.getElementById('tp-label');
+  var langBtn = document.getElementById('lang');
+  var langLit = document.getElementById('lang-lit');
+
+  /* ---------- i18n ---------- */
+  function applyLang(next) {
+    lang = next;
+    document.documentElement.lang = lang;
+    langLit.textContent = lang;
+    langBtn.setAttribute('aria-label', DICT.langLabel[lang]);
+    document.querySelectorAll('[data-en]').forEach(function (el) {
+      el.textContent = el.getAttribute('data-' + lang);
+    });
+    renderBars(true);
+    setTransportLabel();
+  }
+  langBtn.addEventListener('click', function () { applyLang(lang === 'en' ? 'vi' : 'en'); });
+
+  /* ---------- statement bars + typing ---------- */
+  var typingTimer = null, typingDone = false;
+  function renderBars(instant) {
+    if (typingTimer) { clearTimeout(typingTimer); typingTimer = null; }
+    barsHost.innerHTML = '';
+    var lines = DICT.statement[lang];
+    var spans = lines.map(function (text) {
+      var ln = document.createElement('div'); ln.className = 'ln bar-ln';
+      var t = document.createElement('span'); t.className = 't';
+      ln.appendChild(t); barsHost.appendChild(ln);
+      return { ln: ln, t: t, text: text };
+    });
+    if (instant || SETTLE || REDUCED) {
+      spans.forEach(function (s) { s.t.textContent = s.text; });
+      typingDone = true;
+      placeCaret();
+      return;
+    }
+    typingDone = false;
+    var li = 0, ci = 0;
+    function step() {
+      var s = spans[li];
+      ci++;
+      s.t.textContent = s.text.slice(0, ci);
+      s.t.appendChild(caret);
+      setCursorLine(s.ln);
+      var remaining = s.text.length - ci;
+      var delay = TYPE_MS;
+      if (remaining < 4 && remaining >= 0) delay = TYPE_MS + (4 - remaining) * 45; // ease into the hold
+      if (ci >= s.text.length) {
+        li++; ci = 0;
+        if (li >= spans.length) { typingDone = true; typingTimer = null; placeCaret(); return; }
+        delay = 260;
+      }
+      typingTimer = setTimeout(step, delay);
+    }
+    spans[0].t.appendChild(caret);
+    setCursorLine(spans[0].ln);
+    typingTimer = setTimeout(step, 420);
+  }
+
+  /* ---------- cursor line + caret ---------- */
+  var cursorLn = null;
+  function setCursorLine(ln) {
+    if (cursorLn) cursorLn.classList.remove('is-cursor');
+    cursorLn = ln;
+    if (ln) ln.classList.add('is-cursor');
+  }
+  function placeCaret() {
+    var b = blocks[cur];
+    if (b.id === 'b-footer') {
+      var rest = document.getElementById('rest-ln');
+      restCaret.classList.remove('rest');
+      restCaret.classList.add('caret');
+      if (caret.parentNode) caret.parentNode.removeChild(caret);
+      setCursorLine(rest);
+      return;
+    }
+    restCaret.classList.add('rest');
+    var head = (b.id === 'b-statement' && typingDone)
+      ? barsHost.lastElementChild
+      : b.querySelector('.ln');
+    var t = head.querySelector('.t');
+    t.appendChild(caret);
+    setCursorLine(head);
+  }
+
+  /* ---------- the clock ---------- */
+  var cur = 0, bar = 1, hold = 0, pending = null, pre = null;
+  var playing = !SETTLE && !REDUCED;
+  var timer = null, nextBoundary = 0;
+  var lastManual = -Infinity, programmaticUntil = 0;
+
+  function setPre(i) {
+    if (pre !== null) blocks[pre].classList.remove('is-pre');
+    pre = i;
+    if (i !== null) blocks[i].classList.add('is-pre');
+  }
+  function setCurrent(i, scroll) {
+    blocks[cur].classList.remove('is-current');
+    cur = i; hold = 0;
+    blocks[cur].classList.add('is-current');
+    if (pre === cur) setPre(null);
+    placeCaret();
+    if (scroll && !SETTLE && !REDUCED && (performance.now() - lastManual > 6000)) {
+      programmaticUntil = performance.now() + 1600;
+      blocks[cur].scrollIntoView({ block: 'start', behavior: 'smooth' });
+    }
+  }
+  function nextIndex() { return (cur + 1) % blocks.length; }
+
+  function boundary() {
+    bar++; barNo.textContent = bar;
+    var typingHold = !typingDone;
+    if (pending !== null && pending !== cur) {
+      setCurrent(pending, true); pending = null;
+    } else if (!typingHold) {
+      hold++;
+      if (hold >= HOLD) setCurrent(nextIndex(), true);
+    }
+    if (pending !== null && pending === cur) pending = null;
+    // pre-flash whichever block will sound on the next boundary
+    var upcoming = pending !== null ? pending : (!typingHold && hold >= HOLD - 1 ? nextIndex() : null);
+    setPre(upcoming);
+  }
+  function schedule() {
+    var now = performance.now();
+    nextBoundary = now + BAR;
+    timer = setTimeout(function () { boundary(); if (playing) schedule(); }, BAR);
+  }
+  function setTransportLabel() {
+    tpLabel.textContent = playing ? tpLabel.getAttribute('data-' + lang) : (lang === 'en' ? 'paused' : 'tạm dừng');
+    transport.setAttribute('aria-pressed', playing ? 'true' : 'false');
+    transport.setAttribute('aria-label', DICT.tpLabel[lang][playing ? 0 : 1]);
+  }
+  transport.addEventListener('click', function () {
+    playing = !playing;
+    setTransportLabel();
+    if (playing) { schedule(); } else { clearTimeout(timer); timer = null; }
+  });
+
+  /* ---------- hover / focus: edits apply on the boundary ---------- */
+  blocks.forEach(function (b, i) {
+    function request() {
+      if (i === cur) return;
+      if (REDUCED || !playing) { setCurrent(i, false); setPre(null); return; }
+      pending = i; setPre(i);
+    }
+    b.addEventListener('mouseenter', request);
+    b.addEventListener('focusin', request);
+  });
+
+  /* ---------- manual scroll suppression ---------- */
+  function manual() { lastManual = performance.now(); }
+  ['wheel', 'touchstart', 'touchmove'].forEach(function (ev) {
+    window.addEventListener(ev, manual, { passive: true });
+  });
+  window.addEventListener('keydown', function (e) {
+    if (/^(Arrow(Up|Down)|Page(Up|Down)|Home|End| |Space)$/.test(e.key)) manual();
+  });
+  window.addEventListener('scroll', function () {
+    if (performance.now() > programmaticUntil) manual();
+  }, { passive: true });
+
+  /* ---------- boot ---------- */
+  blocks[0].classList.add('is-current');
+  applyLang('en');
+  if (!SETTLE && !REDUCED) renderBars(false);
+  if (SETTLE) { setPre(1); barNo.textContent = '1'; }
+  setTransportLabel();
+  if (playing) schedule();
+})();
+</script>
+</body>
+</html>

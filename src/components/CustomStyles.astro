@@ -1,0 +1,40 @@
+---
+// Font families are provided by Astro's native Fonts API (see `fonts` in
+// astro.config.ts and <Font /> in Layout.astro), exposed as `--font-anybody`,
+// `--font-hanken` and `--font-jetbrains`. To switch typefaces, change the
+// `fonts` entries and repoint `--aw-font-*` below.
+//
+// The theme is light only (`ui.theme: light:only` in config.yaml); there is
+// no dark palette on purpose.
+---
+
+<style is:inline>
+  :root {
+    --aw-font-sans: var(--font-hanken);
+    --aw-font-serif: var(--font-hanken);
+    --aw-font-heading: var(--font-anybody);
+    --aw-font-display: var(--font-anybody);
+    --aw-font-mono: var(--font-jetbrains);
+
+    /* Ink on paper. */
+    --aw-color-ink: #101214;
+    --aw-color-ink-2: #4a4f57;
+    --aw-color-hair: rgb(16 18 20 / 14%);
+    --aw-color-paper: #ffffff;
+
+    /* One lane per member; each passes 4.5:1 with white text. */
+    --aw-color-lane-vermilion: #c9461f; /* cuongtranba */
+    --aw-color-lane-cobalt: #2457f5; /* thanh-dong */
+    --aw-color-lane-jade: #168459; /* yanmad27 */
+
+    --aw-color-primary: var(--aw-color-ink);
+    --aw-color-secondary: var(--aw-color-ink-2);
+    --aw-color-accent: var(--aw-color-lane-vermilion);
+
+    --aw-color-text-heading: var(--aw-color-ink);
+    --aw-color-text-default: var(--aw-color-ink);
+    --aw-color-text-muted: var(--aw-color-ink-2);
+    --aw-color-bg-page: var(--aw-color-paper);
+    --aw-color-bg-page-dark: var(--aw-color-ink);
+  }
+</style>

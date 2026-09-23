@@ -1,0 +1,243 @@
+---
+// One project, one merge commit. The member lanes that contributed bend into
+// main at the tagline and back out; a private repository gets a hollow node.
+import { Icon } from 'astro-icon/components';
+import Rail from '~/components/site/Rail.astro';
+import ymirTile from '~/assets/images/ymir.svg';
+import { type Lane, type Project, memberByLane, members } from '~/data/site';
+
+export interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const { slug, name, tagline, detail, tags, repo, repoName, site, state, merges, mark } = project;
+
+const through = members
+  .map((m) => m.lane)
+  .filter((l: Lane) => !merges.includes(l))
+  .join(',');
+const headingId = `project-${slug}`;
+---
+
+<article
+  class:list={['gs', 'project', `p-${slug}`]}
+  data-kind="merge"
+  data-merge={merges.join(',')}
+  data-through={through || undefined}
+  data-hollow={state === 'private' ? '' : undefined}
+  aria-labelledby={headingId}
+>
+  <Rail />
+  <div class="col">
+    <div class="meta">
+      <h3 class="name" id={headingId}>
+        {mark === 'undercroft' && <Icon name="undercroft" class="mark" />}
+        {mark === 'ymir' && <img class="mark" src={ymirTile.src} width="28" height="28" alt="" />}
+        {name}
+      </h3>
+      <dl class="mono">
+        <dt>repo</dt>
+        <dd>
+          {
+            repo ? (
+              <a href={repo.url}>
+                <span>{repo.label}</span> →
+              </a>
+            ) : (
+              <span class="private">{repoName}</span>
+            )
+          }
+        </dd>
+        {
+          site && (
+            <>
+              <dt>site</dt>
+              <dd>
+                <a href={site.url}>
+                  <span>{site.label}</span> →
+                </a>
+              </dd>
+            </>
+          )
+        }
+        <dt>tags</dt>
+        <dd>{tags}</dd>
+        <dt>state</dt>
+        <dd class:list={{ private: state === 'private' }}>{state}</dd>
+      </dl>
+    </div>
+    <div class="text">
+      <p class="tagline" data-anchor data-i18n={`project.${slug}.tagline`}>{tagline.en}</p>
+      <p class="detail" data-i18n={`project.${slug}.detail`}>{detail.en}</p>
+      <p class="merges mono">
+        <span class="k">merges</span>
+        {
+          merges.map((lane) => (
+            <span class="who">
+              <i class:list={['dot', `dot-${lane}`]} />
+              {memberByLane(lane).handle}
+            </span>
+          ))
+        }
+      </p>
+    </div>
+  </div>
+</article>
+
+<style>
+  .project {
+    border-top: 1px solid var(--hair);
+  }
+  .p-symphony ::selection {
+    background: var(--t);
+    color: #fff;
+  }
+  .p-text-transporter ::selection {
+    background: var(--y);
+    color: #fff;
+  }
+  .col {
+    padding-top: 88px;
+    padding-bottom: 96px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 32px 72px;
+    max-width: 1400px;
+  }
+  /* The name is the heading; the tagline is the commit message the node sits on.
+     DOM order puts the name first so the article is named before it is read;
+     on wide screens the grid moves it to the right column. */
+  .text {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .meta {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .tagline {
+    font-family: var(--display);
+    font-stretch: 125%;
+    font-variation-settings: 'wdth' 125;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    font-weight: 700;
+    font-size: clamp(1.75rem, 1.1rem + 1.8vw, 2.375rem);
+    line-height: 1.08;
+    max-width: 24ch;
+  }
+  .detail {
+    margin-top: 22px;
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    max-width: 64ch;
+  }
+  .merges {
+    margin-top: 30px;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    align-items: center;
+    color: var(--ink-2);
+  }
+  .who {
+    color: var(--ink);
+  }
+  .dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 7px;
+    vertical-align: -1px;
+  }
+  .dot-c {
+    background: var(--c);
+  }
+  .dot-t {
+    background: var(--t);
+  }
+  .dot-y {
+    background: var(--y);
+  }
+
+  .meta {
+    display: grid;
+    gap: 16px;
+    align-content: start;
+    padding-top: 6px;
+  }
+  /* One row for every project: mark (when one exists) beside the name. */
+  .name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 1.25rem;
+    line-height: 1.1;
+    min-height: 28px;
+  }
+  .name :global(.mark) {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    color: var(--ink);
+    border-radius: 5px;
+  }
+  dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 6px 14px;
+    font-size: 0.8125rem;
+    line-height: 1.55;
+  }
+  dt {
+    color: var(--ink-2);
+  }
+  dd {
+    margin: 0;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  dd a {
+    text-decoration: none;
+  }
+  dd a span {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+    transition: text-decoration-color 160ms ease;
+  }
+  dd a:hover span {
+    text-decoration-color: currentColor;
+  }
+  .private {
+    color: var(--ink-2);
+  }
+
+  @media (width <= 1100px) {
+    .col {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 28px;
+    }
+    /* Stacked: the name leads, so the reader meets "Undercroft" before its tagline. */
+    .meta {
+      grid-column: 1;
+      grid-row: 1;
+      padding-top: 0;
+    }
+    .text {
+      grid-row: 2;
+    }
+  }
+  @media (width <= 720px) {
+    .col {
+      padding-top: 56px;
+      padding-bottom: 64px;
+    }
+  }
+</style>

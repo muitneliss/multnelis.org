@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>muitnelis/ — a small collective in Ho Chi Minh City building tools for the coding-agent era</title>
+<meta name="description" content="A small collective in Ho Chi Minh City building tools for the coding-agent era.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ---------- world ---------- */
+:root{
+  --paper:#F2F4F1;
+  --doc:#FAFBF9;
+  --ink:#0F1A15;
+  --blue:#1D4ED8;
+  --green:#137238;
+  --cyan:#0E7490;
+  --red:#B42318;
+  --ink-2:color-mix(in oklab, var(--ink) 72%, var(--paper));
+  --hair:color-mix(in oklab, var(--ink) 16%, var(--paper));
+  --line:color-mix(in oklab, var(--ink) 38%, transparent);
+  --ease:cubic-bezier(.16,1,.3,1);
+  --mono:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --sans:"Bricolage Grotesque", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --pad:clamp(1rem, .5rem + 2.4vw, 3rem);
+  --step:320ms;
+  --stagger:70ms;
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{
+  background:var(--paper);
+  color:var(--ink);
+  scroll-behavior:smooth;
+  scrollbar-color:color-mix(in oklab, var(--ink) 55%, var(--paper)) var(--paper);
+  scrollbar-width:thin;
+  -webkit-text-size-adjust:100%;
+}
+body{
+  margin:0;
+  font-family:var(--sans);
+  font-optical-sizing:auto;
+  font-size:1rem;
+  line-height:1.5;
+  caret-color:var(--blue);
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--blue);color:#fff}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:var(--paper)}
+::-webkit-scrollbar-thumb{background:color-mix(in oklab, var(--ink) 55%, var(--paper));border-radius:8px;border:2px solid var(--paper)}
+a{color:inherit;text-underline-offset:.22em;text-decoration-thickness:1px}
+:focus-visible{outline:2px solid currentColor;outline-offset:3px;border-radius:3px}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;text-align:left}
+img{display:block;max-width:100%}
+ul{list-style:none;margin:0;padding:0}
+p{margin:0}
+h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.025em}
+.mono{font-family:var(--mono)}
+
+/* ---------- header ---------- */
+.top{
+  position:sticky;top:0;z-index:5;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:.85rem var(--pad);
+  background:color-mix(in oklab, var(--paper) 92%, transparent);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--hair);
+  font-family:var(--mono);
+}
+.brand{font-weight:700;text-decoration:none;font-size:.9375rem;letter-spacing:-.01em}
+.brand:hover{text-decoration:underline}
+.flag{
+  display:inline-flex;align-items:stretch;
+  border:1px solid var(--ink);border-radius:6px;overflow:hidden;
+  font-size:.8125rem;font-weight:700;line-height:1;
+}
+.flag-b{padding:.5rem .7rem;letter-spacing:.04em;color:var(--ink-2);transition:background var(--step) var(--ease),color var(--step) var(--ease)}
+.flag-b + .flag-b{border-left:1px solid var(--ink)}
+.flag-b:hover{color:var(--ink)}
+.flag-b[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.flag-b:focus-visible{outline-offset:-3px;border-radius:0}
+
+/* ---------- tree primitives ---------- */
+.tree{--lh:2.5rem;--cell:2.25rem;--vx:.45rem;--sw:1.5px;--gap:.6rem;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.ln{display:flex;align-items:flex-start;min-height:var(--lh);position:relative}
+.c{flex:0 0 var(--cell);width:var(--cell);align-self:stretch;position:relative;pointer-events:none}
+.c::before{
+  content:"";position:absolute;left:var(--vx);top:0;bottom:0;width:var(--sw);
+  background:var(--line);border-radius:1px;transform-origin:top center;
+}
+.c-blank::before{display:none}
+.c-end::before{bottom:auto;height:calc(var(--lh) / 2)}
+.c-tee::after,.c-end::after{
+  content:"";position:absolute;left:var(--vx);right:var(--gap);
+  top:calc(var(--lh) / 2 - var(--sw) / 2);height:var(--sw);
+  background:var(--line);border-radius:1px;transform-origin:left center;
+}
+.ent{
+  display:inline-flex;align-items:center;
+  line-height:var(--lh);min-height:var(--lh);
+  font-weight:700;text-decoration:none;white-space:nowrap;
+}
+.ent:hover .nm{text-decoration:underline;text-underline-offset:.22em;text-decoration-thickness:1.5px}
+.dir{color:var(--blue)}
+.exe{color:var(--green)}
+.sym{color:var(--cyan);font-weight:500}
+.deny{color:var(--red)}
+.file{color:var(--ink)}
+.star,.sl{font-weight:400;opacity:.65}
+.note{font-size:.72em;font-weight:500;letter-spacing:0;opacity:.9;margin-left:.6em}
+.arrow{font-weight:400;opacity:.7;padding:0 .35em}
+.av{width:2.5rem;height:2.5rem;border-radius:50%;object-fit:cover;flex:none;background:var(--hair)}
+
+/* cascade: the one authored moment */
+@keyframes drawV{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes drawH{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ---------- hero ---------- */
+.hero{
+  display:grid;grid-template-columns:55fr 45fr;gap:clamp(2rem, 4vw, 4rem);
+  align-items:start;
+  padding:clamp(1.5rem, 3vw, 3rem) var(--pad) clamp(2rem, 4vw, 4rem);
+  max-width:1600px;margin:0 auto;
+}
+.root{
+  font-size:clamp(3rem, 1.6rem + 4.2vw, 5rem);
+  line-height:1;letter-spacing:-.03em;font-weight:800;
+  margin:0 0 .35em;
+}
+.root .sl{color:var(--blue);opacity:1;font-weight:800}
+.tree-lg{
+  --lh:4rem;--cell:3rem;--vx:.5rem;--sw:2px;--gap:.8rem;
+  font-size:clamp(1.0625rem, .45rem + 1.25vw, 1.625rem);
+}
+.tree-lg .ent > .av{margin-right:.55em}
+.tree-lg .av{width:2.5rem;height:2.5rem}
+.tree-lg .ent.deny{white-space:normal;flex-wrap:wrap;row-gap:0}
+.tree-lg .ln .c::before{animation:drawV var(--step) var(--ease) both;animation-delay:calc(var(--i) * var(--stagger))}
+.tree-lg .ln .c::after{animation:drawH var(--step) var(--ease) both;animation-delay:calc(var(--i) * var(--stagger) + 90ms)}
+.tree-lg .ln .ent{animation:rise var(--step) var(--ease) both;animation-delay:calc(var(--i) * var(--stagger) + 120ms)}
+
+/* README pane */
+.readme{
+  background:var(--doc);
+  border:1px solid var(--hair);
+  border-radius:12px;
+  padding:0 clamp(1.25rem, 2.5vw, 2.5rem) clamp(1.5rem, 2.5vw, 2.5rem);
+  scroll-margin-top:5rem;
+}
+.doc-tab{
+  display:flex;align-items:baseline;justify-content:space-between;gap:1rem;
+  font-family:var(--mono);font-size:.8125rem;
+  border-bottom:1px solid var(--hair);
+  margin:0 calc(-1 * clamp(1.25rem, 2.5vw, 2.5rem)) clamp(1.5rem, 2.5vw, 2.25rem);
+  padding:0 clamp(1.25rem, 2.5vw, 2.5rem);
+}
+.doc-tab .tab{
+  display:inline-block;padding:.9rem 0 .75rem;font-weight:700;
+  border-bottom:2px solid var(--ink);margin-bottom:-1px;
+}
+.doc-tab .doc-meta{color:var(--ink-2)}
+.statement{
+  font-size:clamp(1.75rem, .9rem + 2.1vw, 2.875rem);
+  line-height:1.04;letter-spacing:-.025em;font-weight:800;
+  text-wrap:balance;max-width:20ch;
+}
+.lede{
+  margin-top:1.25rem;font-size:clamp(1.0625rem, 1rem + .3vw, 1.1875rem);
+  line-height:1.5;color:var(--ink-2);max-width:56ch;text-wrap:pretty;
+}
+.actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.75rem}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:.8rem 1.15rem;border-radius:8px;
+  font-weight:700;font-size:.9375rem;letter-spacing:-.005em;text-decoration:none;
+  transition:transform var(--step) var(--ease),background var(--step) var(--ease),box-shadow var(--step) var(--ease);
+}
+.btn:active{transform:translateY(1px)}
+.btn-solid{background:var(--green);color:#fff;box-shadow:0 1px 0 color-mix(in oklab, var(--green) 40%, var(--ink))}
+.btn-solid:hover{background:color-mix(in oklab, var(--green) 88%, var(--ink));box-shadow:0 6px 16px -8px color-mix(in oklab, var(--green) 60%, transparent)}
+.btn-solid:focus-visible{outline-color:var(--green)}
+.btn-ghost{border:1px solid var(--ink);color:var(--ink);background:transparent}
+.btn-ghost:hover{background:color-mix(in oklab, var(--ink) 6%, transparent)}
+
+/* ---------- directory sections ---------- */
+.listing{padding:clamp(3rem, 6vw, 6rem) var(--pad) 0;max-width:1600px;margin:0 auto;scroll-margin-top:4rem}
+.path{
+  font-family:var(--mono);font-weight:700;letter-spacing:-.01em;
+  font-size:clamp(1.25rem, 1rem + 1vw, 1.75rem);line-height:1.2;
+  margin:0 0 1rem;
+}
+.path .dim{color:var(--ink-2);font-weight:500}
+.path .dirn{color:var(--blue)}
+.tree-md{--lh:2.5rem;--cell:2.25rem;--vx:.45rem;--sw:1.5px;--gap:.6rem;font-size:1rem}
+
+.node{
+  --hue:var(--blue);
+  --wash:color-mix(in oklab, var(--hue) 7%, var(--paper));
+  --line:color-mix(in oklab, var(--hue) 48%, transparent);
+  position:relative;
+  margin:0 calc(-1 * var(--pad));padding:0 var(--pad);
+  border-radius:10px;
+  scroll-margin-top:4.5rem;
+  transition:background var(--step) var(--ease);
+}
+.node.open{background:var(--wash)}
+.node.exe-node{--hue:var(--green)}
+.node.deny-node{--hue:var(--red)}
+.head{--lh:3.5rem;font-size:clamp(1.25rem, 1rem + .9vw, 1.5rem)}
+.head .ent{color:var(--hue)}
+.head .ent > .av,.head .ent > .mark{margin-right:.5em}
+.head .ent .av{width:2.25rem;height:2.25rem}
+.head .who{
+  font-family:var(--sans);font-weight:500;font-size:.72em;letter-spacing:-.01em;
+  line-height:var(--lh);margin-left:.75em;color:color-mix(in oklab, var(--hue) 62%, var(--ink));
+  white-space:nowrap;
+}
+.head .ent::after{
+  content:"";width:.5em;height:.5em;flex:none;margin-left:.6em;
+  border-right:2px solid currentColor;border-bottom:2px solid currentColor;
+  transform:rotate(-45deg) translateY(1px);opacity:.55;
+  transition:transform var(--step) var(--ease);
+}
+.node.open > .head .ent::after{transform:rotate(45deg) translateY(-2px)}
+.mark{width:1.15em;height:1.15em;flex:none;display:block}
+.mark svg{width:100%;height:100%;display:block}
+.mark img{width:100%;height:100%;border-radius:22%}
+
+.kids{
+  display:grid;grid-template-rows:0fr;
+  transition:grid-template-rows var(--step) var(--ease), visibility 0s var(--step);
+  visibility:hidden;
+}
+.node.open > .kids{grid-template-rows:1fr;visibility:visible;transition:grid-template-rows var(--step) var(--ease), visibility 0s 0s}
+.kin{min-height:0;overflow:hidden}
+.node.open:not(.anim) > .kids > .kin{overflow:visible}
+.kin > .tree{padding-bottom:1rem}
+
+.node.open > .kids .ln .c::before{animation:drawV var(--step) var(--ease) both;animation-delay:calc(var(--i) * var(--stagger))}
+.node.open > .kids .ln .c::after{animation:drawH var(--step) var(--ease) both;animation-delay:calc(var(--i) * var(--stagger) + 90ms)}
+.node.open > .kids .ln > .fn,
+.node.open > .kids .ln > .content,
+.node.open > .kids .ln > .ent{animation:rise var(--step) var(--ease) both;animation-delay:calc(var(--i) * var(--stagger) + 120ms)}
+
+.fn{
+  flex:0 0 9.5rem;font-family:var(--mono);font-size:.9375rem;font-weight:500;
+  line-height:var(--lh);color:var(--hue);white-space:nowrap;
+}
+.fn.dir{color:var(--blue)}
+.fn.exe{color:var(--green)}
+.fn.deny{color:var(--red)}
+.content{
+  flex:1 1 18rem;min-width:0;padding:.5rem 0;
+  font-family:var(--sans);color:var(--ink);
+}
+.content .role{font-size:1.25rem;font-weight:700;letter-spacing:-.015em;line-height:1.5rem}
+.content .facts{
+  font-family:var(--mono);font-size:.8125rem;margin-top:.35rem;
+  color:color-mix(in oklab, var(--hue) 58%, var(--ink));
+}
+.content .about{font-size:1.0625rem;line-height:1.55;max-width:65ch;text-wrap:pretty}
+.content .tagline{font-size:1.375rem;font-weight:700;letter-spacing:-.02em;line-height:1.5rem;max-width:32ch;text-wrap:balance}
+.content .detail{font-size:1.0625rem;line-height:1.55;max-width:65ch;text-wrap:pretty}
+.content .tags{font-family:var(--mono);font-size:.875rem;line-height:1.5rem;color:color-mix(in oklab, var(--hue) 58%, var(--ink))}
+.content .quote{font-size:1.125rem;line-height:1.5rem;font-weight:500;font-style:italic;letter-spacing:-.01em}
+.content .quote::before{content:"“"}
+.content .quote::after{content:"”"}
+.content .denied{font-family:var(--mono);font-size:.9375rem;line-height:1.5rem;color:var(--red);font-weight:700}
+.av-lg{width:10rem;height:10rem;border-radius:50%;object-fit:cover;background:var(--hair);margin:.25rem 0 .5rem}
+.content .ent{line-height:1.5rem;min-height:1.5rem;font-size:.9375rem;white-space:normal;word-break:break-word}
+.ln > .ent.sym{font-size:.9375rem;white-space:normal;flex-wrap:wrap;align-items:baseline;line-height:1.5rem;padding:.5rem 0}
+.ent.sym .nm{white-space:nowrap}
+.ent.sym .url{min-width:0;overflow-wrap:anywhere}
+.rep{font-family:var(--mono);font-size:.9375rem;font-weight:500;line-height:var(--lh);color:var(--green)}
+
+/* ---------- footer ---------- */
+.foot{
+  max-width:1600px;margin:0 auto;
+  padding:clamp(3rem, 6vw, 6rem) var(--pad) clamp(2rem, 4vw, 3rem);
+}
+.foot .tree{--lh:3rem;--cell:2.5rem;--vx:.5rem;--sw:1.5px;font-size:.9375rem}
+.foot .ln > span{line-height:var(--lh);font-weight:500;color:var(--ink-2)}
+.foot .sym{font-weight:500}
+.foot .sym:hover{text-decoration:underline}
+
+/* ---------- responsive ---------- */
+@media (max-width: 900px){
+  .hero{grid-template-columns:1fr;gap:2.5rem}
+  .statement{max-width:24ch}
+}
+@media (max-width: 720px){
+  .tree-lg{--lh:2.75rem;--cell:1.75rem;--vx:.3rem;--gap:.5rem;--sw:1.5px}
+  .tree-lg .av{width:1.75rem;height:1.75rem}
+  .tree-md{--cell:1.75rem;--vx:.3rem;--gap:.45rem}
+  .head{--lh:3rem}
+  .head .ent{white-space:normal;flex-wrap:wrap;row-gap:0}
+  .head .who{display:none}
+  /* child rows become a grid: connector cells span both rows, file name above its contents */
+  .tree-md .ln{display:grid;grid-template-columns:repeat(var(--n,2), var(--cell)) minmax(0,1fr);grid-template-rows:auto auto;align-items:start}
+  .tree-md .ln:not(:has(> .c:nth-child(2))){--n:1}
+  .tree-md .ln:has(> .c:nth-child(3)){--n:3}
+  .tree-md .ln > .c{grid-row:1 / span 2;align-self:stretch}
+  .tree-md .ln > .fn{grid-column:calc(var(--n,2) + 1);grid-row:1;line-height:2rem}
+  .tree-md .ln > .content{grid-column:calc(var(--n,2) + 1);grid-row:2;padding-top:0}
+  .tree-md .ln > .ent,.tree-md .ln > .rep{grid-column:calc(var(--n,2) + 1);grid-row:1}
+  .tree-md .ln > .fn + .content{margin-top:-.25rem}
+  .content .role,.content .tagline{line-height:1.3}
+  .av-lg{width:7.5rem;height:7.5rem}
+  .actions .btn{flex:1 1 auto}
+  .top{padding:.7rem var(--pad)}
+  .doc-tab .doc-meta{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none !important;transition:none !important}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a class="brand" href="#">muitnelis.org</a>
+  <div class="flag" role="group" aria-label="Language">
+    <button type="button" class="flag-b" data-lang="en" aria-pressed="true" lang="en">EN</button>
+    <button type="button" class="flag-b" data-lang="vi" aria-pressed="false" lang="vi">VI</button>
+  </div>
+</header>
+
+<main>
+  <!-- ===== first viewport: the tree + README.md ===== -->
+  <section class="hero" aria-label="muitnelis">
+    <div class="hero-tree">
+      <h1 class="root"><span class="nm">muitnelis</span><span class="sl">/</span></h1>
+      <ul class="tree tree-lg" aria-label="Repository index">
+        <li class="ln" style="--i:0"><span class="c c-tee"></span><a class="ent dir" href="#members"><span class="nm">members</span><span class="sl">/</span></a></li>
+        <li class="ln" style="--i:1"><span class="c c-pass"></span><span class="c c-tee"></span><a class="ent dir" href="#cuongtranba"><img class="av" src="../research/avatars/cuongtranba.png" alt="" width="40" height="40"><span class="nm">cuongtranba</span><span class="sl">/</span></a></li>
+        <li class="ln" style="--i:2"><span class="c c-pass"></span><span class="c c-tee"></span><a class="ent dir" href="#thanh-dong"><img class="av" src="../research/avatars/thanh-dong.png" alt="" width="40" height="40"><span class="nm">thanh-dong</span><span class="sl">/</span></a></li>
+        <li class="ln" style="--i:3"><span class="c c-pass"></span><span class="c c-end"></span><a class="ent dir" href="#yanmad27"><img class="av" src="../research/avatars/yanmad27.png" alt="" width="40" height="40"><span class="nm">yanmad27</span><span class="sl">/</span></a></li>
+        <li class="ln" style="--i:4"><span class="c c-tee"></span><a class="ent dir" href="#projects"><span class="nm">projects</span><span class="sl">/</span></a></li>
+        <li class="ln" style="--i:5"><span class="c c-pass"></span><span class="c c-tee"></span><a class="ent exe" href="#undercroft"><span class="nm">undercroft</span><span class="star">*</span></a></li>
+        <li class="ln" style="--i:6"><span class="c c-pass"></span><span class="c c-tee"></span><a class="ent exe" href="#ymir"><span class="nm">ymir</span><span class="star">*</span></a></li>
+        <li class="ln" style="--i:7"><span class="c c-pass"></span><span class="c c-tee"></span><a class="ent exe" href="#symphony"><span class="nm">symphony</span><span class="star">*</span></a></li>
+        <li class="ln" style="--i:8"><span class="c c-pass"></span><span class="c c-end"></span><a class="ent deny" href="#text-transporter"><span class="nm">text-transporter</span><span class="note">[permission denied]</span></a></li>
+        <li class="ln" style="--i:9"><span class="c c-end"></span><a class="ent file" href="#readme"><span class="nm">README.md</span></a></li>
+      </ul>
+    </div>
+
+    <article class="readme" id="readme" aria-label="README.md">
+      <div class="doc-tab"><span class="tab">README.md</span><span class="doc-meta">muitnelis/README.md</span></div>
+      <h2 class="statement" data-i18n="hero.h1">A small collective in Ho Chi Minh City building tools for the coding-agent era.</h2>
+      <p class="lede" data-i18n="hero.p">We publish what we build for ourselves: agent harnesses, autonomous implementation runs, a self-hostable data lake, and small utilities that make life easier.</p>
+      <div class="actions">
+        <a class="btn btn-solid" href="https://github.com/muitneliss" data-i18n="cta.code">See the code on GitHub</a>
+        <a class="btn btn-ghost" href="#members" data-i18n="cta.team">Meet the team</a>
+      </div>
+    </article>
+  </section>
+
+  <!-- ===== members/ ===== -->
+  <section class="listing" id="members" aria-labelledby="members-h">
+    <h2 class="path" id="members-h"><span class="dim">muitnelis/</span><span class="dirn">members/</span></h2>
+    <ul class="tree tree-md">
+
+      <!-- cuongtranba -->
+      <li class="node open" id="cuongtranba">
+        <div class="ln head">
+          <span class="c c-tee"></span>
+          <button type="button" class="ent" aria-expanded="true" aria-controls="cuongtranba-k"><img class="av" src="../research/avatars/cuongtranba.png" alt="" width="36" height="36"><span class="nm">cuongtranba</span><span class="sl">/</span></button>
+          <span class="who">Cuong Tran</span>
+        </div>
+        <div class="kids" id="cuongtranba-k"><div class="kin">
+          <ul class="tree tree-md" aria-label="cuongtranba">
+            <li class="ln" style="--i:0"><span class="c c-pass"></span><span class="c c-tee"></span><span class="fn">avatar.png</span><div class="content"><img class="av-lg" src="../research/avatars/cuongtranba.png" alt="Cuong Tran" width="160" height="160"></div></li>
+            <li class="ln" style="--i:1"><span class="c c-pass"></span><span class="c c-tee"></span><span class="fn">role.txt</span><div class="content"><p class="role" data-i18n="cuongtranba.role">Backend and agent tooling</p><p class="facts">Go · Rust · C# · TypeScript · on GitHub since 2013 · 124 public repos</p></div></li>
+            <li class="ln" style="--i:2"><span class="c c-pass"></span><span class="c c-tee"></span><span class="fn">about.md</span><div class="content"><p class="about" data-i18n="cuongtranba.intro">Builds Go and Rust services with clean architecture, and the tooling around Claude Code and Codex: parallel agent teams, skill stacks, session resume, and a web UI for both CLIs.</p></div></li>
+            <li class="ln" style="--i:3"><span class="c c-pass"></span><span class="c c-tee"></span><span class="fn dir">repos/</span></li>
+            <li class="ln" style="--i:4"><span class="c c-pass"></span><span class="c c-pass"></span><span class="c c-tee"></span><span class="rep">agent-teams-setup<span class="star">*</span></span></li>
+            <li class="ln" style="--i:5"><span class="c c-pass"></span><span class="c c-pass"></span><span class="c c-tee"></span><span class="rep">go-scaffolding<span class="star">*</span></span></li>
+            <li class="ln" style="--i:6"><span class="c c-pass"></span><span class="c c-pass"></span><span class="c c-tee"></span><span class="rep">tinkaria<span class="star">*</span></span></li>
+            <li class="ln" style="--i:7"><span class="c c-pass"></span><span class="c c-pass"></span><span class="c c-tee"></span><span class="rep">wtguard<span class="star">*</span></span></li>
+            <li class="ln" style="--i:8"><span class="c c-pass"></span><span class="c c-pass"></span><span class="c c-end"></span><span class="rep">narrated-video<span class="star">*</span></span></li>
+            <li class="ln" style="--i:9"><span class="c c-pass"></span><span class="c c-end"></span><span class="fn dir">links/</span></li>
+            <li class="ln" style="--i:10"><span class="c c-pass"></span><span class="c c-blank"></span><span class="c c-tee"></span><a class="ent sym" href="https://github.com/cuongtranba"><span class="nm">github</span><span class="arrow">-&gt;</span><span class="url">https://github.com/cuongtranba</span></a></li>
+            <li class="ln" style="--i:11"><span class="c c-pass"></span><span class="c c-blank"></span><span class="c c-end"></span><a class="ent sym" href="https://trancuong.me"><span class="nm">site</span><span class="arrow">-&gt;</span><span class="url">https://trancuong.me</span></a></li>
+          </ul>
+        </div></div>
+      </li>
+
+      <!-- thanh-dong -->
+      <li class="node" id="thanh-dong">
+        <div class="ln head">
+          <span class="c c-tee"></span>
+          <button type="button" class="ent" aria-expanded="false" aria-controls="thanh-dong-k"><img class="av" src="../research/avatars/thanh-dong.png" alt="" width="36" height="36"><span class="nm">thanh-dong</span><span class="sl">/</span></button>
+        </div>
+        <div class="kids" id="thanh-dong-k" inert><div class="kin">
+          <ul class="tree tree-md" aria-label="thanh-dong">
+            <li class="ln" style="--i:0"><span class="c c-pass"></span><span class="c c-tee"></span><span class="fn">avatar.png</span><div class="content"><img class="av-lg" src="../research/avatars/thanh-dong.png" alt="thanh-dong" width="160" height="160"></div></li>
+            <li class="ln" style="--i:1"><span class="c c-pass"></span><span class="c c-tee"></span><span class="fn">role.txt</span><div class="content"><p class="role" data-i18n="thanh-dong.role">Agent harnesses and orchestration</p><p class="facts">Rust · TypeScript · Go · Python · on GitHub since 2015</p></div></li>
+            <li class="ln" style="--i:2"><span class="c c-pass"></span><span class="c c-tee"></span><span class="fn">about.md</span><div class="content"><p class="about" data-i18n="thanh-dong.intro">Turns any repo into an agent-ready workspace, optimises how Claude Code routes to plugins, previews what an agent touched, and runs Symphony's autonomous implementation runs.</p></div></li>
+            <li class="ln" style="--i:3"><span class="c c-pass"></span><span class="c c-tee"></span><span class="fn dir">repos/</span></li>
+            <li class="ln" style="--i:4"><span class="c c-pass"></span><span class="c c-pass"></span><span class="c c-tee"></span><span class="rep">harness-repository-cc<span class="star">*</span></span></li>
+            <li class="ln" style="--i:5"><span class="c c-pass"></span><span class="c c-pass"></span><span class="c c-tee"></span><span class="rep">claude-routing-optimizer<span class="star">*</span></span></li>
+            <li class="ln" style="--i:6"><span class="c c-pass"></span><span class="c c-pass"></span><span class="c c-tee"></span><span class="rep">herdr-rich-preview<span class="star">*</span></span></li>
+            <li class="ln" style="--i:7"><span class="c c-pass"></span><span class="c c-pass"></span><span class="c c-tee"></span><span class="rep">magikarp_skill<span class="star">*</span></span></li>
+            <li class="ln" style="--i:8"><span class="c c-pass"></span><span class="c c-pass"></span><span class="c c-end"></span><span class="rep">read-things<span class="star">*</span></span></li>
+            <li class="ln" style="--i:9"><span class="c c-pass"></span><span class="c c-end"></span><span class="fn dir">links/</span></li>
+            <li class="ln" style="--i:10"><span class="c c-pass"></span><span class="c c-blank"></span><span class="c c-end"></span><a class="ent sym" href="https://github.com/thanh-dong"><span class="nm">github</span><span class="arrow">-&gt;</span><span class="url">https://github.com/thanh-dong</span></a></li>
+          </ul>
+        </div></div>
+      </li>
+
+      <!-- yanmad27 -->
+      <li class="node" id="yanmad27">
+        <div class="ln head">
+          <span class="c c-end"></span>
+          <button type="button" class="ent" aria-expanded="false" aria-controls="yanmad27-k"><img class="av" src="../research/avatars/yanmad27.png" alt="" width="36" height="36"><span class="nm">yanmad27</span><span class="sl">/</span></button>
+          <span class="who">Doan Phan (Yan)</span>
+        </div>
+        <div class="kids" id="yanmad27-k" inert><div class="kin">
+          <ul class="tree tree-md" aria-label="yanmad27">
+            <li class="ln" style="--i:0"><span class="c c-blank"></span><span class="c c-tee"></span><span class="fn">avatar.png</span><div class="content"><img class="av-lg" src="../research/avatars/yanmad27.png" alt="Doan Phan" width="160" height="160"></div></li>
+            <li class="ln" style="--i:1"><span class="c c-blank"></span><span class="c c-tee"></span><span class="fn">role.txt</span><div class="content"><p class="role" data-i18n="yanmad27.role">Full-stack and small tools</p><p class="facts">TypeScript · Go · Rust · React · NestJS · on GitHub since 2018</p></div></li>
+            <li class="ln" style="--i:2"><span class="c c-blank"></span><span class="c c-tee"></span><span class="fn">bio.txt</span><div class="content"><p class="quote">Make life easy</p></div></li>
+            <li class="ln" style="--i:3"><span class="c c-blank"></span><span class="c c-tee"></span><span class="fn">about.md</span><div class="content"><p class="about" data-i18n="yanmad27.intro">Full-stack engineer who ships web apps end to end and small tools that scratch an itch: a Rust window manager for Windows, a Telegram expense bot, and a Claude Code plugin that answers questions from context.</p></div></li>
+            <li class="ln" style="--i:4"><span class="c c-blank"></span><span class="c c-tee"></span><span class="fn dir">repos/</span></li>
+            <li class="ln" style="--i:5"><span class="c c-blank"></span><span class="c c-pass"></span><span class="c c-tee"></span><span class="rep">windows-rectangle<span class="star">*</span></span></li>
+            <li class="ln" style="--i:6"><span class="c c-blank"></span><span class="c c-pass"></span><span class="c c-tee"></span><span class="rep">ask-jev<span class="star">*</span></span></li>
+            <li class="ln" style="--i:7"><span class="c c-blank"></span><span class="c c-pass"></span><span class="c c-tee"></span><span class="rep">money-note-bot<span class="star">*</span></span></li>
+            <li class="ln" style="--i:8"><span class="c c-blank"></span><span class="c c-pass"></span><span class="c c-end"></span><span class="rep">text-transporter<span class="star">*</span></span></li>
+            <li class="ln" style="--i:9"><span class="c c-blank"></span><span class="c c-end"></span><span class="fn dir">links/</span></li>
+            <li class="ln" style="--i:10"><span class="c c-blank"></span><span class="c c-blank"></span><span class="c c-tee"></span><a class="ent sym" href="https://github.com/yanmad27"><span class="nm">github</span><span class="arrow">-&gt;</span><span class="url">https://github.com/yanmad27</span></a></li>
+            <li class="ln" style="--i:11"><span class="c c-blank"></span><span class="c c-blank"></span><span class="c c-end"></span><a class="ent sym" href="https://doanphan.com"><span class="nm">site</span><span class="arrow">-&gt;</span><span class="url">https://doanphan.com</span></a></li>
+          </ul>
+        </div></div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ===== projects/ ===== -->
+  <section class="listing" id="projects" aria-labelledby="projects-h">
+    <h2 class="path" id="projects-h"><span class="dim">muitnelis/</span><span class="dirn">projects/</span></h2>
+    <ul class="tree tree-md">
+
+      <!-- undercroft -->
+      <li class="node exe-node open" id="undercroft">
+        <div class="ln head">
+          <span class="c c-tee"></span>
+          <button type="button" class="ent" aria-expanded="true" aria-controls="undercroft-k"><span class="mark" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" fill-rule="evenodd"><path d="M3 0h26a3 3 0 0 1 3 3v26a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V3a3 3 0 0 1 3-3ZM5 27.5V15.5a11 11 0 0 1 22 0V27.5ZM9 27.5V15.5a7 7 0 0 1 14 0V27.5ZM12.5 27.5V15.5a3.5 3.5 0 0 1 7 0V27.5ZM5 15.5h4v1.5H5ZM23 15.5h4v1.5h-4Z"/></svg></span><span class="nm">undercroft</span><span class="star">*</span></button>
+          <span class="who">Undercroft</span>
+        </div>
+        <div class="kids" id="undercroft-k"><div class="kin">
+          <ul class="tree tree-md" aria-label="undercroft">
+            <li class="ln" style="--i:0"><span class="c c-pass"></span><span class="c c-tee"></span><span class="fn">tagline.txt</span><div class="content"><p class="tagline">An immutable raw lake, declarative connectors, and a schema you define yourself.</p></div></li>
+            <li class="ln" style="--i:1"><span class="c c-pass"></span><span class="c c-tee"></span><span class="fn">README.md</span><div class="content"><p class="detail" data-i18n="undercroft.detail">Content-addressed raw storage on S3 or MinIO, YAML connectors instead of code, one generic Postgres table, and dbt models you write. Self-hostable, MIT. Pre-alpha.</p></div></li>
+            <li class="ln" style="--i:2"><span class="c c-pass"></span><span class="c c-tee"></span><span class="fn">tags</span><div class="content"><p class="tags">TypeScript · Bun · Postgres · dbt · MinIO</p></div></li>
+            <li class="ln" style="--i:3"><span class="c c-pass"></span><span class="c c-tee"></span><a class="ent sym" href="https://github.com/muitneliss/undercroft"><span class="nm">repo</span><span class="arrow">-&gt;</span><span class="url">https://github.com/muitneliss/undercroft</span></a></li>
+            <li class="ln" style="--i:4"><span class="c c-pass"></span><span class="c c-end"></span><a class="ent sym" href="https://undercroft.lowbit.link"><span class="nm">site</span><span class="arrow">-&gt;</span><span class="url">https://undercroft.lowbit.link</span></a></li>
+          </ul>
+        </div></div>
+      </li>
+
+      <!-- ymir -->
+      <li class="node exe-node" id="ymir">
+        <div class="ln head">
+          <span class="c c-tee"></span>
+          <button type="button" class="ent" aria-expanded="false" aria-controls="ymir-k"><span class="mark" aria-hidden="true"><img src="../research/refs/ymir-minimal.svg" alt="" width="28" height="28"></span><span class="nm">ymir</span><span class="star">*</span></button>
+          <span class="who">Ymir</span>
+        </div>
+        <div class="kids" id="ymir-k" inert><div class="kin">
+          <ul class="tree tree-md" aria-label="ymir">
+            <li class="ln" style="--i:0"><span class="c c-pass"></span><span class="c c-tee"></span><span class="fn">tagline.txt</span><div class="content"><p class="tagline">A harness spec for any repo, from a Socratic interview.</p></div></li>
+            <li class="ln" style="--i:1"><span class="c c-pass"></span><span class="c c-tee"></span><span class="fn">README.md</span><div class="content"><p class="detail" data-i18n="ymir.detail">Explores your codebase, interviews you per concern, and emits rules, lint, CI, wiki context, and CLAUDE.md or AGENT.md. Works with Claude Code, Cursor, and Codex via skills.sh.</p></div></li>
+            <li class="ln" style="--i:2"><span class="c c-pass"></span><span class="c c-tee"></span><span class="fn">tags</span><div class="content"><p class="tags">TypeScript · Rust CLI · agent skill</p></div></li>
+            <li class="ln" style="--i:3"><span class="c c-pass"></span><span class="c c-end"></span><a class="ent sym" href="https://github.com/muitneliss/ymir"><span class="nm">repo</span><span class="arrow">-&gt;</span><span class="url">https://github.com/muitneliss/ymir</span></a></li>
+          </ul>
+        </div></div>
+      </li>
+
+      <!-- symphony -->
+      <li class="node exe-node" id="symphony">
+        <div class="ln head">
+          <span class="c c-tee"></span>
+          <button type="button" class="ent" aria-expanded="false" aria-controls="symphony-k"><span class="nm">symphony</span><span class="star">*</span></button>
+          <span class="who">Symphony</span>
+        </div>
+        <div class="kids" id="symphony-k" inert><div class="kin">
+          <ul class="tree tree-md" aria-label="symphony">
+            <li class="ln" style="--i:0"><span class="c c-pass"></span><span class="c c-tee"></span><span class="fn">tagline.txt</span><div class="content"><p class="tagline">Manage the work, not the coding sessions.</p></div></li>
+            <li class="ln" style="--i:1"><span class="c c-pass"></span><span class="c c-tee"></span><span class="fn">README.md</span><div class="content"><p class="detail" data-i18n="symphony.detail">Turns tracker issues into isolated, autonomous implementation runs with proof of work: CI status, PR review, walkthrough videos. Adds Claude support, GitHub Issues, and live agent logs on top of openai/symphony. Apache 2.0.</p></div></li>
+            <li class="ln" style="--i:2"><span class="c c-pass"></span><span class="c c-tee"></span><span class="fn">tags</span><div class="content"><p class="tags">Elixir · Phoenix · Codex · Claude</p></div></li>
+            <li class="ln" style="--i:3"><span class="c c-pass"></span><span class="c c-end"></span><a class="ent sym" href="https://github.com/muitneliss/symphony-its-everdred"><span class="nm">repo</span><span class="arrow">-&gt;</span><span class="url">https://github.com/muitneliss/symphony-its-everdred</span></a></li>
+          </ul>
+        </div></div>
+      </li>
+
+      <!-- text-transporter (private) -->
+      <li class="node deny-node" id="text-transporter">
+        <div class="ln head">
+          <span class="c c-end"></span>
+          <button type="button" class="ent" aria-expanded="false" aria-controls="text-transporter-k"><span class="nm">text-transporter</span><span class="note">[permission denied]</span></button>
+          <span class="who">Text Transporter</span>
+        </div>
+        <div class="kids" id="text-transporter-k" inert><div class="kin">
+          <ul class="tree tree-md" aria-label="text-transporter">
+            <li class="ln" style="--i:0"><span class="c c-blank"></span><span class="c c-tee"></span><span class="fn">tagline.txt</span><div class="content"><p class="tagline">Quickly share text between devices.</p></div></li>
+            <li class="ln" style="--i:1"><span class="c c-blank"></span><span class="c c-tee"></span><span class="fn">README.md</span><div class="content"><p class="detail" data-i18n="tt.detail">Paste on one device, read on another. A small utility, kept private while it settles.</p></div></li>
+            <li class="ln" style="--i:2"><span class="c c-blank"></span><span class="c c-tee"></span><span class="fn">tags</span><div class="content"><p class="tags">TypeScript</p></div></li>
+            <li class="ln" style="--i:3"><span class="c c-blank"></span><span class="c c-end"></span><span class="fn deny">repo</span><div class="content"><p class="denied">permission denied</p></div></li>
+          </ul>
+        </div></div>
+      </li>
+    </ul>
+  </section>
+</main>
+
+<footer class="foot">
+  <ul class="tree" aria-label="Footer">
+    <li class="ln"><span class="c c-end"></span><span>muitnelis · Ho Chi Minh City · <a class="sym" href="https://github.com/muitneliss">github.com/muitneliss</a></span></li>
+  </ul>
+</footer>
+
+<script>
+(function () {
+  /* ---------- language ---------- */
+  var VI = {
+    'hero.h1': 'Một nhóm nhỏ ở Sài Gòn làm công cụ cho kỷ nguyên coding agent.',
+    'hero.p': 'Chúng tôi công bố những gì tự làm cho mình: harness cho agent, các lượt triển khai tự động, một data lake tự host, và những tiện ích nhỏ giúp cuộc sống dễ hơn.',
+    'cta.code': 'Xem code trên GitHub',
+    'cta.team': 'Gặp nhóm',
+    'cuongtranba.role': 'Backend và công cụ cho agent',
+    'cuongtranba.intro': 'Xây dịch vụ Go và Rust theo clean architecture, cùng bộ công cụ quanh Claude Code và Codex: đội agent song song, skill stack, resume phiên, và web UI cho cả hai CLI.',
+    'thanh-dong.role': 'Harness và điều phối agent',
+    'thanh-dong.intro': 'Biến bất kỳ repo nào thành workspace sẵn sàng cho agent, tối ưu cách Claude Code định tuyến plugin, xem trước những gì agent đã chạm vào, và vận hành các lượt triển khai tự động của Symphony.',
+    'yanmad27.role': 'Full-stack và công cụ nhỏ',
+    'yanmad27.intro': 'Kỹ sư full-stack làm web app trọn gói và những công cụ nhỏ giải quyết nhu cầu của chính mình: window manager viết bằng Rust cho Windows, bot Telegram ghi chi tiêu, và plugin Claude Code tự trả lời câu hỏi từ ngữ cảnh.',
+    'undercroft.detail': 'Lưu trữ thô định danh theo nội dung trên S3 hoặc MinIO, connector bằng YAML thay vì code, một bảng Postgres chung, và các model dbt bạn tự viết. Tự host, MIT. Pre-alpha.',
+    'ymir.detail': 'Khám phá codebase, phỏng vấn bạn theo từng mối quan tâm, rồi sinh rules, lint, CI, wiki context, và CLAUDE.md hoặc AGENT.md. Dùng được với Claude Code, Cursor và Codex qua skills.sh.',
+    'symphony.detail': 'Biến issue trên tracker thành các lượt triển khai tự động, cô lập, kèm bằng chứng: trạng thái CI, review PR, video walkthrough. Bổ sung Claude, GitHub Issues và log agent trực tiếp trên nền openai/symphony. Apache 2.0.',
+    'tt.detail': 'Dán ở thiết bị này, đọc ở thiết bị kia. Một tiện ích nhỏ, còn để riêng tư trong lúc hoàn thiện.'
+  };
+  var EN = {};
+  var i18nEls = document.querySelectorAll('[data-i18n]');
+  i18nEls.forEach(function (el) { EN[el.getAttribute('data-i18n')] = el.textContent; });
+
+  function setLang(lang) {
+    var dict = lang === 'vi' ? VI : EN;
+    document.documentElement.lang = lang;
+    i18nEls.forEach(function (el) {
+      var k = el.getAttribute('data-i18n');
+      if (dict[k] != null) el.textContent = dict[k];
+    });
+    document.querySelectorAll('.flag-b').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === lang));
+    });
+    try { localStorage.setItem('muitnelis.lang', lang); } catch (e) {}
+  }
+  document.querySelectorAll('.flag-b').forEach(function (b) {
+    b.addEventListener('click', function () { setLang(b.getAttribute('data-lang')); });
+  });
+  var saved = null;
+  try { saved = localStorage.getItem('muitnelis.lang'); } catch (e) {}
+  if (saved === 'vi') setLang('vi');
+
+  /* ---------- expandable nodes ---------- */
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  function setOpen(node, open) {
+    var btn = node.querySelector(':scope > .head .ent');
+    var kids = node.querySelector(':scope > .kids');
+    if (!btn || !kids) return;
+    if (node.classList.contains('open') === open) return;
+    node.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', String(open));
+    kids.inert = !open;
+    if (!reduce.matches) {
+      node.classList.add('anim');
+      var done = function () { node.classList.remove('anim'); };
+      var t = setTimeout(done, 480);
+      kids.addEventListener('transitionend', function h(e) {
+        if (e.target !== kids) return;
+        clearTimeout(t); done(); kids.removeEventListener('transitionend', h);
+      });
+    }
+  }
+
+  document.querySelectorAll('.node').forEach(function (node) {
+    var btn = node.querySelector(':scope > .head .ent');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      setOpen(node, !node.classList.contains('open'));
+    });
+  });
+
+  /* deep links: #cuongtranba opens the node */
+  function openFromHash() {
+    var id = decodeURIComponent(location.hash.replace(/^#/, ''));
+    if (!id) return;
+    var node = document.getElementById(id);
+    if (node && node.classList.contains('node')) setOpen(node, true);
+  }
+  window.addEventListener('hashchange', openFromHash);
+  openFromHash();
+})();
+</script>
+</body>
+</html>

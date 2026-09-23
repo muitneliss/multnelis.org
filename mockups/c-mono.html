@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>muitnelis · tools for the coding-agent era</title>
+<meta name="description" content="A small collective in Ho Chi Minh City building tools for the coding-agent era.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --n0:#FCFCFB; --n1:#F5F5F3; --n2:#ECECE9; --n3:#DCDCD8; --n4:#BBBBB6;
+    --n5:#797973; --n6:#5A5A56; --n7:#3B3B38; --n8:#222221; --n9:#0C0D0C;
+    --accent:#0B8459;
+    --sans:"Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --ease-out:cubic-bezier(.16,1,.3,1);
+    --track:78px; --gap:24px; --gutter:24px;
+    --section:80px;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{
+    background:var(--n0); color:var(--n8);
+    font-family:var(--sans); font-size:16px; line-height:1.55;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    scrollbar-color:var(--n4) var(--n1); scroll-behavior:smooth;
+    text-underline-offset:.15em;
+  }
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} }
+  html,body{overflow-x:clip}
+  body{margin:0; min-height:100vh}
+  ::selection{background:var(--n8); color:var(--n0)}
+  ::-webkit-scrollbar{width:12px; height:12px}
+  ::-webkit-scrollbar-track{background:var(--n1)}
+  ::-webkit-scrollbar-thumb{background:var(--n4); border:3px solid var(--n1); border-radius:8px}
+  ::-webkit-scrollbar-thumb:hover{background:var(--n5)}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px}
+  a{color:inherit; text-decoration-thickness:1px; text-underline-offset:.15em; text-decoration-color:var(--n4)}
+  a:hover{text-decoration-color:currentColor}
+  img{display:block; max-width:100%}
+  h1,h2,h3,p{margin:0}
+  h1,h2,h3{font-weight:600; letter-spacing:-.02em; text-wrap:balance}
+  p{text-wrap:pretty}
+  pre{margin:0; font-family:var(--mono); font-size:13px; line-height:1.65; tab-size:2}
+  code,.mono{font-family:var(--mono); font-size:13px}
+  .tnum{font-variant-numeric:tabular-nums}
+
+  /* 12-column grid, 1200px content, gutters that stretch to the viewport */
+  .grid{
+    display:grid;
+    grid-template-columns:minmax(var(--gutter),1fr) repeat(12,minmax(0,var(--track))) minmax(var(--gutter),1fr);
+    column-gap:var(--gap);
+  }
+
+  /* Header */
+  .site-header{padding:28px 0}
+  .site-header .brand{grid-column:2/5; align-self:center; font-weight:600; font-size:20px; letter-spacing:-.02em; text-decoration:none}
+  .site-header nav{grid-column:5/14; align-self:center; display:flex; justify-content:flex-end; align-items:center; gap:28px}
+  .site-header nav a{font-size:15px; text-decoration:none; color:var(--n7)}
+  .site-header nav a:hover{color:var(--n9); text-decoration:underline}
+  .lang{display:inline-flex; border:1px solid var(--n3); border-radius:999px; padding:2px; background:var(--n0)}
+  .lang button{
+    appearance:none; border:0; background:transparent; color:var(--n6); font:inherit; font-size:12.5px; font-weight:600;
+    letter-spacing:.02em; height:26px; padding:0 11px; border-radius:999px; cursor:pointer;
+  }
+  .lang button:hover{color:var(--n9)}
+  .lang button[aria-pressed="true"]{background:var(--accent); color:#fff}
+
+  /* Hero */
+  .hero{padding:72px 0 var(--section); align-items:center}
+  .hero .copy{grid-column:2/8}
+  .hero h1{font-size:4rem; line-height:1.04; max-width:16ch}
+  .hero h1 .key{
+    text-decoration:underline; text-decoration-color:var(--accent);
+    text-decoration-thickness:.06em; text-underline-offset:.1em; text-decoration-skip-ink:none;
+  }
+  .hero .lede{margin-top:28px; font-size:18px; line-height:1.55; color:var(--n6); max-width:62ch}
+  .actions{display:flex; gap:12px; margin-top:40px; flex-wrap:wrap}
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px; height:48px; padding:0 22px;
+    border-radius:8px; font-size:15px; font-weight:600; text-decoration:none; letter-spacing:-.005em;
+    transition:background-color 160ms var(--ease-out), border-color 160ms var(--ease-out), transform 160ms var(--ease-out);
+  }
+  .btn-primary{background:var(--accent); color:#fff}
+  .btn-primary:hover{background:#0A7550}
+  .btn-primary:active{transform:translateY(1px)}
+  .btn-ghost{border:1px solid var(--n4); color:var(--n8); background:transparent}
+  .btn-ghost:hover{background:var(--n1); border-color:var(--n5)}
+  .hero .ground{grid-column:8/15; margin-right:calc(var(--gutter) * -1); border-radius:16px 0 0 16px; padding:56px 40px 56px 40px}
+  .hero .ground .frame{max-width:640px}
+
+  /* Ground and frames */
+  .ground{
+    position:relative; border-radius:16px; padding:36px 24px;
+    background:radial-gradient(120% 110% at 50% 28%, var(--n1) 0%, var(--n2) 100%);
+  }
+  .frame{
+    background:var(--n9); color:var(--n2); border-radius:12px; overflow:hidden;
+    box-shadow:0 24px 48px -24px rgba(12,13,12,.5), 0 2px 8px -3px rgba(12,13,12,.3);
+  }
+  .frame .bar{
+    display:flex; align-items:center; gap:12px; height:40px; padding:0 14px 0 16px;
+    border-bottom:1px solid rgba(255,255,255,.08); font-family:var(--mono); font-size:12px; color:var(--n4);
+  }
+  .frame .bar .dots{display:inline-flex; gap:6px; margin-right:2px}
+  .frame .bar .dots i{width:9px; height:9px; border-radius:50%; background:var(--n7)}
+  .frame .bar .title{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .frame .bar .note{color:var(--n5); flex:none}
+  .frame .body{padding:18px 20px 20px; overflow-x:auto}
+  .frame pre .dim{color:var(--n4)}
+  .frame pre .cmt{color:var(--n5)}
+  .frame pre .key{color:var(--n0)}
+
+  /* Claim / proof pairs */
+  .pairs{padding:var(--section) 0 0}
+  .pair{row-gap:32px; padding:var(--section) 0}
+  .pair:first-child{padding-top:0}
+  .pair .claim{grid-column:2/7; grid-row:1; position:sticky; top:40px; align-self:start}
+  .pair .proof{grid-column:8/14; grid-row:1}
+  .pair:nth-child(even) .proof{grid-column:2/8}
+  .pair:nth-child(even) .claim{grid-column:9/14}
+  .claim h2{font-size:2rem; line-height:1.15}
+  .claim .detail{margin-top:20px; font-size:16.5px; line-height:1.6; color:var(--n6); max-width:66ch}
+  .claim .meta{margin-top:28px; padding-top:20px; border-top:1px solid var(--n3); display:flex; flex-direction:column; gap:10px; font-size:14px; color:var(--n7)}
+  .claim .meta .row{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+  .claim .meta .name{font-weight:600; color:var(--n9)}
+  .claim .meta .tags{font-family:var(--mono); font-size:12.5px; color:var(--n6)}
+  .status{display:inline-flex; align-items:center; gap:7px; color:var(--n6)}
+  .status::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--n5)}
+  .status.public::before{background:var(--accent)}
+  .mark-img{width:28px; height:28px; border-radius:6px}
+
+  /* Proof: entrance */
+  .proof{opacity:0; transform:translateY(12px); transition:opacity 500ms var(--ease-out), transform 500ms var(--ease-out); transition-delay:var(--d,0ms)}
+  .proof.in{opacity:1; transform:none}
+  @media (prefers-reduced-motion:reduce){ .proof{opacity:1; transform:none; transition:none} }
+
+  /* Members list */
+  .members{list-style:none; margin:0; padding:0; border-top:1px solid var(--n3)}
+  .member{display:grid; grid-template-columns:96px minmax(0,1fr); gap:28px; padding:32px 0; border-bottom:1px solid var(--n3)}
+  .member .avatar{width:96px; height:96px; border-radius:50%; object-fit:cover; box-shadow:0 0 0 1px var(--n3)}
+  .member .who{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap}
+  .member h3{font-size:19px; line-height:1.2; letter-spacing:-.015em}
+  .member .handle{font-family:var(--mono); font-size:12.5px; color:var(--n5)}
+  .member .role{margin-top:4px; font-size:15px; color:var(--n6)}
+  .member .intro{margin-top:12px; font-size:15px; line-height:1.6; color:var(--n7); max-width:62ch}
+  .member .facts{margin-top:14px; font-family:var(--mono); font-size:12.5px; line-height:1.6; color:var(--n6)}
+  .member .links{margin-top:12px; display:flex; gap:18px; font-size:14px}
+
+  /* Undercroft mark + topics */
+  .arch{display:grid; grid-template-columns:96px minmax(0,1fr); gap:32px; align-items:start}
+  .arch svg{width:96px; height:96px; color:var(--n9)}
+  .topics{margin:0; padding:0; list-style:none; display:grid; grid-template-columns:1fr 1fr; column-gap:24px; font-family:var(--mono); font-size:13px; color:var(--n7); border-top:1px solid var(--n3)}
+  .topics li{padding:8px 0; border-bottom:1px solid var(--n3)}
+  .ground .label{font-size:13px; color:var(--n6); margin-bottom:10px}
+  .ground .label .path{font-family:var(--mono); font-size:12.5px; color:var(--n5)}
+
+  /* Private proof */
+  .quiet{font-family:var(--mono); font-size:13px; line-height:1.7; color:var(--n7)}
+  .quiet .k{color:var(--n5)}
+  .quiet p{margin-top:16px; font-family:var(--sans); font-size:14.5px; color:var(--n6); max-width:48ch}
+
+  /* Footer */
+  .site-footer{margin-top:var(--section); padding:32px 0 48px}
+  .site-footer .rule{grid-column:2/14; border-top:1px solid var(--n3); padding-top:24px; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; font-size:14px; color:var(--n6)}
+  .site-footer a{text-decoration:none}
+  .site-footer a:hover{text-decoration:underline}
+
+  /* Tablet */
+  @media (max-width:1180px){
+    .hero h1{font-size:3.25rem}
+    .hero .ground{padding:40px 32px 40px 28px}
+    .pair .claim{position:static}
+  }
+  @media (max-width:960px){
+    .hero{padding-top:48px}
+    .hero .copy, .hero .ground, .pair .claim, .pair .proof,
+    .pair:nth-child(even) .claim, .pair:nth-child(even) .proof{grid-column:2/14}
+    .pair .claim{grid-row:1} .pair .proof{grid-row:2}
+    .hero .ground{margin-right:0; border-radius:16px; margin-top:48px; padding:32px 24px}
+    .pair{row-gap:40px}
+    .pair .claim{position:static}
+  }
+  /* Mobile */
+  @media (max-width:640px){
+    :root{--gutter:20px; --section:72px}
+    .site-header{padding:20px 0}
+    .site-header .brand{grid-column:2/5; font-size:18px}
+    .site-header nav{grid-column:5/14; gap:14px}
+    .site-header nav a{font-size:14px}
+    .lang button{padding:0 9px; font-size:12px}
+    .hero{padding-top:40px}
+    .hero h1{font-size:2.5rem; max-width:none}
+    .hero .lede{font-size:16.5px; margin-top:20px}
+    .actions{flex-direction:column; margin-top:32px}
+    .btn{width:100%}
+    .hero .ground{padding:20px 16px; margin-top:40px}
+    .ground{padding:20px 16px}
+    .frame .body{padding:14px 16px 16px}
+    .claim h2{font-size:1.625rem}
+    .member{grid-template-columns:1fr; gap:16px; padding:28px 0}
+    .member .avatar{width:72px; height:72px}
+    .arch{grid-template-columns:1fr; gap:24px}
+    .arch svg{width:72px; height:72px}
+    .site-footer .rule{flex-direction:column; gap:6px}
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header grid">
+  <a class="brand" href="#top" aria-label="muitnelis, home">muitnelis</a>
+  <nav aria-label="Primary">
+    <a href="#team" data-i18n="nav.team">Team</a>
+    <a href="#projects" data-i18n="nav.projects">Projects</a>
+    <a href="https://github.com/muitneliss">GitHub</a>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="en" aria-pressed="true" lang="en">EN</button>
+      <button type="button" data-lang="vi" aria-pressed="false" lang="vi">VI</button>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+  <section class="hero grid">
+    <div class="copy">
+      <h1 data-i18n-html="hero.h1">A small collective in Ho&nbsp;Chi&nbsp;Minh City building tools for the <span class="key">coding-agent era</span>.</h1>
+      <p class="lede" data-i18n="hero.lede">We publish what we build for ourselves: agent harnesses, autonomous implementation runs, a self-hostable data lake, and small utilities that make life easier.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="https://github.com/muitneliss" data-i18n="hero.primary">See the code on GitHub</a>
+        <a class="btn btn-ghost" href="#team" data-i18n="hero.secondary">Meet the team</a>
+      </div>
+    </div>
+    <div class="ground">
+      <figure class="frame proof" style="--d:0ms; margin:0">
+        <div class="bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="title">muitneliss/undercroft · README.md</span></div>
+        <div class="body"><pre>your APIs ──▶ raw lake (S3/MinIO) ──▶ raw.records (Postgres) ──▶ dbt ──▶ BI
+<span class="dim">              immutable,              one generic table          your models
+              content-addressed</span></pre></div>
+      </figure>
+    </div>
+  </section>
+
+  <div class="pairs">
+
+    <!-- 1. Team -->
+    <section class="pair grid" id="team">
+      <div class="claim">
+        <h2 data-i18n="team.h2">Three engineers in Ho Chi Minh City.</h2>
+        <p class="detail" data-i18n="team.detail">Each one is introduced by what they actually ship, and every name links to the code.</p>
+      </div>
+      <div class="proof" style="--d:0ms">
+        <ul class="members">
+          <li class="member">
+            <img class="avatar" src="../research/avatars/cuongtranba.png" alt="" width="96" height="96">
+            <div>
+              <div class="who"><h3>Cuong Tran</h3><span class="handle">cuongtranba</span></div>
+              <p class="role" data-i18n="m1.role">Backend and agent tooling</p>
+              <p class="intro" data-i18n="m1.intro">Builds Go and Rust services with clean architecture, and the tooling around Claude Code and Codex: parallel agent teams, skill stacks, session resume, and a web UI for both CLIs.</p>
+              <p class="facts" data-i18n="m1.facts">Go · Rust · C# · TypeScript · on GitHub since 2013 · 124 public repos</p>
+              <p class="links"><a href="https://github.com/cuongtranba">GitHub</a><a href="https://trancuong.me" data-i18n="link.site">Site</a></p>
+            </div>
+          </li>
+          <li class="member">
+            <img class="avatar" src="../research/avatars/thanh-dong.png" alt="" width="96" height="96">
+            <div>
+              <div class="who"><h3>thanh-dong</h3></div>
+              <p class="role" data-i18n="m2.role">Agent harnesses and orchestration</p>
+              <p class="intro" data-i18n="m2.intro">Turns any repo into an agent-ready workspace, optimises how Claude Code routes to plugins, previews what an agent touched, and runs Symphony's autonomous implementation runs.</p>
+              <p class="facts" data-i18n="m2.facts">Rust · TypeScript · Go · Python · on GitHub since 2015</p>
+              <p class="links"><a href="https://github.com/thanh-dong">GitHub</a></p>
+            </div>
+          </li>
+          <li class="member">
+            <img class="avatar" src="../research/avatars/yanmad27.png" alt="" width="96" height="96">
+            <div>
+              <div class="who"><h3>Doan Phan (Yan)</h3><span class="handle">yanmad27</span></div>
+              <p class="role" data-i18n="m3.role">Full-stack and small tools</p>
+              <p class="intro" data-i18n="m3.intro">Full-stack engineer who ships web apps end to end and small tools that scratch an itch: a Rust window manager for Windows, a Telegram expense bot, and a Claude Code plugin that answers questions from context.</p>
+              <p class="facts" data-i18n="m3.facts">TypeScript · Go · Rust · React · NestJS · on GitHub since 2018</p>
+              <p class="links"><a href="https://github.com/yanmad27">GitHub</a><a href="https://doanphan.com" data-i18n="link.site">Site</a></p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 2. Ymir -->
+    <section class="pair grid" id="projects">
+      <div class="claim">
+        <h2 data-i18n="ymir.h2">A harness spec for any repo, from a Socratic interview.</h2>
+        <p class="detail" data-i18n="ymir.detail">Explores your codebase, interviews you per concern, and emits rules, lint, CI, wiki context, and CLAUDE.md or AGENT.md. Works with Claude Code, Cursor, and Codex via skills.sh.</p>
+        <div class="meta">
+          <div class="row"><img class="mark-img" src="../research/refs/ymir-minimal.svg" alt="" width="28" height="28"><span class="name">Ymir</span><span class="status public" data-i18n="status.public">public</span><a href="https://github.com/muitneliss/ymir">muitneliss/ymir</a></div>
+          <div class="tags">TypeScript · Rust CLI · agent skill</div>
+        </div>
+      </div>
+      <div class="proof" style="--d:0ms">
+        <div class="ground">
+          <figure class="frame" style="margin:0">
+            <div class="bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="title">muitneliss/ymir · README.md</span></div>
+            <div class="body"><pre><span class="key">.ymir/</span>
+├── harness-profile.yaml
+└── harness-playbook.md
+
+<span class="cmt"># what you say to your agent</span>
+<span class="dim">&gt;</span> ymir init for this project
+<span class="dim">&gt;</span> ymir add lint
+<span class="dim">&gt;</span> ymir apply</pre></div>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Symphony -->
+    <section class="pair grid">
+      <div class="claim">
+        <h2 data-i18n="sym.h2">Manage the work, not the coding sessions.</h2>
+        <p class="detail" data-i18n="sym.detail">Turns tracker issues into isolated, autonomous implementation runs with proof of work: CI status, PR review, walkthrough videos. Adds Claude support, GitHub Issues, and live agent logs on top of openai/symphony. Apache 2.0.</p>
+        <div class="meta">
+          <div class="row"><span class="name">Symphony</span><span class="status public" data-i18n="status.public">public</span><a href="https://github.com/muitneliss/symphony-its-everdred">muitneliss/symphony-its-everdred</a></div>
+          <div class="tags">Elixir · Phoenix · Codex · Claude</div>
+        </div>
+      </div>
+      <div class="proof" style="--d:0ms">
+        <div class="ground">
+          <figure class="frame" style="margin:0">
+            <div class="bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="title">symphony · runs/issue-87</span><span class="note" data-i18n="sym.note">illustrative log</span></div>
+            <div class="body"><pre><span class="dim">$</span> tail -n 4 <span class="key">logs/agent.ndjson</span>
+{"t":"10:02:14","event":"run.start","mode":"isolated run"}
+{"t":"10:09:40","event":"ci.status","state":"success"}
+{"t":"10:11:30","event":"pr.review","state":"requested"}
+{"t":"10:12:02","event":"walkthrough","state":"rendered"}
+
+<span class="dim">$</span> head -n 4 <span class="key">logs/agent.md</span>
+<span class="dim">#</span> issue-87 · isolated run
+- CI status: success
+- PR review: requested (#91)
+- walkthrough: rendered</pre></div>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Undercroft -->
+    <section class="pair grid">
+      <div class="claim">
+        <h2 data-i18n="uc.h2">An immutable raw lake, declarative connectors, and a schema you define yourself.</h2>
+        <p class="detail" data-i18n="uc.detail">Content-addressed raw storage on S3 or MinIO, YAML connectors instead of code, one generic Postgres table, and dbt models you write. Self-hostable, MIT. Pre-alpha.</p>
+        <div class="meta">
+          <div class="row"><span class="name">Undercroft</span><span class="status public" data-i18n="status.public">public</span><a href="https://github.com/muitneliss/undercroft">muitneliss/undercroft</a><a href="https://undercroft.lowbit.link">undercroft.lowbit.link</a></div>
+          <div class="tags">TypeScript · Bun · Postgres · dbt · MinIO</div>
+        </div>
+      </div>
+      <div class="proof" style="--d:0ms">
+        <div class="ground">
+          <div class="arch">
+            <svg viewBox="0 0 32 32" fill="currentColor" fill-rule="evenodd" role="img" aria-label="The Undercroft mark"><path d="M3 0h26a3 3 0 0 1 3 3v26a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V3a3 3 0 0 1 3-3ZM5 27.5V15.5a11 11 0 0 1 22 0V27.5ZM9 27.5V15.5a7 7 0 0 1 14 0V27.5ZM12.5 27.5V15.5a3.5 3.5 0 0 1 7 0V27.5ZM5 15.5h4v1.5H5ZM23 15.5h4v1.5h-4Z"/></svg>
+            <div>
+              <div class="label"><span data-i18n="uc.label">Topics on GitHub</span> <span class="path">· muitneliss/undercroft</span></div>
+              <ul class="topics">
+                <li>bun</li><li>data-lake</li><li>dbt</li><li>elt</li><li>metabase</li>
+                <li>minio</li><li>postgres</li><li>self-hosted</li><li>typescript</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Text Transporter -->
+    <section class="pair grid">
+      <div class="claim">
+        <h2 data-i18n="tt.h2">Quickly share text between devices.</h2>
+        <p class="detail" data-i18n="tt.detail">Paste on one device, read on another. A small utility, kept private while it settles.</p>
+        <div class="meta">
+          <div class="row"><span class="name">Text Transporter</span><span class="status" data-i18n="status.private">private</span></div>
+          <div class="tags">TypeScript</div>
+        </div>
+      </div>
+      <div class="proof" style="--d:0ms">
+        <div class="ground">
+          <div class="quiet">
+            <div><span class="k">repo      </span>muitneliss/text-transporter</div>
+            <div><span class="k">status    </span><span class="status" data-i18n="status.private">private</span></div>
+            <div><span class="k">language  </span>TypeScript</div>
+            <p data-i18n="tt.proof">No public artefact yet. A public copy lives on yanmad27's own GitHub profile.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-footer grid">
+  <div class="rule">
+    <span>muitnelis · Ho Chi Minh City · <a href="https://github.com/muitneliss">github.com/muitneliss</a></span>
+    <span data-i18n="footer.org">Org created April 2025</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var vi = {
+    "nav.team":"Đội ngũ",
+    "nav.projects":"Dự án",
+    "hero.h1":"Một nhóm nhỏ ở Sài Gòn làm công cụ cho <span class=\"key\">kỷ nguyên coding agent</span>.",
+    "hero.lede":"Chúng tôi công bố những gì tự làm cho mình: harness cho agent, các lượt triển khai tự động, một data lake tự host, và những tiện ích nhỏ giúp cuộc sống dễ hơn.",
+    "hero.primary":"Xem code trên GitHub",
+    "hero.secondary":"Gặp đội ngũ",
+    "team.h2":"Ba kỹ sư ở Sài Gòn.",
+    "team.detail":"Mỗi người được giới thiệu bằng những gì họ thực sự làm ra, và mỗi cái tên đều dẫn về code.",
+    "m1.role":"Backend và công cụ cho agent",
+    "m1.intro":"Xây dịch vụ Go và Rust theo clean architecture, cùng bộ công cụ quanh Claude Code và Codex: đội agent song song, skill stack, resume phiên, và web UI cho cả hai CLI.",
+    "m1.facts":"Go · Rust · C# · TypeScript · trên GitHub từ 2013 · 124 repo công khai",
+    "m2.role":"Harness và điều phối agent",
+    "m2.intro":"Biến bất kỳ repo nào thành workspace sẵn sàng cho agent, tối ưu cách Claude Code định tuyến plugin, xem trước những gì agent đã chạm vào, và vận hành các lượt triển khai tự động của Symphony.",
+    "m2.facts":"Rust · TypeScript · Go · Python · trên GitHub từ 2015",
+    "m3.role":"Full-stack và công cụ nhỏ",
+    "m3.intro":"Kỹ sư full-stack làm web app trọn gói và những công cụ nhỏ giải quyết nhu cầu của chính mình: window manager viết bằng Rust cho Windows, bot Telegram ghi chi tiêu, và plugin Claude Code tự trả lời câu hỏi từ ngữ cảnh.",
+    "m3.facts":"TypeScript · Go · Rust · React · NestJS · trên GitHub từ 2018",
+    "link.site":"Trang cá nhân",
+    "ymir.h2":"Một harness spec cho bất kỳ repo nào, từ một cuộc phỏng vấn Socratic.",
+    "ymir.detail":"Khám phá codebase, phỏng vấn bạn theo từng mối quan tâm, rồi sinh rules, lint, CI, wiki context, và CLAUDE.md hoặc AGENT.md. Dùng được với Claude Code, Cursor và Codex qua skills.sh.",
+    "sym.h2":"Quản lý công việc, không phải các phiên code.",
+    "sym.detail":"Biến issue trên tracker thành các lượt triển khai tự động, cô lập, kèm bằng chứng: trạng thái CI, review PR, video walkthrough. Bổ sung Claude, GitHub Issues và log agent trực tiếp trên nền openai/symphony. Apache 2.0.",
+    "sym.note":"log minh hoạ",
+    "uc.h2":"Một raw lake bất biến, connector khai báo, và schema do bạn tự định nghĩa.",
+    "uc.detail":"Lưu trữ thô định danh theo nội dung trên S3 hoặc MinIO, connector bằng YAML thay vì code, một bảng Postgres chung, và các model dbt bạn tự viết. Tự host, MIT. Pre-alpha.",
+    "uc.label":"Topics trên GitHub",
+    "tt.h2":"Chia sẻ văn bản nhanh giữa các thiết bị.",
+    "tt.detail":"Dán ở thiết bị này, đọc ở thiết bị kia. Một tiện ích nhỏ, còn để riêng tư trong lúc hoàn thiện.",
+    "tt.proof":"Chưa có sản phẩm công khai. Một bản công khai nằm trên GitHub cá nhân của yanmad27.",
+    "status.public":"công khai",
+    "status.private":"riêng tư",
+    "footer.org":"Org lập tháng 4 năm 2025"
+  };
+  var en = {};
+  var nodes = document.querySelectorAll("[data-i18n],[data-i18n-html]");
+  nodes.forEach(function(el){
+    var k = el.getAttribute("data-i18n") || el.getAttribute("data-i18n-html");
+    en[k] = el.hasAttribute("data-i18n-html") ? el.innerHTML : el.textContent;
+  });
+  function setLang(lang){
+    var dict = lang === "vi" ? vi : en;
+    nodes.forEach(function(el){
+      var isHtml = el.hasAttribute("data-i18n-html");
+      var k = el.getAttribute(isHtml ? "data-i18n-html" : "data-i18n");
+      if (!(k in dict)) return;
+      if (isHtml) el.innerHTML = dict[k]; else el.textContent = dict[k];
+    });
+    document.documentElement.setAttribute("lang", lang);
+    document.querySelectorAll(".lang button").forEach(function(b){
+      b.setAttribute("aria-pressed", b.getAttribute("data-lang") === lang ? "true" : "false");
+    });
+    try { localStorage.setItem("muitnelis.lang", lang); } catch(e){}
+  }
+  document.querySelectorAll(".lang button").forEach(function(b){
+    b.addEventListener("click", function(){ setLang(b.getAttribute("data-lang")); });
+  });
+  var saved = null;
+  try { saved = localStorage.getItem("muitnelis.lang"); } catch(e){}
+  if (saved === "vi") setLang("vi");
+
+  // One authored moment: each proof rises 12px as it enters, staggered per pair.
+  var proofs = Array.prototype.slice.call(document.querySelectorAll(".proof"));
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var settle = /[?&]settle\b/.test(location.search) || location.hash === "#settle";
+  if (reduce || settle || !("IntersectionObserver" in window)) {
+    proofs.forEach(function(p){ p.classList.add("in"); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      var batch = 0;
+      entries.forEach(function(e){
+        if (!e.isIntersecting) return;
+        e.target.style.setProperty("--d", (batch++ * 90) + "ms");
+        e.target.classList.add("in");
+        io.unobserve(e.target);
+      });
+    }, { rootMargin:"0px 0px -10% 0px", threshold:0.1 });
+    proofs.forEach(function(p){ io.observe(p); });
+  }
+  window.__settle = function(){ proofs.forEach(function(p){ p.classList.add("in"); }); };
+})();
+</script>
+</body>
+</html>

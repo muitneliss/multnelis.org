@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@125,800&family=Hanken+Grotesk:wght@400;500&family=JetBrains+Mono:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      html,
+      body {
+        margin: 0;
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+        background: #fff;
+        color: #101214;
+      }
+      .frame {
+        position: relative;
+        width: 1200px;
+        height: 630px;
+        display: grid;
+        grid-template-columns: 120px 1fr;
+      }
+      .rail {
+        position: relative;
+      }
+      .rail svg {
+        position: absolute;
+        inset: 0;
+        width: 120px;
+        height: 630px;
+      }
+      .body {
+        padding: 64px 96px 60px 24px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .top {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+      }
+      .mark {
+        width: 72px;
+        height: 72px;
+      }
+      .word {
+        font-family: 'Anybody', sans-serif;
+        font-stretch: 125%;
+        font-weight: 800;
+        font-size: 56px;
+        letter-spacing: -0.02em;
+        line-height: 1;
+      }
+      .chip {
+        margin-left: 12px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 20px;
+        padding: 6px 12px;
+        border: 2px solid #101214;
+        border-radius: 8px;
+      }
+      h1 {
+        margin: 0;
+        font-family: 'Anybody', sans-serif;
+        font-stretch: 125%;
+        font-weight: 800;
+        font-size: 60px;
+        letter-spacing: -0.02em;
+        line-height: 1.04;
+        max-width: 980px;
+        margin-top: 8px;
+      }
+      .foot {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        font-family: 'Hanken Grotesk', sans-serif;
+        font-size: 26px;
+        color: #3a3d42;
+      }
+      .foot .mono {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 24px;
+        color: #101214;
+      }
+      .lanes {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+      }
+      .lanes i {
+        display: block;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        box-shadow: 0 0 0 3px #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame">
+      <div class="rail" aria-hidden="true">
+        <svg viewBox="0 0 120 630" fill="none" stroke-linecap="round" stroke-width="6">
+          <path d="M36 -10 C36 120 60 130 60 210" stroke="#C9461F" />
+          <path d="M60 -10 V210" stroke="#2457F5" />
+          <path d="M84 -10 C84 120 60 130 60 210" stroke="#168459" />
+          <path d="M60 210 V640" stroke="#101214" />
+          <circle cx="60" cy="210" r="14" fill="#101214" stroke="#fff" stroke-width="4" />
+          <circle cx="60" cy="470" r="9" fill="#101214" stroke="#fff" stroke-width="4" />
+        </svg>
+      </div>
+      <div class="body">
+        <div class="top">
+          <img class="mark" src="icon-concepts/concept-1.svg" alt="" />
+          <span class="word">muitnelis</span>
+          <span class="chip">main</span>
+        </div>
+        <h1>A small collective in Ho&nbsp;Chi&nbsp;Minh City building tools for the coding-agent era.</h1>
+        <div class="foot">
+          <span class="mono">github.com/muitneliss</span>
+          <span class="lanes">
+            <i style="background: #c9461f"></i>
+            <i style="background: #2457f5"></i>
+            <i style="background: #168459"></i>
+            <span style="margin-left: 8px">Undercroft · Ymir · Symphony</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
