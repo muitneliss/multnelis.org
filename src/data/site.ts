@@ -55,16 +55,8 @@ export interface Project {
   slug: string;
   name: string;
   tagline: Bilingual;
-  detail: Bilingual;
-  /** Stack tags, joined with middle dots. Not translated. */
-  tags: string;
+  /** Absent when the repository is private: the project is named, not linked. */
   repo?: { label: string; url: string };
-  /** Shown when the repository is private: name only, no link. */
-  repoName?: string;
-  site?: { label: string; url: string };
-  state: 'public' | 'private';
-  /** Members whose lanes merge into this commit, in display order. */
-  merges: Lane[];
   /** Existing project mark, when one exists. */
   mark?: 'undercroft' | 'ymir';
 }
@@ -79,19 +71,13 @@ export const brand = {
   location: { en: 'Ho Chi Minh City', vi: 'Sài Gòn' } satisfies Bilingual,
 };
 
-/** The /contact page, laid out like a CODEOWNERS file: paths and the people who answer for them. */
+/** The /contact page: one line and one address. */
 export const contact = {
-  title: { en: 'Who answers for what.', vi: 'Ai phụ trách việc gì.' } satisfies Bilingual,
-  lead: {
-    en: 'One address reaches all of us. For a specific project, the people who merged it are listed below, and every public repository takes issues on GitHub.',
-    vi: 'Một địa chỉ tới được cả nhóm. Với một dự án cụ thể, những người đã merge nó được liệt kê bên dưới, và mọi repository công khai đều nhận issue trên GitHub.',
-  } satisfies Bilingual,
+  title: { en: 'One address reaches all of us.', vi: 'Một địa chỉ tới được cả nhóm.' } satisfies Bilingual,
   action: { en: 'Email us', vi: 'Gửi email cho chúng tôi' } satisfies Bilingual,
-  owners: { en: 'Owners', vi: 'Người phụ trách' } satisfies Bilingual,
-  paths: { en: 'Paths', vi: 'Đường dẫn' } satisfies Bilingual,
   metaTitle: 'Contact — multnelis',
   metaDescription:
-    'Write to contact@multnelis.org, or reach the people who maintain Undercroft, Ymir, Symphony, and Text Transporter.',
+    'Write to multnelis at contact@multnelis.org. One address reaches the whole team in Ho Chi Minh City.',
 };
 
 export const statement: Bilingual = {
@@ -201,15 +187,7 @@ export const projects: Project[] = [
       en: 'An immutable raw lake, declarative connectors, and a schema you define yourself.',
       vi: 'Một raw lake bất biến, connector khai báo, và schema do bạn tự định nghĩa.',
     },
-    detail: {
-      en: 'Content-addressed raw storage on S3 or MinIO, YAML connectors instead of code, one generic Postgres table, and dbt models you write. Self-hostable, MIT. Pre-alpha.',
-      vi: 'Lưu trữ thô định danh theo nội dung trên S3 hoặc MinIO, connector bằng YAML thay vì code, một bảng Postgres chung, và các model dbt bạn tự viết. Tự host, MIT. Pre-alpha.',
-    },
-    tags: 'TypeScript · Bun · Postgres · dbt · MinIO',
     repo: { label: 'muitneliss/undercroft', url: 'https://github.com/muitneliss/undercroft' },
-    site: { label: 'undercroft.lowbit.link', url: 'https://undercroft.lowbit.link' },
-    state: 'public',
-    merges: ['c', 't', 'y'],
     mark: 'undercroft',
   },
   {
@@ -219,14 +197,7 @@ export const projects: Project[] = [
       en: 'A harness spec for any repo, from a Socratic interview.',
       vi: 'Một harness spec cho bất kỳ repo nào, từ một cuộc phỏng vấn Socratic.',
     },
-    detail: {
-      en: 'Explores your codebase, interviews you per concern, and emits rules, lint, CI, wiki context, and CLAUDE.md or AGENT.md. Works with Claude Code, Cursor, and Codex via skills.sh.',
-      vi: 'Khám phá codebase, phỏng vấn bạn theo từng mối quan tâm, rồi sinh rules, lint, CI, wiki context, và CLAUDE.md hoặc AGENT.md. Dùng được với Claude Code, Cursor và Codex qua skills.sh.',
-    },
-    tags: 'TypeScript · Rust CLI · agent skill',
     repo: { label: 'muitneliss/ymir', url: 'https://github.com/muitneliss/ymir' },
-    state: 'public',
-    merges: ['c', 't', 'y'],
     mark: 'ymir',
   },
   {
@@ -236,14 +207,7 @@ export const projects: Project[] = [
       en: 'Manage the work, not the coding sessions.',
       vi: 'Quản lý công việc, không phải từng phiên code.',
     },
-    detail: {
-      en: 'Turns tracker issues into isolated, autonomous implementation runs with proof of work: CI status, PR review, walkthrough videos. Adds Claude support, GitHub Issues, and live agent logs on top of openai/symphony. Apache 2.0.',
-      vi: 'Biến issue trên tracker thành các lượt triển khai tự động, cô lập, kèm bằng chứng: trạng thái CI, review PR, video walkthrough. Bổ sung Claude, GitHub Issues và log agent trực tiếp trên nền openai/symphony. Apache 2.0.',
-    },
-    tags: 'Elixir · Phoenix · Codex · Claude',
     repo: { label: 'muitneliss/symphony-its-everdred', url: 'https://github.com/muitneliss/symphony-its-everdred' },
-    state: 'public',
-    merges: ['t', 'c'],
   },
   {
     slug: 'text-transporter',
@@ -252,14 +216,6 @@ export const projects: Project[] = [
       en: 'Quickly share text between devices.',
       vi: 'Chia sẻ văn bản nhanh giữa các thiết bị.',
     },
-    detail: {
-      en: 'Paste on one device, read on another. A small utility, kept private while it settles.',
-      vi: 'Dán ở thiết bị này, đọc ở thiết bị kia. Một tiện ích nhỏ, còn để riêng tư trong lúc hoàn thiện.',
-    },
-    tags: 'TypeScript',
-    repoName: 'text-transporter',
-    state: 'private',
-    merges: ['y'],
   },
 ];
 
@@ -282,11 +238,6 @@ export const ui: Record<string, Bilingual> = {
   'ui.home': { en: 'Home', vi: 'Trang chủ' },
 };
 
-export const memberByLane = (lane: Lane): Member => members.find((m) => m.lane === lane)!;
-
-/** The repository path a project answers to, as a CODEOWNERS line would name it: the real repo name, never a display slug. */
-export const projectPath = (p: Project): string => `/${p.repo ? p.repo.label.split('/')[1] : (p.repoName ?? p.slug)}`;
-
 /**
  * Every translatable node on the page, keyed by its `data-i18n` attribute.
  * Components must use these exact keys; the toggle swaps `textContent`.
@@ -299,10 +250,7 @@ export const i18nEntries = (): Record<string, Bilingual> => {
     'actions.secondary': actions.secondary.label,
     'footer.place': footer.place,
     'contact.title': contact.title,
-    'contact.lead': contact.lead,
     'contact.action': contact.action,
-    'contact.owners': contact.owners,
-    'contact.paths': contact.paths,
     ...ui,
   };
   for (const m of members) {
@@ -313,7 +261,6 @@ export const i18nEntries = (): Record<string, Bilingual> => {
   }
   for (const p of projects) {
     entries[`project.${p.slug}.tagline`] = p.tagline;
-    entries[`project.${p.slug}.detail`] = p.detail;
   }
   return entries;
 };

@@ -46,7 +46,7 @@ This file is the single source of instructions for every coding agent. Codex rea
 src/
   assets/styles/tailwind.css   # Tailwind v4 config (themes, utilities, plugins); imports shadcn.css and site.css
   components/
-    site/          # The multnelis page: SiteHeader, Hero, Rail, MemberField, ProjectCommit, SiteFooter, LanguageToggle…
+    site/          # The multnelis page: SiteHeader, Hero, Rail, MemberField, Projects, SiteFooter, LanguageToggle…
     common/        # Shared: Image, Metadata, StructuredData, Analytics, ApplyColorMode
     ui/            # Template primitives: Button, Form, Headline, Timeline, WidgetWrapper (not used by the current pages)
     widgets/       # Template page sections: Hero, Features, Bento, Pricing, FAQs… (not used by the current pages)

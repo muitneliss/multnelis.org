@@ -1,0 +1,136 @@
+---
+// What the collective ships, one line each: name, tagline, repository. Every
+// member lane merges into main at the heading, since all three built these.
+import { Icon } from 'astro-icon/components';
+import Rail from '~/components/site/Rail.astro';
+import ymirTile from '~/assets/images/ymir.svg';
+import { members, projects } from '~/data/site';
+
+const merges = members.map((m) => m.lane).join(',');
+---
+
+<section class="gs projects" id="projects" data-kind="merge" data-merge={merges} aria-labelledby="projects-title">
+  <Rail />
+  <div class="col">
+    <h2 id="projects-title" data-anchor data-i18n="ui.projects">Projects</h2>
+    <ul class="list">
+      {
+        projects.map(({ slug, name, tagline, repo, mark }) => (
+          <li>
+            <h3 class="name">
+              {mark === 'undercroft' && <Icon name="undercroft" class="mark" />}
+              {mark === 'ymir' && <img class="mark" src={ymirTile.src} width="28" height="28" alt="" />}
+              {name}
+            </h3>
+            <p class="tagline" data-i18n={`project.${slug}.tagline`}>
+              {tagline.en}
+            </p>
+            {repo ? (
+              <a class="repo mono" href={repo.url}>
+                <span>{repo.label}</span>&nbsp;→
+              </a>
+            ) : (
+              <span class="repo mono private">private</span>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .projects {
+    border-top: 1px solid var(--hair);
+  }
+  .col {
+    padding-top: 104px;
+    padding-bottom: 112px;
+    max-width: 1400px;
+  }
+  h2 {
+    font-weight: 800;
+    font-size: clamp(2.125rem, 1.4rem + 2.2vw, 3.25rem);
+    line-height: 1;
+  }
+  .list {
+    margin-top: 56px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 40px;
+  }
+  li {
+    display: flex;
+    flex-direction: column;
+    padding-top: 22px;
+    border-top: 1px solid var(--hair);
+  }
+  .name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 1.25rem;
+    line-height: 1.1;
+    min-height: 28px;
+  }
+  .name :global(.mark) {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    color: var(--ink);
+    border-radius: 5px;
+  }
+  .tagline {
+    margin-top: 14px;
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    max-width: 40ch;
+  }
+  /* Pinned to the bottom so the four repository refs share one baseline. */
+  .repo {
+    margin-top: auto;
+    padding-top: 18px;
+    font-size: 0.8125rem;
+    line-height: 1.55;
+  }
+  a.repo {
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  a.repo span {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+    transition: text-decoration-color 160ms ease;
+  }
+  a.repo:hover span {
+    text-decoration-color: currentColor;
+  }
+  .private {
+    color: var(--ink-2);
+  }
+
+  @media (width <= 1100px) {
+    .list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 36px 40px;
+    }
+  }
+  @media (width <= 720px) {
+    .col {
+      padding-top: 56px;
+      padding-bottom: 64px;
+    }
+    .list {
+      margin-top: 36px;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 28px;
+    }
+    li {
+      padding-top: 18px;
+    }
+  }
+</style>
