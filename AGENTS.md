@@ -4,6 +4,10 @@
 
 This repository is the landing page of **multnelis** (https://multnelis.org), built on the AstroWind template. Read `README.md` for the layout, `PRODUCT.md` for product truth (who the members are, which projects are shown, what must never be claimed), and `DESIGN.md` for the visual system. All page copy, in English and Vietnamese, lives in `src/data/site.ts`; the page is `src/pages/index.astro` with components under `src/components/site/`. The blog is disabled and the template's demo pages are removed; the rest of this file documents the template conventions that still apply.
 
+## Shipping changes
+
+`main` is protected: nobody pushes to it directly, admins included. Every change goes through a pull request, the `Check` and `Build` jobs of the CI workflow must pass on the branch (kept up to date with `main`), and then it is merged. Merging `main` deploys to GitHub Pages. Branches are deleted on merge, and auto-merge is enabled, so `gh pr merge --squash --auto` is the normal way to land a green pull request.
+
 ## Template Overview
 
 AstroWind is a free, open-source website template built with **Astro v7** and **Tailwind CSS v4**. It generates a fully static site optimized for performance, SEO, and accessibility.
