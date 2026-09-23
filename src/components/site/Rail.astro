@@ -163,7 +163,7 @@
   if (document.fonts?.ready) document.fonts.ready.then(buildAll);
   window.addEventListener('load', buildAll);
   /* The language toggle changes line counts, so the anchors move. */
-  document.addEventListener('muitnelis:lang', buildAll);
+  document.addEventListener('multnelis:lang', buildAll);
 
   const ro = new ResizeObserver((entries) => {
     for (const e of entries) build(e.target as HTMLElement);

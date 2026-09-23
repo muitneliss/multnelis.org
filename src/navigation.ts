@@ -12,5 +12,5 @@ export const footerData = {
   links: [],
   secondaryLinks: [],
   socialLinks: [{ ariaLabel: 'GitHub', icon: 'tabler:brand-github', href: 'https://github.com/muitneliss' }],
-  footNote: 'muitnelis · Ho Chi Minh City',
+  footNote: 'multnelis · Ho Chi Minh City',
 };

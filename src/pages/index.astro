@@ -10,14 +10,14 @@ import SiteFooter from '~/components/site/SiteFooter.astro';
 import { brand, members, projects, statement } from '~/data/site';
 
 const metadata = {
-  title: 'muitnelis — a small collective in Ho Chi Minh City building tools for the coding-agent era',
+  title: 'multnelis — a small collective in Ho Chi Minh City building tools for the coding-agent era',
   ignoreTitleTemplate: true,
   openGraph: { type: 'website' },
 };
 
 // WebSite + Organization from config.yaml, plus the three members as Person
 // entries pointing at their GitHub profiles. Nothing here that is not on the page.
-const siteUrl = SITE.site ?? 'https://muitnelis.org';
+const siteUrl = SITE.site ?? 'https://multnelis.org';
 const orgId = `${siteUrl}/#organization`;
 const schema = {
   '@context': 'https://schema.org',

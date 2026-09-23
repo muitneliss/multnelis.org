@@ -70,8 +70,8 @@ export interface Project {
 }
 
 export const brand = {
-  name: 'muitnelis',
-  domain: 'muitnelis.org',
+  name: 'multnelis',
+  domain: 'multnelis.org',
   github: 'https://github.com/muitneliss',
   githubLabel: 'github.com/muitneliss',
   location: { en: 'Ho Chi Minh City', vi: 'Sài Gòn' } satisfies Bilingual,
@@ -246,11 +246,11 @@ export const projects: Project[] = [
   },
 ];
 
-/** Rendered as "muitnelis · <place> · github.com/muitneliss", the CONTENT.md footer line in both languages. */
+/** Rendered as "multnelis · <place> · github.com/muitneliss", the CONTENT.md footer line in both languages. */
 export const footer = {
   line: {
-    en: 'muitnelis · Ho Chi Minh City · github.com/muitneliss',
-    vi: 'muitnelis · Sài Gòn · github.com/muitneliss',
+    en: 'multnelis · Ho Chi Minh City · github.com/muitneliss',
+    vi: 'multnelis · Sài Gòn · github.com/muitneliss',
   } satisfies Bilingual,
   place: brand.location,
   domain: brand.domain,

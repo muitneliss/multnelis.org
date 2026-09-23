@@ -57,12 +57,12 @@ import { viDictionary } from '~/data/site';
     for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.lang === lang));
     if (persist) {
       try {
-        localStorage.setItem('muitnelis:lang', lang);
+        localStorage.setItem('multnelis:lang', lang);
       } catch {
         /* private mode: the choice lasts for this page only */
       }
     }
-    document.dispatchEvent(new CustomEvent('muitnelis:lang', { detail: lang }));
+    document.dispatchEvent(new CustomEvent('multnelis:lang', { detail: lang }));
   }
 
   for (const b of buttons) b.addEventListener('click', () => setLang(b.dataset.lang as Lang));
@@ -70,7 +70,7 @@ import { viDictionary } from '~/data/site';
   const fromQuery = new URLSearchParams(location.search).get('lang');
   let stored: string | null = null;
   try {
-    stored = localStorage.getItem('muitnelis:lang');
+    stored = localStorage.getItem('multnelis:lang');
   } catch {
     /* ignore */
   }

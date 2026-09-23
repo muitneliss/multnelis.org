@@ -1,7 +1,7 @@
-# Surface brief: src/pages/index.astro (muitnelis.org landing page)
+# Surface brief: src/pages/index.astro (multnelis.org landing page)
 
 Scope: the single landing page at `/`. Visitor mode: Persuade.
-Audience: developers arriving from GitHub or a member's site. Job: know who muitnelis is, what it ships, click through to code.
+Audience: developers arriving from GitHub or a member's site. Job: know who multnelis is, what it ships, click through to code.
 Action: "See the code on GitHub" (primary), "Meet the team" (anchor). Proof: real members with real avatars, real repositories, real project facts from PRODUCT.md.
 Constraints: English default with Vietnamese toggle on one URL; no invented claims; GitHub Pages static build; WCAG AA contrast.
 Chosen direction: "The commit graph" (round-1 pick card, user-selected after a bolder re-roll round). Memorable moment: three coloured lanes, one per member, drawing themselves down the page and merging into projects.

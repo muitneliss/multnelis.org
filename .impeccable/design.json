@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "generatedAt": "2026-09-23T00:00:00Z",
-  "title": "Design System: muitnelis.org",
+  "title": "Design System: multnelis.org",
   "extensions": {
     "colorMeta": {
       "ink": {
@@ -187,15 +187,15 @@
       "forkReach": [168, 96],
       "mergeReach": [76, 44],
       "heroRun": [190, 112],
-      "anchor": "[data-anchor] per section; node sits at its vertical centre; rebuilt on resize, fonts.ready, load and muitnelis:lang"
+      "anchor": "[data-anchor] per section; node sits at its vertical centre; rebuilt on resize, fonts.ready, load and multnelis:lang"
     },
     "i18n": {
       "owner": "src/data/site.ts",
       "attributes": ["data-i18n", "data-i18n-alt", "data-i18n-aria"],
       "keys": ["hero.statement", "hero.supporting", "actions.primary", "actions.secondary", "member.<handle>.role|intro|facts|iconAlt", "project.<slug>.tagline|detail", "footer.place", "ui.introduction", "ui.projects", "ui.language"],
       "dictionary": "#i18n-vi (application/json) built from viDictionary()",
-      "persistence": "localStorage muitnelis:lang; ?lang=vi|en on arrival",
-      "event": "muitnelis:lang"
+      "persistence": "localStorage multnelis:lang; ?lang=vi|en on arrival",
+      "event": "multnelis:lang"
     }
   },
   "components": [

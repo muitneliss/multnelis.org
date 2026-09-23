@@ -8,15 +8,15 @@ web
 
 ## Stack
 
-Astro 7 + Tailwind CSS v4 on the AstroWind template (arthelokyo/astrowind), pinned by the user. Static build deployed to GitHub Pages from the repository `muitneliss/muitnelis.org`, served at https://muitnelis.org. Node 26 locally; template requires Node >= 22.
+Astro 7 + Tailwind CSS v4 on the AstroWind template (arthelokyo/astrowind), pinned by the user. Static build deployed to GitHub Pages from the repository `muitneliss/multnelis.org`, served at https://multnelis.org. Node 26 locally; template requires Node >= 22.
 
 ## Users
 
-Developers and open-source maintainers who land on muitnelis.org from GitHub (the org page, a repo README, a skills.sh listing) or from a member's personal site. They want to know, within seconds, who this collective is, what it builds, and where to find the code. A secondary audience is Vietnamese-speaking developers in Ho Chi Minh City; the site ships English by default with a Vietnamese toggle.
+Developers and open-source maintainers who land on multnelis.org from GitHub (the org page, a repo README, a skills.sh listing) or from a member's personal site. They want to know, within seconds, who this collective is, what it builds, and where to find the code. A secondary audience is Vietnamese-speaking developers in Ho Chi Minh City; the site ships English by default with a Vietnamese toggle.
 
 ## Product Purpose
 
-A single landing page that introduces the muitnelis team as an open-source collective: the members, the tools they ship, and how to reach them. Success means a visitor can name the team's focus (agent-era developer tooling and data infrastructure), recognise the three members and their domains, and click through to a repository.
+A single landing page that introduces the multnelis team as an open-source collective: the members, the tools they ship, and how to reach them. Success means a visitor can name the team's focus (agent-era developer tooling and data infrastructure), recognise the three members and their domains, and click through to a repository.
 
 ## Positioning
 
@@ -24,10 +24,10 @@ A small Ho Chi Minh City collective shipping tools for the coding-agent era: har
 
 ## Operating Context
 
-- GitHub organisation: https://github.com/muitneliss (two "s"). Domain: muitnelis.org (one "s"). The domain spelling is the brand spelling on the page; the org URL is linked as-is.
+- GitHub organisation: https://github.com/muitneliss (spelled m-u-i-t, two "s"). Domain and brand: multnelis.org (spelled m-u-l-t, one "s"), the domain the team actually registered at Cloudflare on 2026-09-22. The page uses the domain spelling everywhere; the org URL is linked as-is. Do not "correct" one to the other.
 - Members shown (confirmed by user): cuongtranba, thanh-dong, yanmad27. ArcticaLam, ducdmdev, loclam812 are org members but excluded from the page by user decision.
 - Projects shown (confirmed by user): undercroft (public), ymir (public), symphony-its-everdred (public, displayed as "Symphony"), text-transporter (private; described, not linked).
-- Hosting: GitHub Pages with a CNAME file. DNS for muitnelis.org is not yet configured.
+- Hosting: GitHub Pages with a CNAME file. DNS for multnelis.org is not yet configured.
 
 ## Capabilities and Constraints
 
@@ -39,7 +39,7 @@ A small Ho Chi Minh City collective shipping tools for the coding-agent era: har
 
 ## Brand Commitments
 
-- Name: "muitnelis" (lowercase on the page, matching the domain).
+- Name: "multnelis" (lowercase on the page, matching the domain).
 - Existing project marks may be reused as-is: Undercroft's arch mark (`research/refs/undercroft-mark.svg`, single ink, 32x32) and Ymir's frost-rune icon (`research/refs/ymir-minimal.svg`, navy tile with ice-blue strokes). Symphony and Text Transporter have no marks.
 - The org has no logo yet; the GitHub org avatar is an auto-generated identicon and is not a brand asset.
 

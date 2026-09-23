@@ -2,7 +2,7 @@
 
 ## This project
 
-This repository is the landing page of **muitnelis** (https://muitnelis.org), built on the AstroWind template. Read `README.md` for the layout, `PRODUCT.md` for product truth (who the members are, which projects are shown, what must never be claimed), and `DESIGN.md` for the visual system. All page copy, in English and Vietnamese, lives in `src/data/site.ts`; the page is `src/pages/index.astro` with components under `src/components/site/`. The blog is disabled and the template's demo pages are removed; the rest of this file documents the template conventions that still apply.
+This repository is the landing page of **multnelis** (https://multnelis.org), built on the AstroWind template. Read `README.md` for the layout, `PRODUCT.md` for product truth (who the members are, which projects are shown, what must never be claimed), and `DESIGN.md` for the visual system. All page copy, in English and Vietnamese, lives in `src/data/site.ts`; the page is `src/pages/index.astro` with components under `src/components/site/`. The blog is disabled and the template's demo pages are removed; the rest of this file documents the template conventions that still apply.
 
 ## Template Overview
 

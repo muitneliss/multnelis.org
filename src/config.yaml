@@ -1,6 +1,6 @@
 site:
-  name: muitnelis
-  site: 'https://muitnelis.org'
+  name: multnelis
+  site: 'https://multnelis.org'
   base: '/'
   trailingSlash: false
 
@@ -9,14 +9,14 @@ site:
 # Default SEO metadata
 metadata:
   title:
-    default: muitnelis
-    template: '%s — muitnelis'
+    default: multnelis
+    template: '%s — multnelis'
   description: 'A small collective in Ho Chi Minh City building tools for the coding-agent era: Undercroft, Ymir, Symphony, and more.'
   robots:
     index: true
     follow: true
   openGraph:
-    site_name: muitnelis
+    site_name: multnelis
     images:
       - url: '~/assets/images/og.png'
         width: 1200

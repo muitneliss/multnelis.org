@@ -1,6 +1,6 @@
-# muitnelis.org
+# multnelis.org
 
-The landing page of **muitnelis**, a small collective in Ho Chi Minh City building tools for the coding-agent era. Live at [muitnelis.org](https://muitnelis.org).
+The landing page of **multnelis**, a small collective in Ho Chi Minh City building tools for the coding-agent era. Live at [multnelis.org](https://multnelis.org).
 
 The page is a git commit graph: each member owns a coloured lane, projects are the merge commits where lanes meet, and reading down the page is reading history.
 
@@ -18,7 +18,7 @@ The page is a git commit graph: each member owns a coloured lane, projects are t
 | `src/pages/index.astro`      | The page and its structured data.                                                              |
 | `src/components/site/`       | Header, hero, rail (the commit graph), member fields, project commits, footer, language toggle |
 | `src/assets/images/members/` | GitHub avatars and the per-member domain icons.                                                |
-| `src/assets/favicons/`       | The muitnelis mark (three lanes merging into one node).                                        |
+| `src/assets/favicons/`       | The multnelis mark (three lanes merging into one node).                                        |
 | `brand/`                     | Mark concepts, member icon sources, and the social-preview composition (`og.html`).            |
 | `mockups/`                   | The design rounds that led to this page; `b-graph.html` is the chosen direction.               |
 | `PRODUCT.md`, `DESIGN.md`    | Product truth and the visual system, for humans and coding agents.                             |

@@ -1,5 +1,5 @@
 ---
-name: muitnelis.org
+name: multnelis.org
 description: A small collective in Ho Chi Minh City, drawn as a commit graph. Ink on white, three lane colours, one rail.
 colors:
   ink: '#101214'
@@ -163,7 +163,7 @@ components:
     size: '88px'
 ---
 
-# Design System: muitnelis.org
+# Design System: multnelis.org
 
 ## Overview
 
@@ -306,11 +306,11 @@ An `aria-hidden` SVG per section built from measured layout. Lane order on the r
 
 ### Navigation
 
-The header is part of the hero's graph section: wordmark (28px mark + `muitnelis` in Anybody 800 / 1.375rem, no underline) linking to `#top`, the branch chip, and the language switch; a Hair rule under it starts at the rail's right edge. There is no menu; in-page movement is the "Meet the team" ghost button to `#members`. Smooth scroll on, off under reduced motion.
+The header is part of the hero's graph section: wordmark (28px mark + `multnelis` in Anybody 800 / 1.375rem, no underline) linking to `#top`, the branch chip, and the language switch; a Hair rule under it starts at the rail's right edge. There is no menu; in-page movement is the "Meet the team" ghost button to `#members`. Smooth scroll on, off under reduced motion.
 
 ### Language Toggle (i18n pattern)
 
-English is server-rendered. Every translatable text node carries `data-i18n="<key>"`, images carry `data-i18n-alt`, landmarks carry `data-i18n-aria`; keys are `hero.*`, `actions.*`, `member.<handle>.{role,intro,facts,iconAlt}`, `project.<slug>.{tagline,detail}`, `footer.place`, `ui.*`. `src/data/site.ts` is the single owner of both languages and emits the Vietnamese half as `#i18n-vi` JSON; the toggle swaps `textContent` / `alt` / `aria-label`, sets `html.lang`, persists to `localStorage` (`muitnelis:lang`), honours `?lang=vi`, and dispatches `muitnelis:lang` so the rail re-measures.
+English is server-rendered. Every translatable text node carries `data-i18n="<key>"`, images carry `data-i18n-alt`, landmarks carry `data-i18n-aria`; keys are `hero.*`, `actions.*`, `member.<handle>.{role,intro,facts,iconAlt}`, `project.<slug>.{tagline,detail}`, `footer.place`, `ui.*`. `src/data/site.ts` is the single owner of both languages and emits the Vietnamese half as `#i18n-vi` JSON; the toggle swaps `textContent` / `alt` / `aria-label`, sets `html.lang`, persists to `localStorage` (`multnelis:lang`), honours `?lang=vi`, and dispatches `multnelis:lang` so the rail re-measures.
 
 ## Do's and Don'ts
 
