@@ -131,6 +131,12 @@
       nodes.push(node(g, xm, A, 'm', { hollow: sec.hasAttribute('data-hollow') }));
     }
 
+    /* A heading between rows: every lane passes straight through, no commit. */
+    if (kind === 'through') {
+      P('m', `M ${f(xm)} 0 L ${f(xm)} ${H}`);
+      for (const l of through) P(l, `M ${f(g.x[l])} 0 L ${f(g.x[l])} ${H}`);
+    }
+
     if (kind === 'end') {
       P('m', `M ${f(xm)} 0 L ${f(xm)} ${f(A)}`);
       for (const l of FAR_TO_NEAR.filter((k) => merge.includes(k))) {

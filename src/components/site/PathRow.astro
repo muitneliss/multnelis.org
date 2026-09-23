@@ -1,0 +1,193 @@
+---
+// One path on the contact page: the project, the owners whose lanes merge
+// into it, and the route a visitor should take (issues for a public repository,
+// email for the private one).
+import Rail from '~/components/site/Rail.astro';
+import { brand, type Lane, type Project, memberByLane, members, projectPath } from '~/data/site';
+
+export interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const { slug, name, repo, state, merges } = project;
+
+const through = members
+  .map((m) => m.lane)
+  .filter((l: Lane) => !merges.includes(l))
+  .join(',');
+const headingId = `path-${slug}`;
+const path = projectPath(project);
+const issues = repo ? `${repo.url}/issues` : undefined;
+const issuesLabel = repo ? `${repo.label}/issues` : undefined;
+---
+
+<article
+  class="gs path"
+  data-kind="merge"
+  data-merge={merges.join(',')}
+  data-through={through || undefined}
+  data-hollow={state === 'private' ? '' : undefined}
+  aria-labelledby={headingId}
+>
+  <Rail />
+  <div class="col row">
+    <div class="where">
+      <h3 id={headingId} data-anchor>{name}</h3>
+      <p class="file mono">{path}</p>
+    </div>
+    <p class="owners mono">
+      {
+        merges.map((lane) => (
+          <a class="who" href={`#owner-${memberByLane(lane).handle}`}>
+            <>
+              <i class:list={['dot', `dot-${lane}`]} />
+              <span>@{memberByLane(lane).handle}</span>
+            </>
+          </a>
+        ))
+      }
+    </p>
+    <dl class="mono">
+      {
+        issues ? (
+          <>
+            <dt>issues</dt>
+            <dd>
+              <a href={issues}>
+                <span>{issuesLabel}</span>&nbsp;→
+              </a>
+            </dd>
+          </>
+        ) : (
+          <>
+            <dt>email</dt>
+            <dd>
+              <a href={`mailto:${brand.email}`}>
+                <span>{brand.email}</span>&nbsp;→
+              </a>
+            </dd>
+          </>
+        )
+      }
+      <dt>state</dt>
+      <dd class:list={{ private: state === 'private' }}>{state}</dd>
+    </dl>
+  </div>
+</article>
+
+<style>
+  .path {
+    border-top: 1px solid var(--hair);
+  }
+  .row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px 300px;
+    gap: 16px 40px;
+    align-items: start;
+    padding-top: 40px;
+    padding-bottom: 44px;
+    max-width: 1400px;
+  }
+  h3 {
+    font-weight: 700;
+    font-size: 1.25rem;
+    line-height: 1.1;
+  }
+  /* The repository path, a fact under the name, the way the handle sits under an owner. */
+  .file {
+    margin-top: 10px;
+    font-size: 0.875rem;
+    line-height: 1.2;
+    color: var(--ink-2);
+  }
+  .who {
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .who span {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+    transition: text-decoration-color 160ms ease;
+  }
+  .who:hover span {
+    text-decoration-color: currentColor;
+  }
+  .owners {
+    padding-top: 6px;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 18px;
+  }
+  .dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 7px;
+    vertical-align: -1px;
+  }
+  .dot-c {
+    background: var(--c);
+  }
+  .dot-t {
+    background: var(--t);
+  }
+  .dot-y {
+    background: var(--y);
+  }
+  dl {
+    margin: 0;
+    padding-top: 6px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 6px 14px;
+    font-size: 0.8125rem;
+    line-height: 1.55;
+  }
+  dt {
+    color: var(--ink-2);
+  }
+  dd {
+    margin: 0;
+    min-width: 0;
+  }
+  /* The arrow never wraps alone: the anchor holds, the label may break inside. */
+  dd a {
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  dd a span {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+    transition: text-decoration-color 160ms ease;
+  }
+  dd a:hover span {
+    text-decoration-color: currentColor;
+  }
+  .private {
+    color: var(--ink-2);
+  }
+  @media (width <= 1100px) {
+    .row {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 14px;
+    }
+    .owners,
+    dl {
+      padding-top: 0;
+    }
+  }
+  @media (width <= 720px) {
+    .row {
+      padding-top: 28px;
+      padding-bottom: 32px;
+    }
+  }
+</style>

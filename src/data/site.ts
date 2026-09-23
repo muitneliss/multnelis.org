@@ -74,7 +74,24 @@ export const brand = {
   domain: 'multnelis.org',
   github: 'https://github.com/muitneliss',
   githubLabel: 'github.com/muitneliss',
+  /** Forwarded by Cloudflare Email Routing to the organisation owner. */
+  email: 'contact@multnelis.org',
   location: { en: 'Ho Chi Minh City', vi: 'Sài Gòn' } satisfies Bilingual,
+};
+
+/** The /contact page, laid out like a CODEOWNERS file: paths and the people who answer for them. */
+export const contact = {
+  title: { en: 'Who answers for what.', vi: 'Ai phụ trách việc gì.' } satisfies Bilingual,
+  lead: {
+    en: 'One address reaches all of us. For a specific project, the people who merged it are listed below, and every public repository takes issues on GitHub.',
+    vi: 'Một địa chỉ tới được cả nhóm. Với một dự án cụ thể, những người đã merge nó được liệt kê bên dưới, và mọi repository công khai đều nhận issue trên GitHub.',
+  } satisfies Bilingual,
+  action: { en: 'Email us', vi: 'Gửi email cho chúng tôi' } satisfies Bilingual,
+  owners: { en: 'Owners', vi: 'Người phụ trách' } satisfies Bilingual,
+  paths: { en: 'Paths', vi: 'Đường dẫn' } satisfies Bilingual,
+  metaTitle: 'Contact — multnelis',
+  metaDescription:
+    'Write to contact@multnelis.org, or reach the people who maintain Undercroft, Ymir, Symphony, and Text Transporter.',
 };
 
 export const statement: Bilingual = {
@@ -261,9 +278,14 @@ export const ui: Record<string, Bilingual> = {
   'ui.introduction': { en: 'Introduction', vi: 'Giới thiệu' },
   'ui.projects': { en: 'Projects', vi: 'Dự án' },
   'ui.language': { en: 'Language', vi: 'Ngôn ngữ' },
+  'ui.contact': { en: 'Contact', vi: 'Liên hệ' },
+  'ui.home': { en: 'Home', vi: 'Trang chủ' },
 };
 
 export const memberByLane = (lane: Lane): Member => members.find((m) => m.lane === lane)!;
+
+/** The repository path a project answers to, as a CODEOWNERS line would name it: the real repo name, never a display slug. */
+export const projectPath = (p: Project): string => `/${p.repo ? p.repo.label.split('/')[1] : (p.repoName ?? p.slug)}`;
 
 /**
  * Every translatable node on the page, keyed by its `data-i18n` attribute.
@@ -276,6 +298,11 @@ export const i18nEntries = (): Record<string, Bilingual> => {
     'actions.primary': actions.primary.label,
     'actions.secondary': actions.secondary.label,
     'footer.place': footer.place,
+    'contact.title': contact.title,
+    'contact.lead': contact.lead,
+    'contact.action': contact.action,
+    'contact.owners': contact.owners,
+    'contact.paths': contact.paths,
     ...ui,
   };
   for (const m of members) {

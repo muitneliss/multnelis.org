@@ -1,15 +1,34 @@
 ---
-// The header is a branch switcher: the wordmark, the current branch, and the
-// language toggle. It sits inside the hero's graph section so the rail runs
-// through it.
+// The header is a branch switcher: the wordmark, the current branch, the link
+// to the other page, and the language toggle. It sits inside the first graph
+// section of each page so the rail runs through it.
 import { Icon } from 'astro-icon/components';
 import LanguageToggle from '~/components/site/LanguageToggle.astro';
 import { brand } from '~/data/site';
+
+export interface Props {
+  /** Which page this header is on; decides where the wordmark and the cross-link go. */
+  current?: 'home' | 'contact';
+}
+
+const { current = 'home' } = Astro.props;
+const home = current === 'home' ? '#top' : '/';
 ---
 
 <header class="top col">
-  <a class="wordmark" href="#top"><Icon name="mark" size={28} class="mark" aria-hidden="true" />{brand.name}</a>
+  <a class="wordmark" href={home}><Icon name="mark" size={28} class="mark" aria-hidden="true" />{brand.name}</a>
   <span class="chip mono"><Icon name="branch" size={14} />main</span>
+  {
+    current === 'home' ? (
+      <a class="cross" href="/contact" data-i18n="ui.contact">
+        Contact
+      </a>
+    ) : (
+      <a class="cross" href="/" data-i18n="ui.home">
+        Home
+      </a>
+    )
+  }
   <LanguageToggle />
 </header>
 
@@ -61,6 +80,16 @@ import { brand } from '~/data/site';
   .wordmark :global(.mark) {
     flex: none;
   }
+  .cross {
+    font: 600 0.9375rem/1 var(--body);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+    transition: text-decoration-color 160ms ease;
+  }
+  .cross:hover {
+    text-decoration-color: currentColor;
+  }
   @media (width <= 720px) {
     .top {
       gap: 12px;
@@ -74,6 +103,9 @@ import { brand } from '~/data/site';
     .wordmark :global(.mark) {
       width: 24px;
       height: 24px;
+    }
+    .cross {
+      font-size: 0.875rem;
     }
   }
   /* On narrow phones the branch chip is the one thing the row can spare. */

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-23T00:00:00Z",
+  "generatedAt": "2026-09-23T12:00:00Z",
   "title": "Design System: multnelis.org",
   "extensions": {
     "colorMeta": {
@@ -149,15 +149,15 @@
     },
     "typographyMeta": {
       "display": { "displayName": "Display", "purpose": "The hero statement only. Anybody wide 125, 800, balanced; 2.5rem / 1.0 with pretty wrapping at 720px and below.", "cssVar": "--display" },
-      "headline": { "displayName": "Headline", "purpose": "A member's name inside their lane field, in white." },
+      "headline": { "displayName": "Headline", "purpose": "A member's name inside their lane field, in white; on the contact page a group heading (Owners, Paths) in Ink on white." },
       "title": { "displayName": "Title", "purpose": "A project's tagline: the commit message the merge node sits beside. Max 24ch." },
-      "title-sm": { "displayName": "Title Small", "purpose": "A project's name beside its 28px mark; the wordmark uses the same face at 800 / 1.375rem." },
-      "lead": { "displayName": "Lead", "purpose": "The hero supporting line in Ink. 1.125rem on phones. Max 62ch." },
-      "subhead": { "displayName": "Subhead", "purpose": "A member's role line. 1.1875rem on phones." },
+      "title-sm": { "displayName": "Title Small", "purpose": "A project's name beside its 28px mark; an owner's name and a path's name on the contact page; the wordmark uses the same face at 800 / 1.375rem." },
+      "lead": { "displayName": "Lead", "purpose": "The hero supporting line in Ink, on both pages. 1.125rem on phones. Max 62ch." },
+      "subhead": { "displayName": "Subhead", "purpose": "A member's role line inside their field. 1.1875rem on phones." },
       "body": { "displayName": "Body", "purpose": "Member intros. Max 62ch.", "cssVar": "--body" },
-      "body-sm": { "displayName": "Body Small", "purpose": "Project detail (max 64ch), repo link lists at 500, the italic member quote." },
-      "label": { "displayName": "Label (mono)", "purpose": "Repository data only: facts, the metadata dl, merges line, branch chip, footer domain, language segment (500, +0.02em).", "cssVar": "--mono" },
-      "label-md": { "displayName": "Label Medium (mono)", "purpose": "The handle chip and member github/site links; the footer line is 0.9375rem." }
+      "body-sm": { "displayName": "Body Small", "purpose": "Project detail (max 64ch), repo link lists at 500, the italic member quote, an owner row's role line (1.5 leading, max 48ch)." },
+      "label": { "displayName": "Label (mono)", "purpose": "Repository data only: facts, every metadata dl (repo/site/tags/state, owns/github/site, issues|email/state), merges line, path-row owner handles, branch chip, the white handle chip, footer domain, language segment (500, +0.02em).", "cssVar": "--mono" },
+      "label-md": { "displayName": "Label Medium (mono)", "purpose": "The in-field handle chip and member github/site links; the repository path under a path name (Ink Two, 1.2 leading). The footer line, hero address and header cross-link are 0.9375rem; the cross-link is Hanken 600, not mono." }
     },
     "shadows": [],
     "motion": [
@@ -171,8 +171,8 @@
       { "name": "static-mode", "value": "html.is-static (prefers-reduced-motion: reduce, or ?static)", "purpose": "Rail fully drawn, nodes visible, no dash animation, smooth scroll off." }
     ],
     "breakpoints": [
-      { "name": "project-stack", "value": "1100px", "purpose": "Project grid collapses to one column; name and metadata lead the tagline." },
-      { "name": "phone", "value": "720px", "purpose": "Rail 48px, gutter 20px, stroke 4px; display 2.5rem; member grid stacks; actions stack full-width; lang label hidden; section padding halves." },
+      { "name": "project-stack", "value": "1100px", "purpose": "Project grid collapses to one column; name and metadata lead the tagline. Owner row drops its 300px dl under the name block; path row becomes a single column with 14px gaps." },
+      { "name": "phone", "value": "720px", "purpose": "Rail 48px, gutter 20px, stroke 4px; display 2.5rem; member grid stacks; actions stack full-width (the contact address centres under the button); lang label hidden; section padding halves; group heading 48/20, rows 28/32; owner avatar 48px and the owner dl spans the full row." },
       { "name": "narrow", "value": "440px", "purpose": "The header branch chip is removed." }
     ],
     "rail": {
@@ -187,12 +187,20 @@
       "forkReach": [168, 96],
       "mergeReach": [76, 44],
       "heroRun": [190, 112],
-      "anchor": "[data-anchor] per section; node sits at its vertical centre; rebuilt on resize, fonts.ready, load and multnelis:lang"
+      "anchor": "[data-anchor] per section; node sits at its vertical centre; rebuilt on resize, fonts.ready, load and multnelis:lang",
+      "kinds": {
+        "hero": "lanes converge into the first big node on main; anchor is the landing h1 or the contact actions row",
+        "member": "data-lane forks off main to the anchor (the avatar) with a fork dot on main; data-through lanes pass straight down",
+        "merge": "data-merge lanes bend in to a node on main at the anchor (tagline or path name); data-hollow for private; data-through lanes pass straight down",
+        "through": "main and the data-through lanes pass straight down, no node and no anchor; a heading between rows",
+        "end": "every data-merge lane merges into the last big node"
+      }
     },
     "i18n": {
       "owner": "src/data/site.ts",
       "attributes": ["data-i18n", "data-i18n-alt", "data-i18n-aria"],
-      "keys": ["hero.statement", "hero.supporting", "actions.primary", "actions.secondary", "member.<handle>.role|intro|facts|iconAlt", "project.<slug>.tagline|detail", "footer.place", "ui.introduction", "ui.projects", "ui.language"],
+      "keys": ["hero.statement", "hero.supporting", "actions.primary", "actions.secondary", "member.<handle>.role|intro|facts|iconAlt", "project.<slug>.tagline|detail", "contact.title", "contact.lead", "contact.action", "contact.owners", "contact.paths", "footer.place", "ui.introduction", "ui.projects", "ui.language", "ui.contact", "ui.home"],
+      "untranslated": "handles, repository paths (projectPath()), URLs, the email address",
       "dictionary": "#i18n-vi (application/json) built from viDictionary()",
       "persistence": "localStorage multnelis:lang; ?lang=vi|en on arrival",
       "event": "multnelis:lang"
@@ -240,6 +248,14 @@
       "css": ".ds-field-swatch { display: inline-block; padding: 20px; background: var(--c, #c9461f); } .ds-chip-handle { display: inline-block; font-family: var(--mono, 'JetBrains Mono', monospace); font-feature-settings: 'calt' 0; font-size: 0.875rem; line-height: 1; padding: 6px 9px; border: 1px solid rgb(255 255 255 / 70%); border-radius: 5px; color: #fff; }"
     },
     {
+      "name": "Handle Chip (white)",
+      "kind": "chip",
+      "refersTo": "chip-handle-white",
+      "description": "The same chip in the white register, under an owner's name on the contact page: @handle in mono on a Hair border.",
+      "html": "<span class=\"ds-chip-handle-white\">@cuongtranba</span>",
+      "css": ".ds-chip-handle-white { display: inline-block; font-family: var(--mono, 'JetBrains Mono', monospace); font-feature-settings: 'calt' 0; font-variant-numeric: tabular-nums; font-size: 0.8125rem; line-height: 1; padding: 6px 9px; border: 1px solid var(--hair, rgb(16 18 20 / 14%)); border-radius: 5px; color: var(--ink, #101214); }"
+    },
+    {
       "name": "Member Field",
       "kind": "card",
       "refersTo": "field-vermilion",
@@ -256,6 +272,22 @@
       "css": ".ds-commit { border-top: 1px solid var(--hair, rgb(16 18 20 / 14%)); padding: 40px 0 44px; display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 28px 48px; color: var(--ink, #101214); font-family: var(--body, 'Hanken Grotesk', sans-serif); } .ds-commit-tagline { margin: 0; font-family: var(--display, 'Anybody', sans-serif); font-stretch: 125%; font-variation-settings: 'wdth' 125; letter-spacing: -0.02em; text-wrap: balance; font-weight: 700; font-size: 1.75rem; line-height: 1.08; max-width: 24ch; } .ds-commit-detail { margin: 22px 0 0; font-size: 1.0625rem; line-height: 1.55; max-width: 64ch; } .ds-commit-merges { margin: 30px 0 0; font-family: var(--mono, 'JetBrains Mono', monospace); font-feature-settings: 'calt' 0; font-size: 0.8125rem; line-height: 1.6; display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; color: var(--ink-2, #4a4f57); } .ds-commit-merges .who { color: var(--ink, #101214); } .ds-commit-merges .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 7px; vertical-align: -1px; } .ds-commit-merges .dot-c { background: var(--c, #c9461f); } .ds-commit-merges .dot-t { background: var(--t, #2457f5); } .ds-commit-merges .dot-y { background: var(--y, #168459); } .ds-commit-meta { display: grid; gap: 16px; align-content: start; padding-top: 6px; } .ds-commit-name { margin: 0; display: flex; align-items: center; gap: 10px; font-family: var(--display, 'Anybody', sans-serif); font-stretch: 125%; font-variation-settings: 'wdth' 125; letter-spacing: -0.02em; font-weight: 700; font-size: 1.25rem; line-height: 1.1; min-height: 28px; } .ds-commit-name .mark { flex: none; width: 28px; height: 28px; color: var(--ink, #101214); border-radius: 5px; } .ds-commit dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-family: var(--mono, 'JetBrains Mono', monospace); font-feature-settings: 'calt' 0; font-variant-numeric: tabular-nums; font-size: 0.8125rem; line-height: 1.55; } .ds-commit dt { color: var(--ink-2, #4a4f57); } .ds-commit dd { margin: 0; min-width: 0; overflow-wrap: anywhere; } .ds-commit dd a { color: inherit; text-decoration: none; } .ds-commit dd a span { text-decoration: underline; text-underline-offset: 0.2em; text-decoration-color: color-mix(in srgb, currentColor 45%, transparent); transition: text-decoration-color 160ms ease; } .ds-commit dd a:hover span { text-decoration-color: currentColor; } .ds-commit a:focus-visible { outline: 2px solid var(--ink, #101214); outline-offset: 3px; border-radius: 3px; }"
     },
     {
+      "name": "Owner Row",
+      "kind": "card",
+      "refersTo": "avatar-owner",
+      "description": "The contact page's compact member: white row under a hairline, 64px avatar on the commit node, name then @handle chip then role, and a mono dl of owns / github / site on the right.",
+      "html": "<section class=\"ds-owner\"><div class=\"ds-owner-avatar\" aria-hidden=\"true\"></div><div class=\"ds-owner-who\"><h3 class=\"ds-owner-name\">Cuong Tran</h3><span class=\"ds-owner-handle\">@cuongtranba</span><p class=\"ds-owner-role\">Backend and agent tooling</p></div><dl class=\"ds-owner-dl\"><dt>owns</dt><dd class=\"ds-owner-owns\"><span>/undercroft</span><span>/ymir</span><span>/symphony-its-everdred</span></dd><dt>github</dt><dd><a href=\"#\"><span>github.com/cuongtranba</span>&nbsp;→</a></dd><dt>site</dt><dd><a href=\"#\"><span>trancuong.me</span>&nbsp;→</a></dd></dl></section>",
+      "css": ".ds-owner { border-top: 1px solid var(--hair, rgb(16 18 20 / 14%)); display: grid; grid-template-columns: 64px minmax(0, 1fr) 260px; gap: 16px 40px; align-items: start; padding: 40px 0 44px; color: var(--ink, #101214); font-family: var(--body, 'Hanken Grotesk', sans-serif); } .ds-owner-avatar { width: 64px; height: 64px; border-radius: 50%; border: 3px solid #fff; outline: 1px solid var(--hair, rgb(16 18 20 / 14%)); box-sizing: border-box; background: #fff url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><circle cx=%2232%22 cy=%2224%22 r=%2212%22 fill=%22%23e6e2d8%22/><path d=%22M8 64c2-16 12-24 24-24s22 8 24 24z%22 fill=%22%23e6e2d8%22/></svg>') center/cover; transition: transform 500ms cubic-bezier(0.19, 1, 0.22, 1); } .ds-owner-avatar:hover { transform: scale(1.03); } .ds-owner-name { margin: 0; font-family: var(--display, 'Anybody', sans-serif); font-stretch: 125%; font-variation-settings: 'wdth' 125; letter-spacing: -0.02em; font-weight: 700; font-size: 1.25rem; line-height: 1.1; } .ds-owner-handle { display: inline-block; margin-top: 10px; font-family: var(--mono, 'JetBrains Mono', monospace); font-feature-settings: 'calt' 0; font-size: 0.8125rem; line-height: 1; padding: 6px 9px; border: 1px solid var(--hair, rgb(16 18 20 / 14%)); border-radius: 5px; } .ds-owner-role { margin: 12px 0 0; font-size: 1.0625rem; line-height: 1.5; max-width: 48ch; } .ds-owner-dl { margin: 0; padding-top: 6px; display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-family: var(--mono, 'JetBrains Mono', monospace); font-feature-settings: 'calt' 0; font-variant-numeric: tabular-nums; font-size: 0.8125rem; line-height: 1.55; } .ds-owner-dl dt { color: var(--ink-2, #4a4f57); } .ds-owner-dl dd { margin: 0; min-width: 0; } .ds-owner-owns { display: flex; flex-wrap: wrap; gap: 0 1.2em; } .ds-owner-dl a { color: inherit; text-decoration: none; white-space: nowrap; } .ds-owner-dl a span { white-space: normal; overflow-wrap: anywhere; text-decoration: underline; text-underline-offset: 0.2em; text-decoration-color: color-mix(in srgb, currentColor 45%, transparent); transition: text-decoration-color 160ms ease; } .ds-owner-dl a:hover span { text-decoration-color: currentColor; } .ds-owner a:focus-visible { outline: 2px solid var(--ink, #101214); outline-offset: 3px; border-radius: 3px; } @media (prefers-reduced-motion: reduce) { .ds-owner-avatar, .ds-owner-avatar:hover { transition: none; transform: none; } }"
+    },
+    {
+      "name": "Path Row",
+      "kind": "card",
+      "refersTo": "title-sm",
+      "description": "A project as a CODEOWNERS line on the contact page: name then repository path, its owners as dotted @handle links, and a mono dl with issues (or email for a private repo) and state.",
+      "html": "<article class=\"ds-path\"><div><h3 class=\"ds-path-name\">Undercroft</h3><p class=\"ds-path-file\">/undercroft</p></div><p class=\"ds-path-owners\"><a class=\"who\" href=\"#\"><i class=\"dot dot-c\"></i><span>@cuongtranba</span></a><a class=\"who\" href=\"#\"><i class=\"dot dot-t\"></i><span>@thanh-dong</span></a><a class=\"who\" href=\"#\"><i class=\"dot dot-y\"></i><span>@yanmad27</span></a></p><dl class=\"ds-path-dl\"><dt>issues</dt><dd><a href=\"#\"><span>muitneliss/undercroft/issues</span>&nbsp;→</a></dd><dt>state</dt><dd>public</dd></dl></article>",
+      "css": ".ds-path { border-top: 1px solid var(--hair, rgb(16 18 20 / 14%)); display: grid; grid-template-columns: minmax(0, 1fr) 220px 260px; gap: 16px 40px; align-items: start; padding: 40px 0 44px; color: var(--ink, #101214); font-family: var(--body, 'Hanken Grotesk', sans-serif); } .ds-path-name { margin: 0; font-family: var(--display, 'Anybody', sans-serif); font-stretch: 125%; font-variation-settings: 'wdth' 125; letter-spacing: -0.02em; font-weight: 700; font-size: 1.25rem; line-height: 1.1; } .ds-path-file { margin: 10px 0 0; font-family: var(--mono, 'JetBrains Mono', monospace); font-feature-settings: 'calt' 0; font-size: 0.875rem; line-height: 1.2; color: var(--ink-2, #4a4f57); } .ds-path-owners { margin: 0; padding-top: 6px; font-family: var(--mono, 'JetBrains Mono', monospace); font-feature-settings: 'calt' 0; font-size: 0.8125rem; line-height: 1.6; display: flex; flex-wrap: wrap; gap: 2px 18px; } .ds-path .who { color: var(--ink, #101214); text-decoration: none; } .ds-path .who span { text-decoration: underline; text-underline-offset: 0.2em; text-decoration-color: color-mix(in srgb, currentColor 45%, transparent); transition: text-decoration-color 160ms ease; } .ds-path .who:hover span { text-decoration-color: currentColor; } .ds-path .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 7px; vertical-align: -1px; } .ds-path .dot-c { background: var(--c, #c9461f); } .ds-path .dot-t { background: var(--t, #2457f5); } .ds-path .dot-y { background: var(--y, #168459); } .ds-path-dl { margin: 0; padding-top: 6px; display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-family: var(--mono, 'JetBrains Mono', monospace); font-feature-settings: 'calt' 0; font-variant-numeric: tabular-nums; font-size: 0.8125rem; line-height: 1.55; } .ds-path-dl dt { color: var(--ink-2, #4a4f57); } .ds-path-dl dd { margin: 0; min-width: 0; } .ds-path-dl a { color: inherit; text-decoration: none; white-space: nowrap; } .ds-path-dl a span { white-space: normal; overflow-wrap: anywhere; text-decoration: underline; text-underline-offset: 0.2em; text-decoration-color: color-mix(in srgb, currentColor 45%, transparent); transition: text-decoration-color 160ms ease; } .ds-path-dl a:hover span { text-decoration-color: currentColor; } .ds-path a:focus-visible { outline: 2px solid var(--ink, #101214); outline-offset: 3px; border-radius: 3px; }"
+    },
+    {
       "name": "Rail Node",
       "kind": "custom",
       "refersTo": "lane-vermilion",
@@ -266,7 +298,7 @@
   ],
   "narrative": {
     "northStar": "The Commit Graph",
-    "overview": "The page is a git history read top to bottom. A rail of round-capped lanes runs down the left edge of every section: main is ink, and each of the three members owns one colour that forks off main, carries their full-bleed field, and bends back in to merge into each project they touched. Time is the scroll axis; the statement is the first commit, the footer is the last. Remove every word and the page is still recognisable: one ink rail, three colour fields, a handful of ringed nodes.\n\nThe material is flat and printed. White ground, near-black ink, no shadows, no gradients, no glass. Hierarchy comes from three things only: the wide, heavy display face; the lane colours owning whole regions rather than accents; and hairline rules. The three faces have strict jobs (Anybody wide for headings and the wordmark, Hanken Grotesk for reading, JetBrains Mono for refs, handles, facts and metadata) so the mono face reads as \"data from the repository\" wherever it appears.\n\nMotion is one signature, not a mood: the rail draws itself as sections enter the viewport, nodes pop after the line arrives, and hovering a member's avatar pulses their lane along the whole page. Under prefers-reduced-motion the graph is simply already drawn.",
+    "overview": "The page is a git history read top to bottom. A rail of round-capped lanes runs down the left edge of every section: main is ink, and each of the three members owns one colour that forks off main, carries their full-bleed field, and bends back in to merge into each project they touched. Time is the scroll axis; the statement is the first commit, the footer is the last. Remove every word and the page is still recognisable: one ink rail, three colour fields, a handful of ringed nodes. The /contact page is the same history read as a CODEOWNERS file: the address is the first commit, each owner row forks that member's lane, each path row merges its owners back into main, and the rows are compact and white rather than full-bleed.\n\nThe material is flat and printed. White ground, near-black ink, no shadows, no gradients, no glass. Hierarchy comes from three things only: the wide, heavy display face; the lane colours owning whole regions rather than accents; and hairline rules. The three faces have strict jobs (Anybody wide for headings and the wordmark, Hanken Grotesk for reading, JetBrains Mono for refs, handles, facts and metadata) so the mono face reads as \"data from the repository\" wherever it appears.\n\nMotion is one signature, not a mood: the rail draws itself as sections enter the viewport, nodes pop after the line arrives, and hovering a member's avatar pulses their lane along the whole page. Under prefers-reduced-motion the graph is simply already drawn.",
     "keyCharacteristics": [
       "White ground, ink text, three saturated lane colours used as full-bleed fields, never as tints or accents on white.",
       "A measured, script-built SVG rail (120px desktop / 48px mobile) with 6px round-capped strokes and white-ringed nodes; solid nodes for public commits, hollow for private.",
@@ -279,7 +311,9 @@
       { "name": "The Whole-Region Rule", "body": "A lane colour is applied to a member's entire field, the rail stroke and the merge dots, and nothing else. It is never a tint, a link colour, a heading colour on white, or a border. On white the page is monochrome.", "section": "colors" },
       { "name": "The White-Text Rule", "body": "Inside a lane field everything is white: headings, body, mono facts, links, the handle chip border (at 70% white), focus outlines. Selection inverts to white on the lane colour.", "section": "colors" },
       { "name": "The Contrast Floor", "body": "Each lane colour passes 4.5:1 with white text; Ink Two passes on white. Do not lighten a lane to \"soften\" it.", "section": "colors" },
-      { "name": "The Mono-Is-Data Rule", "body": "JetBrains Mono appears only on strings that exist in a repository or profile: handles, repo refs, tags, state, dates and counts, the branch name, the language code. Never on prose, headings or buttons.", "section": "typography" },
+      { "name": "The Mono-Is-Data Rule", "body": "JetBrains Mono appears only on strings that exist in a repository or profile: handles, repo refs, repository paths, tags, state, dates and counts, the branch name, the language code, the email address. Never on prose, headings, buttons or navigation links.", "section": "typography" },
+      { "name": "The Name-Then-Path Rule", "body": "Wherever a thing has both a display name and a repository fact, the name comes first in Anybody and the fact sits under it in mono: an owner's name then @handle, a path's name then /repo-name. The fact is never promoted above the name.", "section": "typography" },
+      { "name": "The Nowrap-Anchor Rule", "body": "A mono arrow link is <a><span>label</span>&nbsp;→</a>: the anchor is white-space: nowrap so the arrow never wraps alone, and the span is white-space: normal; overflow-wrap: anywhere so a long label may still break inside. The arrow always ends the same line as the last word.", "section": "components" },
       { "name": "The Wide Display Rule", "body": "Anybody is always set with font-stretch: 125% / 'wdth' 125, weight 700–800, tracking -0.02em. There is no regular-width or light display setting.", "section": "typography" },
       { "name": "The Flat Print Rule", "body": "No box-shadow, no gradients, no blur, no translucency beyond the two ink alphas (Hair 14%, Ink Tint 7%). A new surface is either white or one lane colour.", "section": "elevation" }
     ],
@@ -291,7 +325,10 @@
       "Do use white for all text and borders inside a lane field, and invert selection to white on the lane colour.",
       "Do keep controls on the 4–7px radius scale with a 1px Ink or Hair border and no fill at rest; fill with Ink only for the solid button and the pressed segment.",
       "Do add new strings to src/data/site.ts with both en and vi and mark the node with data-i18n (or data-i18n-alt / data-i18n-aria).",
-      "Do gate any new motion on html.is-static and prefers-reduced-motion, and use --ease (cubic-bezier(0.19, 1, 0.22, 1)) for movement."
+      "Do gate any new motion on html.is-static and prefers-reduced-motion, and use --ease (cubic-bezier(0.19, 1, 0.22, 1)) for movement.",
+      "Do put a heading between rows in its own data-kind=\"through\" section listing every live lane in data-through, so the graph never breaks between commits.",
+      "Do write mono arrow links as <a><span>label</span>&nbsp;→</a> with the anchor nowrap and the span free to wrap (the Nowrap-Anchor Rule).",
+      "Do lead with the name in Anybody and put the repository fact (@handle, /repo) in mono beneath it, 10px down."
     ],
     "donts": [
       "Don't use a lane colour as a tint, link colour, heading colour, icon colour or border on white; lane colours own whole regions or rail strokes.",

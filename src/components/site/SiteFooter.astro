@@ -11,7 +11,8 @@ const merges = members.map((m) => m.lane).join(',');
   <div class="col">
     <p class="line mono" data-anchor>
       {brand.name} · <span data-i18n="footer.place">{footer.place.en}</span> ·{' '}
-      <a href={brand.github}><span>{brand.githubLabel}</span></a>
+      <a href={brand.github}><span>{brand.githubLabel}</span></a> ·{' '}
+      <a href={`mailto:${brand.email}`}><span>{brand.email}</span></a>
     </p>
     <p class="sub mono">{footer.domain}</p>
   </div>

@@ -1,0 +1,187 @@
+---
+// One owner on the contact page: a compact white row where the member's lane
+// forks off main and the commit node sits on their avatar. "owns" lists the
+// paths this person answers for, derived from the projects they merged.
+import { Image } from 'astro:assets';
+import Rail from '~/components/site/Rail.astro';
+import { type Member, members, projectPath, projects } from '~/data/site';
+
+export interface Props {
+  member: Member;
+}
+
+const { member } = Astro.props;
+const { handle, name, role, github, site, avatar, lane } = member;
+
+const through = members
+  .slice(0, members.indexOf(member))
+  .map((m) => m.lane)
+  .join(',');
+const owns = projects.filter((p) => p.merges.includes(lane)).map(projectPath);
+const headingId = `owner-${handle}`;
+const hostname = (url: string) => url.replace(/^https?:\/\//, '');
+---
+
+<section
+  class="gs owner"
+  data-kind="member"
+  data-lane={lane}
+  data-through={through || undefined}
+  aria-labelledby={headingId}
+>
+  <Rail />
+  <div class="col row">
+    <Image
+      class="avatar"
+      src={avatar}
+      width={64}
+      height={64}
+      densities={[1, 2]}
+      loading="eager"
+      alt={name}
+      data-anchor
+      data-avatar
+      data-lane={lane}
+    />
+    <div class="who">
+      <h3 id={headingId}>{name}</h3>
+      <span class="handle mono">@{handle}</span>
+      <p class="role" data-i18n={`member.${handle}.role`}>{role.en}</p>
+    </div>
+    <dl class="mono">
+      <dt>owns</dt>
+      <dd class="owns">{owns.map((p) => <span>{p}</span>)}</dd>
+      <dt>github</dt>
+      <dd><a href={github}><span>{hostname(github)}</span>&nbsp;→</a></dd>
+      {
+        site && (
+          <>
+            <dt>site</dt>
+            <dd>
+              <a href={site}>
+                <span>{hostname(site)}</span>&nbsp;→
+              </a>
+            </dd>
+          </>
+        )
+      }
+    </dl>
+  </div>
+</section>
+
+<style>
+  .owner {
+    border-top: 1px solid var(--hair);
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr) 300px;
+    gap: 16px 40px;
+    align-items: start;
+    padding-top: 40px;
+    padding-bottom: 44px;
+    max-width: 1400px;
+  }
+  .avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 3px solid var(--paper);
+    outline: 1px solid var(--hair);
+    object-fit: cover;
+    transition: transform 500ms var(--ease);
+  }
+  .avatar:hover {
+    transform: scale(1.03);
+  }
+  h3 {
+    font-weight: 700;
+    font-size: 1.25rem;
+    line-height: 1.1;
+  }
+  .handle {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 0.8125rem;
+    line-height: 1;
+    padding: 6px 9px;
+    border: 1px solid var(--hair);
+    border-radius: 5px;
+  }
+  .role {
+    margin-top: 12px;
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    max-width: 48ch;
+  }
+  dl {
+    margin: 0;
+    padding-top: 6px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 6px 14px;
+    font-size: 0.8125rem;
+    line-height: 1.55;
+  }
+  dt {
+    color: var(--ink-2);
+  }
+  dd {
+    margin: 0;
+    min-width: 0;
+  }
+  .owns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1.2em;
+  }
+  /* The arrow never wraps alone: the anchor holds, the label may break inside. */
+  dd a {
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  dd a span {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+    transition: text-decoration-color 160ms ease;
+  }
+  dd a:hover span {
+    text-decoration-color: currentColor;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .avatar {
+      transition: none;
+    }
+    .avatar:hover {
+      transform: none;
+    }
+  }
+  @media (width <= 1100px) {
+    .row {
+      grid-template-columns: 64px minmax(0, 1fr);
+    }
+    dl {
+      grid-column: 2;
+      padding-top: 0;
+    }
+  }
+  @media (width <= 720px) {
+    .row {
+      grid-template-columns: 48px minmax(0, 1fr);
+      gap: 12px 16px;
+      padding-top: 28px;
+      padding-bottom: 32px;
+    }
+    .avatar {
+      width: 48px;
+      height: 48px;
+    }
+    /* The metadata takes the whole row on phones so a handle and its arrow share a line. */
+    dl {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

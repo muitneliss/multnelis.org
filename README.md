@@ -9,13 +9,15 @@ The page is a git commit graph: each member owns a coloured lane, projects are t
 - [Astro 7](https://astro.build) with Tailwind CSS v4, started from the [AstroWind](https://github.com/arthelokyo/astrowind) template (MIT, see `LICENSE.md`).
 - Static build, deployed to GitHub Pages by `.github/workflows/deploy.yml` on every push to `main`. `public/CNAME` binds the custom domain.
 - English is server-rendered; the Vietnamese toggle swaps strings client-side on the same URL (`?lang=vi` also works).
+- Mail to contact@multnelis.org is forwarded by Cloudflare Email Routing (rule "contact" on the multnelis.org zone) to the organisation owner. No mailbox is hosted.
 
 ## Where things live
 
 | Path                         | What                                                                                           |
 | ---------------------------- | ---------------------------------------------------------------------------------------------- |
 | `src/data/site.ts`           | Every word on the page, in English and Vietnamese, plus members and projects. Edit this file.  |
-| `src/pages/index.astro`      | The page and its structured data.                                                              |
+| `src/pages/index.astro`      | The landing page and its structured data.                                                      |
+| `src/pages/contact.astro`    | The contact page, laid out like a CODEOWNERS file: paths and the people who answer for them.   |
 | `src/components/site/`       | Header, hero, rail (the commit graph), member fields, project commits, footer, language toggle |
 | `src/assets/images/members/` | GitHub avatars and the per-member domain icons.                                                |
 | `src/assets/favicons/`       | The multnelis mark (three lanes merging into one node).                                        |

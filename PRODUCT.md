@@ -36,6 +36,7 @@ A small Ho Chi Minh City collective shipping tools for the coding-agent era: har
 - Member avatars come from GitHub (`avatars.githubusercontent.com/u/<id>`), cached locally under `research/avatars/`.
 - Branding imagery (logo, favicon, member domain icons, OG image) is generated with the Codex CLI's image generation, per user instruction.
 - No analytics, no forms, no backend.
+- Contact: a `/contact` page (email plus GitHub, no form). contact@multnelis.org exists as a Cloudflare Email Routing address forwarding to the organisation owner (bacuongtr@gmail.com); there is no hosted mailbox and no sending from that address.
 
 ## Brand Commitments
 
