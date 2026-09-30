@@ -1,0 +1,30 @@
+# Version, changelog and tag for the site, from Conventional Commits.
+#
+# release-please keeps one release PR open against main. Merging it bumps
+# `version` in package.json, writes CHANGELOG.md and cuts a GitHub release and
+# tag. Deploying is not tied to it: every push to main already deploys
+# (deploy.yml), so a release records what shipped rather than shipping it.
+#
+# The release PR is opened with the workflow's GITHUB_TOKEN. GitHub holds the
+# workflow runs that token triggers for maintainer approval, so the PR's required
+# `Check` and `Build` jobs wait until someone approves them on the PR (or closes
+# and reopens it). Approve them, let them go green, then merge the PR.
+name: release-please
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json

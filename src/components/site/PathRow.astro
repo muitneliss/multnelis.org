@@ -1,77 +1,56 @@
 ---
-// One path on the contact page: the project, the owners whose lanes merge
-// into it, and the route a visitor should take (issues for a public repository,
-// email for the private one).
+// One project on the contact page, as a CODEOWNERS line: the project's lane
+// forks off main at its name, and the row says where to raise it (the
+// repository's issues) and where it lives.
 import Rail from '~/components/site/Rail.astro';
-import { brand, type Lane, type Project, memberByLane, members, projectPath } from '~/data/site';
+import { type Project, lanes, projectPath } from '~/data/site';
 
 export interface Props {
   project: Project;
 }
 
 const { project } = Astro.props;
-const { slug, name, repo, state, merges } = project;
+const { slug, name, track, repo, site, lane } = project;
 
-const through = members
-  .map((m) => m.lane)
-  .filter((l: Lane) => !merges.includes(l))
-  .join(',');
+/* Lanes that already forked above this row keep running through. */
+const through = lanes.slice(0, lanes.indexOf(lane)).join(',');
 const headingId = `path-${slug}`;
-const path = projectPath(project);
-const issues = repo ? `${repo.url}/issues` : undefined;
-const issuesLabel = repo ? `${repo.label}/issues` : undefined;
 ---
 
 <article
   class="gs path"
-  data-kind="merge"
-  data-merge={merges.join(',')}
+  data-kind="fork"
+  data-lane={lane}
   data-through={through || undefined}
-  data-hollow={state === 'private' ? '' : undefined}
   aria-labelledby={headingId}
 >
   <Rail />
-  <div class="col row">
+  <div class="col row" data-pulse-lane={lane}>
     <div class="where">
       <h3 id={headingId} data-anchor>{name}</h3>
-      <p class="file mono">{path}</p>
+      <p class="file mono">{projectPath(project)}</p>
     </div>
-    <p class="owners mono">
-      {
-        merges.map((lane) => (
-          <a class="who" href={`#owner-${memberByLane(lane).handle}`}>
-            <>
-              <i class:list={['dot', `dot-${lane}`]} />
-              <span>@{memberByLane(lane).handle}</span>
-            </>
-          </a>
-        ))
-      }
+    <p class="track">
+      <i class:list={['dot', `dot-${lane}`]} aria-hidden="true"></i>
+      <span data-i18n={`project.${slug}.track`}>{track.en}</span>
     </p>
     <dl class="mono">
+      <dt>issues</dt>
+      <dd>
+        <a class="arrow" href={`${repo.url}/issues`}><span>{repo.label}/issues</span>&nbsp;→</a>
+      </dd>
       {
-        issues ? (
+        site && (
           <>
-            <dt>issues</dt>
+            <dt>site</dt>
             <dd>
-              <a href={issues}>
-                <span>{issuesLabel}</span>&nbsp;→
-              </a>
-            </dd>
-          </>
-        ) : (
-          <>
-            <dt>email</dt>
-            <dd>
-              <a href={`mailto:${brand.email}`}>
-                <span>{brand.email}</span>&nbsp;→
+              <a class="arrow" href={site.url}>
+                <span>{site.label}</span>&nbsp;→
               </a>
             </dd>
           </>
         )
       }
-      <dt>state</dt>
-      <dd class:list={{ private: state === 'private' }}>{state}</dd>
     </dl>
   </div>
 </article>
@@ -94,54 +73,24 @@ const issuesLabel = repo ? `${repo.label}/issues` : undefined;
     font-size: 1.25rem;
     line-height: 1.1;
   }
-  /* The repository path, a fact under the name, the way the handle sits under an owner. */
+  /* The repository path, a fact under the name. */
   .file {
     margin-top: 10px;
     font-size: 0.875rem;
     line-height: 1.2;
     color: var(--ink-2);
   }
-  .who {
-    text-decoration: none;
-    color: var(--ink);
-  }
-  .who span {
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
-    text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
-    transition: text-decoration-color 160ms ease;
-  }
-  .who:hover span {
-    text-decoration-color: currentColor;
-  }
-  .owners {
-    padding-top: 6px;
-    font-size: 0.8125rem;
-    line-height: 1.6;
+  .track {
     display: flex;
-    flex-wrap: wrap;
-    gap: 2px 18px;
-  }
-  .dot {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin-right: 7px;
-    vertical-align: -1px;
-  }
-  .dot-c {
-    background: var(--c);
-  }
-  .dot-t {
-    background: var(--t);
-  }
-  .dot-y {
-    background: var(--y);
+    align-items: center;
+    gap: 10px;
+    padding-top: 2px;
+    font-size: 1.0625rem;
+    font-weight: 600;
   }
   dl {
     margin: 0;
-    padding-top: 6px;
+    padding-top: 4px;
     display: grid;
     grid-template-columns: auto 1fr;
     gap: 6px 14px;
@@ -155,31 +104,12 @@ const issuesLabel = repo ? `${repo.label}/issues` : undefined;
     margin: 0;
     min-width: 0;
   }
-  /* The arrow never wraps alone: the anchor holds, the label may break inside. */
-  dd a {
-    text-decoration: none;
-    white-space: nowrap;
-  }
-  dd a span {
-    white-space: normal;
-    overflow-wrap: anywhere;
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
-    text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
-    transition: text-decoration-color 160ms ease;
-  }
-  dd a:hover span {
-    text-decoration-color: currentColor;
-  }
-  .private {
-    color: var(--ink-2);
-  }
   @media (width <= 1100px) {
     .row {
       grid-template-columns: minmax(0, 1fr);
       gap: 14px;
     }
-    .owners,
+    .track,
     dl {
       padding-top: 0;
     }

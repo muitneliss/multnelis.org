@@ -2,11 +2,11 @@
 
 ## This project
 
-This repository is the landing page of **multnelis** (https://multnelis.org), built on the AstroWind template. Read `README.md` for the layout, `PRODUCT.md` for product truth (who the members are, which projects are shown, what must never be claimed), and `DESIGN.md` for the visual system. All page copy, in English and Vietnamese, lives in `src/data/site.ts`; the pages are `src/pages/index.astro` and `src/pages/contact.astro` (plus `404.astro`), built from `src/layouts/Layout.astro` and the components under `src/components/site/`. The blog is disabled and the template's demo pages are removed; the rest of this file documents the template conventions that still apply.
+This repository is the landing page of **multnelis** (https://multnelis.org), built on the AstroWind template. Read `README.md` for the layout, `PRODUCT.md` for product truth (which projects are shown, that no people are shown, what must never be claimed), and `DESIGN.md` for the visual system. All page copy, in English and Vietnamese, lives in `src/data/site.ts`; the pages are `src/pages/index.astro` and `src/pages/contact.astro` (plus `404.astro`), built from `src/layouts/Layout.astro` and the components under `src/components/site/`. The blog is disabled and the template's demo pages are removed; the rest of this file documents the template conventions that still apply.
 
 ## Shipping changes
 
-`main` is protected: nobody pushes to it directly, admins included. Every change goes through a pull request, the `Check` and `Build` jobs of the CI workflow must pass on the branch (kept up to date with `main`), and then it is merged. Merging `main` deploys to GitHub Pages. Branches are deleted on merge, and auto-merge is enabled, so `gh pr merge --squash --auto` is the normal way to land a green pull request.
+`main` is protected: nobody pushes to it directly, admins included. Every change goes through a pull request, the `Check` and `Build` jobs of the CI workflow must pass on the branch (kept up to date with `main`), and then it is merged. Merging `main` deploys to GitHub Pages. Branches are deleted on merge, and auto-merge is enabled, so `gh pr merge --squash --auto` is the normal way to land a green pull request. Squash titles are Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`), because release-please reads them to open the release pull request that versions the site; that PR's checks wait for a maintainer to approve them (or to close and reopen it).
 
 ## Template Overview
 
@@ -46,13 +46,13 @@ This file is the single source of instructions for every coding agent. Codex rea
 src/
   assets/styles/tailwind.css   # Tailwind v4 config (themes, utilities, plugins); imports shadcn.css and site.css
   components/
-    site/          # The multnelis page: SiteHeader, Hero, Rail, MemberField, ProjectCommit, SiteFooter, LanguageToggle…
+    site/          # The multnelis pages: SiteHeader, Hero, Profile, ProjectField, Principles, Closing, PathRow, Rail, SiteFooter, LanguageToggle
     common/        # Shared: Image, Metadata, StructuredData, Analytics, ApplyColorMode
     ui/            # Template primitives: Button, Form, Headline, Timeline, WidgetWrapper (not used by the current pages)
     widgets/       # Template page sections: Hero, Features, Bento, Pricing, FAQs… (not used by the current pages)
     CustomStyles.astro  # CSS variables for colors and fonts
   content.config.ts    # Content Collections (currently empty; Astro requires the file)
-  data/site.ts         # All page copy (English and Vietnamese), members and projects
+  data/site.ts         # All copy (English and Vietnamese): profile, projects and use cases, principles
   layouts/             # Layout.astro (used by every page); PageLayout, LandingLayout, MarkdownLayout are template leftovers
   pages/               # File-based routing: index.astro, contact.astro, 404.astro
   utils/               # images.ts, permalinks.ts, frontmatter.ts, utils.ts

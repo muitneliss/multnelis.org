@@ -1,0 +1,91 @@
+---
+// How the team works: every project lane bends back into main at the heading,
+// because the principles are what the three branches share. Each principle
+// names, in mono, where in the repositories it can be checked.
+import Rail from '~/components/site/Rail.astro';
+import { lanes, principles } from '~/data/site';
+---
+
+<section class="gs principles" data-kind="merge" data-merge={lanes.join(',')} aria-labelledby="principles-title">
+  <Rail />
+  <div class="col">
+    <h2 id="principles-title" data-anchor data-i18n="principles.title">{principles.title.en}</h2>
+    <ol class="rows">
+      {
+        principles.items.map((item) => (
+          <li>
+            <h3 data-i18n={`principles.${item.key}.title`}>{item.title.en}</h3>
+            <p class="text" data-i18n={`principles.${item.key}.text`}>
+              {item.text.en}
+            </p>
+            <p class="proof mono">{item.proof}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .col {
+    padding-top: 104px;
+    padding-bottom: 112px;
+    max-width: 1400px;
+  }
+  h2 {
+    font-weight: 800;
+    font-size: clamp(2.125rem, 1.4rem + 2.2vw, 3.25rem);
+    line-height: 1;
+  }
+  .rows {
+    margin: 44px 0 0;
+    padding: 0;
+    list-style: none;
+    border-bottom: 1px solid var(--hair);
+  }
+  .rows li {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.2fr) 220px;
+    gap: 12px 56px;
+    align-items: baseline;
+    padding: 30px 0 34px;
+    border-top: 1px solid var(--hair);
+  }
+  h3 {
+    font-weight: 700;
+    font-size: 1.25rem;
+    line-height: 1.15;
+    max-width: 22ch;
+  }
+  .text {
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    max-width: 58ch;
+  }
+  .proof {
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+
+  @media (width <= 1100px) {
+    .rows li {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (width <= 720px) {
+    .col {
+      padding-top: 56px;
+      padding-bottom: 64px;
+    }
+    .rows {
+      margin-top: 32px;
+    }
+    .rows li {
+      padding: 22px 0 26px;
+    }
+    .text {
+      font-size: 1rem;
+    }
+  }
+</style>

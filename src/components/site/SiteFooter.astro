@@ -1,9 +1,9 @@
 ---
-// The last commit: every lane merges into main one final time.
+// The last commit: every project lane merges into main one final time.
 import Rail from '~/components/site/Rail.astro';
-import { brand, footer, members } from '~/data/site';
+import { brand, footer, lanes } from '~/data/site';
 
-const merges = members.map((m) => m.lane).join(',');
+const merges = lanes.join(',');
 ---
 
 <footer class="gs end" data-kind="end" data-merge={merges}>

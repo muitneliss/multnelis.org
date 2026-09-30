@@ -4,19 +4,22 @@ import { SITE } from 'astrowind:config';
 import Layout from '~/layouts/Layout.astro';
 import StructuredData from '~/components/common/StructuredData.astro';
 import Hero from '~/components/site/Hero.astro';
-import MemberField from '~/components/site/MemberField.astro';
-import ProjectCommit from '~/components/site/ProjectCommit.astro';
+import Profile from '~/components/site/Profile.astro';
+import ProjectField from '~/components/site/ProjectField.astro';
+import Principles from '~/components/site/Principles.astro';
+import Closing from '~/components/site/Closing.astro';
 import SiteFooter from '~/components/site/SiteFooter.astro';
-import { brand, members, projects, statement } from '~/data/site';
+import { brand, projects, statement, supporting } from '~/data/site';
 
 const metadata = {
-  title: 'multnelis — a small collective in Ho Chi Minh City building tools for the coding-agent era',
+  title: 'multnelis — an engineering team in Ho Chi Minh City: Undercroft, Ymir, Text Transporter',
   ignoreTitleTemplate: true,
+  description: supporting.en,
   openGraph: { type: 'website' },
 };
 
-// WebSite + Organization from config.yaml, plus the three members as Person
-// entries pointing at their GitHub profiles. Nothing here that is not on the page.
+// WebSite + Organization from config.yaml, plus each public project as
+// SoftwareSourceCode. Nothing here that is not on the page.
 const siteUrl = SITE.site ?? 'https://multnelis.org';
 const orgId = `${siteUrl}/#organization`;
 const schema = {
@@ -36,16 +39,20 @@ const schema = {
       '@id': orgId,
       name: SITE.name,
       url: siteUrl,
+      email: brand.email,
+      foundingDate: brand.since,
       sameAs: [brand.github],
       location: { '@type': 'Place', name: 'Ho Chi Minh City, Vietnam' },
     },
-    ...members.map((m) => ({
-      '@type': 'Person',
-      name: m.name,
-      alternateName: m.handle !== m.name ? m.handle : undefined,
-      url: m.github,
-      sameAs: m.site ? [m.site] : undefined,
-      memberOf: { '@id': orgId },
+    ...projects.map((p) => ({
+      '@type': 'SoftwareSourceCode',
+      '@id': `${siteUrl}/#${p.slug}`,
+      name: p.name,
+      description: p.tagline.en,
+      codeRepository: p.repo.url,
+      url: p.site?.url ?? p.repo.url,
+      license: p.license,
+      author: { '@id': orgId },
     })),
   ],
 };
@@ -56,12 +63,12 @@ const schema = {
 
   <main>
     <Hero />
-
-    {members.map((member, i) => <MemberField member={member} id={i === 0 ? 'members' : undefined} />)}
-
+    <Profile />
     <div id="projects" role="region" aria-label="Projects" data-i18n-aria="ui.projects">
-      {projects.map((project) => <ProjectCommit project={project} />)}
+      {projects.map((project) => <ProjectField project={project} />)}
     </div>
+    <Principles />
+    <Closing />
   </main>
 
   <SiteFooter />
