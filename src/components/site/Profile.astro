@@ -1,0 +1,225 @@
+---
+// The team's profile: a commit on main before any project branches. Who we
+// are in a paragraph, the same in repository facts, then the index of what we
+// build, one lane per project. Pointing at an entry pulses that project's lane.
+import Rail from '~/components/site/Rail.astro';
+import { brand, footer, profile, projects } from '~/data/site';
+---
+
+<section class="gs profile" data-kind="merge" aria-labelledby="profile-title">
+  <Rail />
+  <div class="col">
+    <div class="about">
+      <div>
+        <h2 id="profile-title" data-anchor data-i18n="profile.title">{profile.title.en}</h2>
+        <p class="body" data-i18n="profile.body">{profile.body.en}</p>
+      </div>
+      <dl class="facts mono">
+        <dt>based</dt>
+        <dd data-i18n="footer.place">{footer.place.en}</dd>
+        <dt>since</dt>
+        <dd>{brand.since}</dd>
+        <dt>public</dt>
+        <dd>{projects.length} projects</dd>
+        <dt>org</dt>
+        <dd>
+          <a class="arrow" href={brand.github}><span>{brand.githubLabel}</span>&nbsp;→</a>
+        </dd>
+      </dl>
+    </div>
+
+    <h3 class="index-title" id="index-title" data-i18n="profile.index">{profile.index.en}</h3>
+    <ul class="index" aria-labelledby="index-title">
+      {
+        projects.map((p) => (
+          <li>
+            <a href={`#${p.slug}`} data-pulse-lane={p.lane}>
+              <span class="name">
+                <i class:list={['dot', `dot-${p.lane}`]} aria-hidden="true" />
+                {p.name}
+              </span>
+              <span class="track" data-i18n={`project.${p.slug}.track`}>
+                {p.track.en}
+              </span>
+              <span class="go" aria-hidden="true">
+                →
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .profile {
+    border-top: 1px solid var(--hair);
+  }
+  .col {
+    padding-top: 104px;
+    padding-bottom: 112px;
+    max-width: 1400px;
+  }
+  .about {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 32px 72px;
+    align-items: start;
+  }
+  h2 {
+    font-weight: 800;
+    font-size: clamp(2.125rem, 1.4rem + 2.2vw, 3.25rem);
+    line-height: 1;
+    max-width: 20ch;
+  }
+  .body {
+    margin-top: 26px;
+    font-size: 1.125rem;
+    line-height: 1.55;
+    max-width: 62ch;
+  }
+  .facts {
+    margin: 6px 0 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px 14px;
+    font-size: 0.8125rem;
+    line-height: 1.55;
+  }
+  .facts dt {
+    color: var(--ink-2);
+  }
+  .facts dd {
+    margin: 0;
+    min-width: 0;
+  }
+
+  .index-title {
+    margin-top: 88px;
+    font-weight: 700;
+    font-size: 1.25rem;
+    line-height: 1.1;
+  }
+  .index {
+    margin: 22px 0 0;
+    padding: 0;
+    list-style: none;
+    border-bottom: 1px solid var(--hair);
+  }
+  .index li {
+    border-top: 1px solid var(--hair);
+  }
+  .index a {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 300px) 32px;
+    gap: 12px 72px;
+    align-items: center;
+    padding: 22px 0;
+    text-decoration: none;
+  }
+  .name {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    font-family: var(--display);
+    font-stretch: 125%;
+    font-variation-settings: 'wdth' 125;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+    font-size: clamp(1.75rem, 1.1rem + 1.8vw, 2.375rem);
+    line-height: 1.08;
+  }
+  .name .dot {
+    width: 14px;
+    height: 14px;
+  }
+  .track {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+  .go {
+    justify-self: end;
+    font-size: 1.5rem;
+    transition: transform 300ms var(--ease);
+  }
+  .index a:hover .name,
+  .index a:focus-visible .name {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.16em;
+  }
+  .index a:hover .go {
+    transform: translateX(6px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .go {
+      transition: none;
+    }
+    .index a:hover .go {
+      transform: none;
+    }
+  }
+  @media (width <= 1100px) {
+    .about {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .facts {
+      margin-top: 0;
+    }
+    .index a {
+      grid-template-columns: minmax(0, 1fr) 32px;
+      gap: 8px 16px;
+    }
+    .track {
+      grid-row: 2;
+      grid-column: 1;
+      padding-left: 30px;
+    }
+    .go {
+      grid-row: 1 / 3;
+      grid-column: 2;
+    }
+  }
+  @media (width <= 720px) {
+    .col {
+      padding-top: 56px;
+      padding-bottom: 64px;
+    }
+    .body {
+      margin-top: 20px;
+      font-size: 1.0625rem;
+    }
+    .index-title {
+      margin-top: 56px;
+    }
+    .index a {
+      padding: 18px 0;
+    }
+    .name {
+      gap: 12px;
+    }
+    .name .dot {
+      width: 10px;
+      height: 10px;
+    }
+    .track {
+      padding-left: 22px;
+      font-size: 1rem;
+    }
+  }
+  /* Narrow phones: the arrow gives its column to the name. */
+  @media (width <= 440px) {
+    .index a {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .go {
+      display: none;
+    }
+    .name {
+      font-size: 1.5rem;
+    }
+  }
+</style>

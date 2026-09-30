@@ -1,6 +1,6 @@
 /*
-  The landing page world: a commit graph. A rail of lanes runs down the left
-  edge; the main lane is ink, and each member owns a colour. Everything here is
+  The site's world: a commit graph. A rail of lanes runs down the left edge;
+  the main lane is ink, and each project owns a colour. Everything here is
   global on purpose: the rail is drawn by script (so it cannot carry scoped
   styles), and the layout variables are shared by every section.
 */
@@ -10,9 +10,9 @@
   --ink-2: var(--aw-color-ink-2);
   --hair: var(--aw-color-hair);
   --paper: var(--aw-color-paper);
-  --c: var(--aw-color-lane-vermilion); /* cuongtranba */
-  --t: var(--aw-color-lane-cobalt); /* thanh-dong */
-  --y: var(--aw-color-lane-jade); /* yanmad27 */
+  --lane-u: var(--aw-color-lane-vermilion); /* Undercroft */
+  --lane-y: var(--aw-color-lane-cobalt); /* Ymir */
+  --lane-t: var(--aw-color-lane-jade); /* Text Transporter */
 
   --rail: 120px;
   --gutter: 64px;
@@ -181,38 +181,126 @@ html.is-static .rail path {
 .lane-m {
   stroke: var(--ink);
 }
-.lane-c {
-  stroke: var(--c);
-}
-.lane-t {
-  stroke: var(--t);
+.lane-u {
+  stroke: var(--lane-u);
 }
 .lane-y {
-  stroke: var(--y);
+  stroke: var(--lane-y);
+}
+.lane-t {
+  stroke: var(--lane-t);
 }
 
-/* Hovering a member's avatar pulses their lane along the whole page. */
+/* A lane dot: a project's colour marking it in a list on white. */
+.dot {
+  display: inline-block;
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.dot-u {
+  background: var(--lane-u);
+}
+.dot-y {
+  background: var(--lane-y);
+}
+.dot-t {
+  background: var(--lane-t);
+}
+
+/* Pointing at a project (its index entry or its name) pulses its lane along the whole page. */
 @keyframes lane-pulse {
   50% {
     stroke-width: calc(var(--sw) * 1.75);
   }
 }
-body[data-pulse='c'] .lane-c,
-body[data-pulse='t'] .lane-t,
-body[data-pulse='y'] .lane-y {
+body[data-pulse='u'] .lane-u,
+body[data-pulse='y'] .lane-y,
+body[data-pulse='t'] .lane-t {
   animation: lane-pulse 900ms ease-in-out infinite;
 }
 @media (prefers-reduced-motion: reduce) {
-  body[data-pulse='c'] .lane-c,
-  body[data-pulse='t'] .lane-t,
-  body[data-pulse='y'] .lane-y {
+  body[data-pulse='u'] .lane-u,
+  body[data-pulse='y'] .lane-y,
+  body[data-pulse='t'] .lane-t {
     animation: none;
     stroke-width: calc(var(--sw) * 1.75);
   }
 }
-html.is-static body[data-pulse='c'] .lane-c,
-html.is-static body[data-pulse='t'] .lane-t,
-html.is-static body[data-pulse='y'] .lane-y {
+html.is-static body[data-pulse='u'] .lane-u,
+html.is-static body[data-pulse='y'] .lane-y,
+html.is-static body[data-pulse='t'] .lane-t {
   animation: none;
   stroke-width: calc(var(--sw) * 1.75);
+}
+
+/* Buttons ------------------------------------------------------------------ */
+
+/* Two peers, same size: solid ink and a hairline ghost. Shared by every page. */
+.action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font: 600 1rem/1 var(--body);
+  padding: 15px 22px;
+  border-radius: 7px;
+  text-decoration: none;
+  border: 1px solid var(--ink);
+  transition:
+    background 180ms ease,
+    color 180ms ease,
+    transform 300ms var(--ease);
+}
+.action-solid {
+  background: var(--ink);
+  color: #fff;
+}
+.action-solid:hover {
+  background: #262a2f;
+  border-color: #262a2f;
+}
+.action-ghost {
+  background: transparent;
+  color: var(--ink);
+}
+.action-ghost:hover {
+  background: var(--ink);
+  color: #fff;
+}
+.action:active {
+  transform: translateY(1px);
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+@media (width <= 720px) {
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .action {
+    width: 100%;
+  }
+}
+
+/* Mono arrow links: the arrow never wraps alone (the Nowrap-Anchor Rule). */
+.arrow {
+  white-space: nowrap;
+  text-decoration: none;
+}
+.arrow span {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+  transition: text-decoration-color 160ms ease;
+}
+.arrow:hover span {
+  text-decoration-color: currentColor;
 }

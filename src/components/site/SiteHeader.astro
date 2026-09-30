@@ -35,8 +35,9 @@ const home = current === 'home' ? '#top' : '/';
 <style>
   .top {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 20px;
+    gap: 12px 20px;
     padding-top: 22px;
     padding-bottom: 22px;
     position: relative;
@@ -81,6 +82,7 @@ const home = current === 'home' ? '#top' : '/';
     flex: none;
   }
   .cross {
+    white-space: nowrap;
     font: 600 0.9375rem/1 var(--body);
     text-decoration: underline;
     text-underline-offset: 0.2em;
@@ -112,6 +114,13 @@ const home = current === 'home' ? '#top' : '/';
   @media (width <= 440px) {
     .chip {
       display: none;
+    }
+    /* The Vietnamese cross-link is longer; tighten the row so it never overflows. */
+    .top {
+      gap: 12px 10px;
+    }
+    .wordmark {
+      font-size: 1.125rem;
     }
   }
 </style>

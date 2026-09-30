@@ -1,6 +1,6 @@
 ---
-// The opening: three lanes converge into the first commit on main, which is
-// the statement itself. The header sits inside this section so the rail runs
+// The opening: the three project lanes converge into the first commit on
+// main, which is the statement itself. The header sits inside this section so the rail runs
 // from the very top of the page.
 import Rail from '~/components/site/Rail.astro';
 import SiteHeader from '~/components/site/SiteHeader.astro';
@@ -43,44 +43,7 @@ import { actions, statement, supporting } from '~/data/site';
     color: var(--ink);
   }
   .actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
     margin-top: 44px;
-  }
-  .action {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    font: 600 1rem/1 var(--body);
-    padding: 15px 22px;
-    border-radius: 7px;
-    text-decoration: none;
-    border: 1px solid var(--ink);
-    transition:
-      background 180ms ease,
-      color 180ms ease,
-      transform 300ms var(--ease);
-  }
-  .action-solid {
-    background: var(--ink);
-    color: #fff;
-  }
-  .action-solid:hover {
-    background: #262a2f;
-    border-color: #262a2f;
-  }
-  .action-ghost {
-    background: transparent;
-    color: var(--ink);
-  }
-  .action-ghost:hover {
-    background: var(--ink);
-    color: #fff;
-  }
-  .action:active {
-    transform: translateY(1px);
   }
 
   @media (width <= 720px) {
@@ -100,11 +63,7 @@ import { actions, statement, supporting } from '~/data/site';
       font-size: 1.125rem;
     }
     .actions {
-      flex-direction: column;
       margin-top: 32px;
-    }
-    .action {
-      width: 100%;
     }
   }
 </style>

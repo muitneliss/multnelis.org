@@ -5,10 +5,9 @@ import Layout from '~/layouts/Layout.astro';
 import StructuredData from '~/components/common/StructuredData.astro';
 import Rail from '~/components/site/Rail.astro';
 import SiteHeader from '~/components/site/SiteHeader.astro';
-import OwnerRow from '~/components/site/OwnerRow.astro';
 import PathRow from '~/components/site/PathRow.astro';
 import SiteFooter from '~/components/site/SiteFooter.astro';
-import { brand, contact, members, projects } from '~/data/site';
+import { brand, contact, projects } from '~/data/site';
 
 const metadata = {
   title: contact.metaTitle,
@@ -34,10 +33,6 @@ const schema = {
     contactPoint: { '@type': 'ContactPoint', email: brand.email, contactType: 'general' },
   },
 };
-
-/* Every lane exists once the owners have forked; the path rows and the
-   "Paths" heading see them all passing through. */
-const allLanes = members.map((m) => m.lane).join(',');
 ---
 
 <Layout metadata={metadata}>
@@ -59,18 +54,11 @@ const allLanes = members.map((m) => m.lane).join(',');
       </div>
     </section>
 
-    <section class="gs group" data-kind="through" aria-labelledby="owners">
+    {/* Only main runs here: each project's lane forks at its own row. */}
+    <section class="gs group" data-kind="through" aria-labelledby="projects-title">
       <Rail />
       <div class="col">
-        <h2 id="owners" data-i18n="contact.owners">{contact.owners.en}</h2>
-      </div>
-    </section>
-    {members.map((member) => <OwnerRow member={member} />)}
-
-    <section class="gs group" data-kind="through" data-through={allLanes} aria-labelledby="paths">
-      <Rail />
-      <div class="col">
-        <h2 id="paths" data-i18n="contact.paths">{contact.paths.en}</h2>
+        <h2 id="projects-title" data-i18n="contact.projects">{contact.projects.en}</h2>
       </div>
     </section>
     {projects.map((project) => <PathRow project={project} />)}
@@ -97,37 +85,8 @@ const allLanes = members.map((m) => m.lane).join(',');
     max-width: 62ch;
   }
   .actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
     gap: 12px 24px;
     margin-top: 44px;
-  }
-  .action {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    font: 600 1rem/1 var(--body);
-    padding: 15px 22px;
-    border-radius: 7px;
-    text-decoration: none;
-    border: 1px solid var(--ink);
-    transition:
-      background 180ms ease,
-      color 180ms ease,
-      transform 300ms var(--ease);
-  }
-  .action-solid {
-    background: var(--ink);
-    color: #fff;
-  }
-  .action-solid:hover {
-    background: #262a2f;
-    border-color: #262a2f;
-  }
-  .action:active {
-    transform: translateY(1px);
   }
   .addr {
     font-size: 0.9375rem;
@@ -164,12 +123,7 @@ const allLanes = members.map((m) => m.lane).join(',');
       font-size: 1.125rem;
     }
     .actions {
-      flex-direction: column;
-      align-items: stretch;
       margin-top: 32px;
-    }
-    .action {
-      width: 100%;
     }
     .addr {
       text-align: center;

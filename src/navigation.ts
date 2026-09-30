@@ -1,10 +1,7 @@
 import { getPermalink } from './utils/permalinks';
 
 export const headerData = {
-  links: [
-    { text: 'Team', href: getPermalink('/#members') },
-    { text: 'Projects', href: getPermalink('/#projects') },
-  ],
+  links: [{ text: 'Projects', href: getPermalink('/#projects') }],
   actions: [{ text: 'GitHub', href: 'https://github.com/muitneliss', target: '_blank' }],
 };
 

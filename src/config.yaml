@@ -11,7 +11,7 @@ metadata:
   title:
     default: multnelis
     template: '%s — multnelis'
-  description: 'A small collective in Ho Chi Minh City building tools for the coding-agent era: Undercroft, Ymir, Symphony, and more.'
+  description: 'multnelis is an engineering team in Ho Chi Minh City shipping its tools in the open: Undercroft, Ymir, and Text Transporter.'
   robots:
     index: true
     follow: true
