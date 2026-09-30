@@ -25,8 +25,8 @@ const headingId = `path-${slug}`;
   aria-labelledby={headingId}
 >
   <Rail />
-  <div class="col row">
-    <div class="where" data-pulse-lane={lane}>
+  <div class="col row" data-pulse-lane={lane}>
+    <div class="where">
       <h3 id={headingId} data-anchor>{name}</h3>
       <p class="file mono">{projectPath(project)}</p>
     </div>

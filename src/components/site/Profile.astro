@@ -28,8 +28,8 @@ import { brand, footer, profile, projects } from '~/data/site';
       </dl>
     </div>
 
-    <h3 class="index-title" id="index-title" data-i18n="profile.index">{profile.index.en}</h3>
-    <ul class="index" aria-labelledby="index-title">
+    <h3 class="index-title" id="what-we-build" data-i18n="profile.index">{profile.index.en}</h3>
+    <ul class="index" aria-labelledby="what-we-build">
       {
         projects.map((p) => (
           <li>
@@ -96,6 +96,7 @@ import { brand, footer, profile, projects } from '~/data/site';
   }
 
   .index-title {
+    scroll-margin-top: 32px;
     margin-top: 88px;
     font-weight: 700;
     font-size: 1.25rem;

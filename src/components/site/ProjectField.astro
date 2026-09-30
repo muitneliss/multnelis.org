@@ -45,7 +45,10 @@ const headingId = `project-${slug}`;
           </span>
           <div>
             <h2 id={headingId} data-anchor>{name}</h2>
-            <span class="path mono">{repo.label}</span>
+            <p class="refs mono">
+              <a class="chip" href={repo.url}><span>{repo.label}</span>&nbsp;→</a>
+              {status && <span class="status">{status}</span>}
+            </p>
           </div>
         </div>
         <p class="tagline" data-i18n={`project.${slug}.tagline`}>{tagline.en}</p>
@@ -102,14 +105,6 @@ const headingId = `project-${slug}`;
             <>
               <dt>license</dt>
               <dd>{license}</dd>
-            </>
-          )
-        }
-        {
-          status && (
-            <>
-              <dt>status</dt>
-              <dd>{status}</dd>
             </>
           )
         }
@@ -186,14 +181,42 @@ const headingId = `project-${slug}`;
     line-height: 1;
     color: #fff;
   }
-  .path {
-    display: inline-block;
+  /* The repository is the page's promise, so its link sits right under the name. */
+  .refs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
     margin-top: 12px;
     font-size: 0.875rem;
     line-height: 1;
+  }
+  .chip {
+    display: inline-flex;
     padding: 6px 9px;
     border: 1px solid rgb(255 255 255 / 70%);
     border-radius: 5px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+      background 180ms ease,
+      color 180ms ease;
+  }
+  .chip:hover {
+    background: #fff;
+    border-color: #fff;
+  }
+  .p-u .chip:hover {
+    color: var(--lane-u);
+  }
+  .p-y .chip:hover {
+    color: var(--lane-y);
+  }
+  .p-t .chip:hover {
+    color: var(--lane-t);
+  }
+  .status {
+    font-size: 0.8125rem;
   }
   .tagline {
     margin-top: 40px;
@@ -297,9 +320,9 @@ const headingId = `project-${slug}`;
       align-items: flex-start;
       gap: 18px;
     }
+    /* Sized so the longest word, "Transporter", fits a 320px phone. */
     h2 {
-      font-size: 2.125rem;
-      overflow-wrap: anywhere;
+      font-size: clamp(1.625rem, 0.9rem + 3.4vw, 2.125rem);
     }
     .tile {
       width: 64px;
@@ -311,7 +334,7 @@ const headingId = `project-${slug}`;
       height: 40px;
       border-radius: 6px;
     }
-    .path {
+    .refs {
       margin-top: 10px;
       font-size: 0.8125rem;
     }

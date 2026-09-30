@@ -1,6 +1,7 @@
 ---
-// The close before the last commit: how to use what we build and how to
-// reach us. Every lane passes straight through to the footer, where they merge.
+// The close before the last commit: where to take a question about a project
+// (its repository) and where to take anything else (the team). Every lane
+// passes straight through to the footer, where they merge.
 import Rail from '~/components/site/Rail.astro';
 import { brand, closing, lanes } from '~/data/site';
 ---
@@ -11,10 +12,12 @@ import { brand, closing, lanes } from '~/data/site';
     <h2 id="closing-title" data-i18n="closing.title">{closing.title.en}</h2>
     <p class="lead" data-i18n="closing.lead">{closing.lead.en}</p>
     <div class="actions">
-      <a class="action action-solid" href={`mailto:${brand.email}`} data-i18n="closing.action">
-        {closing.action.en}
+      <a class="action action-solid" href={brand.github} data-i18n="closing.primary">
+        {closing.primary.en}
       </a>
-      <a class="action action-ghost" href="/contact" data-i18n="ui.contactRoutes"> Every contact route </a>
+      <a class="action action-ghost" href="/contact" data-i18n="closing.secondary">
+        {closing.secondary.en}
+      </a>
     </div>
   </div>
 </section>

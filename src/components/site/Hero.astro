@@ -1,7 +1,7 @@
 ---
 // The opening: the three project lanes converge into the first commit on
-// main, which is the statement itself. The header sits inside this section so the rail runs
-// from the very top of the page.
+// main, which is the statement itself. The header sits inside this section so
+// the rail runs from the very top of the page.
 import Rail from '~/components/site/Rail.astro';
 import SiteHeader from '~/components/site/SiteHeader.astro';
 import { actions, statement, supporting } from '~/data/site';
@@ -51,8 +51,9 @@ import { actions, statement, supporting } from '~/data/site';
       padding-top: 56px;
       padding-bottom: 88px;
     }
+    /* Scales with the phone so the longest word ("engineering") never overflows. */
     h1 {
-      font-size: 2.5rem;
+      font-size: clamp(1.75rem, 0.2rem + 8vw, 2.5rem);
       line-height: 1;
       hyphens: manual;
       /* Past balance's line limit on a phone: pretty keeps the last line full. */

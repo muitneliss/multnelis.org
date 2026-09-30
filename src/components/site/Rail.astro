@@ -193,17 +193,20 @@
     sections.forEach((s) => io.observe(s));
   }
 
-  /* Point at a project, by hover or keyboard focus: its lane pulses on the whole rail. */
+  /* Point at a project, by hover or keyboard focus: its lane pulses on the whole
+     rail. Hover and focus are tracked apart so leaving one keeps the other. */
+  let hovered: string | undefined;
+  let focused: string | undefined;
+  const pulse = () => {
+    const lane = hovered ?? focused;
+    if (lane) body.dataset.pulse = lane;
+    else delete body.dataset.pulse;
+  };
   document.querySelectorAll<HTMLElement>('[data-pulse-lane]').forEach((el) => {
-    const on = () => {
-      body.dataset.pulse = el.dataset.pulseLane;
-    };
-    const off = () => {
-      delete body.dataset.pulse;
-    };
-    el.addEventListener('mouseenter', on);
-    el.addEventListener('mouseleave', off);
-    el.addEventListener('focusin', on);
-    el.addEventListener('focusout', off);
+    const lane = el.dataset.pulseLane;
+    el.addEventListener('mouseenter', () => ((hovered = lane), pulse()));
+    el.addEventListener('mouseleave', () => ((hovered = undefined), pulse()));
+    el.addEventListener('focusin', () => ((focused = lane), pulse()));
+    el.addEventListener('focusout', () => ((focused = undefined), pulse()));
   });
 </script>

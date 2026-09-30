@@ -21,7 +21,7 @@
   --color-muted: var(--aw-color-text-muted);
   --color-link: var(--aw-color-link, var(--aw-color-primary));
 
-  /* The world: ink, paper, one lane per member (see CustomStyles.astro). */
+  /* The world: ink, paper, one lane per project (see CustomStyles.astro). */
   --color-ink: var(--aw-color-ink);
   --color-ink-2: var(--aw-color-ink-2);
   --color-hair: var(--aw-color-hair);
