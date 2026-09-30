@@ -1,7 +1,7 @@
 {
   "name": "multnelis.org",
   "version": "0.2.0",
-  "description": "Landing page of multnelis, a small collective in Ho Chi Minh City building tools for the coding-agent era.",
+  "description": "The site of multnelis, an engineering team in Ho Chi Minh City that builds its own tools in the open.",
   "type": "module",
   "private": true,
   "engines": {
