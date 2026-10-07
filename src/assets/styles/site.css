@@ -145,37 +145,48 @@ h3 {
   display: block;
 }
 
+/*
+  The rail is drawn as far as the reader has scrolled: the controller
+  (src/components/site/rail/controller.ts) writes each stroke's dash offset
+  and each node's landing on every frame, so nothing here transitions them.
+  Under the hero's 3D overture the flat rail waits at --rail-opacity.
+*/
+.rail {
+  opacity: var(--rail-opacity, 1);
+}
 .rail path {
   fill: none;
   stroke-width: var(--sw);
   stroke-linecap: round;
   stroke-linejoin: round;
-  transition:
-    stroke-dashoffset 600ms var(--ease),
-    stroke-width 220ms ease;
+  transition: stroke-width 220ms ease;
 }
-.gs.drawn .rail path {
-  stroke-dashoffset: 0;
+/* History not yet read: the lane's shape as a hairline, filled with colour as the head passes. */
+.rail .ghost {
+  stroke: color-mix(in srgb, var(--ink) 14%, var(--paper));
+  stroke-width: 1.5px;
 }
-
 .rail .node {
   transform-box: fill-box;
   transform-origin: center;
-  transform: scale(0.6);
+}
+html.is-static .rail .ghost {
+  display: none;
+}
+
+/*
+  A scene's heading arrives after its commit lands. Script hides it until the
+  controller's first frame takes over (is-driven); if the script never runs,
+  the fallback shows it, so content is never lost to a failed load.
+*/
+html.is-live:not(.is-driven) [data-arrive] {
   opacity: 0;
-  transition:
-    transform 600ms var(--ease) 220ms,
-    opacity 240ms ease 220ms;
+  animation: arrive-fallback 1ms 3s forwards;
 }
-.gs.drawn .rail .node,
-html.is-static .rail .node {
-  transform: none;
-  opacity: 1;
-}
-html.is-static .rail path {
-  stroke-dasharray: none;
-  stroke-dashoffset: 0;
-  transition: stroke-width 220ms ease;
+@keyframes arrive-fallback {
+  to {
+    opacity: 1;
+  }
 }
 
 .lane-m {

@@ -1,0 +1,67 @@
+---
+// The hero's band for the overture: the page's whole commit graph in 3D,
+// tilted away under the hero's actions, which the scroll then lays flat onto
+// the rail (./rail/overture.ts, loaded on demand by the rail controller).
+// Decorative: the hero text already names every project. The band only takes
+// space when the overture can run (html.has-overture, set in the layout head).
+import { projects } from '~/data/site';
+---
+
+<div class="overture" data-overture aria-hidden="true">
+  <div class="stage">
+    <canvas></canvas>
+    {
+      projects.map((p) => (
+        <span class="label mono" data-label={p.lane}>
+          {p.repo.label.split('/')[1]}
+        </span>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .overture {
+    display: none;
+  }
+  :global(html.has-overture) .overture {
+    display: block;
+    height: 50svh;
+    margin-top: 32px;
+  }
+  /* The 3D view covers the viewport while the camera travels from the band to the rail. */
+  .stage {
+    position: fixed;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    visibility: hidden;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: -0.6em 0 0 18px;
+    font-size: 0.8125rem;
+    line-height: 1.2;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  @media (width <= 720px) {
+    :global(html.has-overture) .overture {
+      height: 40svh;
+      margin-top: 24px;
+    }
+  }
+  /* The hero already names the projects; a narrow phone has no room for labels too. */
+  @media (width <= 440px) {
+    .label {
+      display: none;
+    }
+  }
+</style>

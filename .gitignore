@@ -34,3 +34,10 @@ research/qualitybar/
 research/codex-probe/
 mockups/shots/*.png
 !mockups/shots/*-desktop.png
+
+# Playwright output; visual baselines are committed for Linux only (npm run test:e2e:update)
+test-results/
+playwright-report/
+blob-report/
+e2e/**/*-darwin.png
+e2e/**/*-win32.png

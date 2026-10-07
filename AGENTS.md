@@ -6,7 +6,7 @@ This repository is the landing page of **multnelis** (https://multnelis.org), bu
 
 ## Shipping changes
 
-`main` is protected: nobody pushes to it directly, admins included. Every change goes through a pull request, the `Check` and `Build` jobs of the CI workflow must pass on the branch (kept up to date with `main`), and then it is merged. Merging `main` deploys to GitHub Pages. Branches are deleted on merge, and auto-merge is enabled, so `gh pr merge --squash --auto` is the normal way to land a green pull request. Squash titles are Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`), because release-please reads them to open the release pull request that versions the site; that PR's checks wait for a maintainer to approve them (or to close and reopen it).
+`main` is protected: nobody pushes to it directly, admins included. Every change goes through a pull request, the `Check` and `Build` jobs of the CI workflow must pass on the branch (the `Test` job runs the unit, end-to-end and visual tests alongside them) (kept up to date with `main`), and then it is merged. Merging `main` deploys to GitHub Pages. Branches are deleted on merge, and auto-merge is enabled, so `gh pr merge --squash --auto` is the normal way to land a green pull request. Squash titles are Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`), because release-please reads them to open the release pull request that versions the site; that PR's checks wait for a maintainer to approve them (or to close and reopen it).
 
 ## Template Overview
 
@@ -28,13 +28,16 @@ This file is the single source of instructions for every coding agent. Codex rea
 
 ## Quick Reference
 
-| Command           | Purpose                             |
-| ----------------- | ----------------------------------- |
-| `npm run dev`     | Start dev server at localhost:4321  |
-| `npm run build`   | Production build to `./dist/`       |
-| `npm run preview` | Preview production build locally    |
-| `npm run check`   | Run astro check + ESLint + Prettier |
-| `npm run fix`     | Auto-fix ESLint + Prettier issues   |
+| Command                   | Purpose                                              |
+| ------------------------- | ---------------------------------------------------- |
+| `npm run dev`             | Start dev server at localhost:4321                   |
+| `npm run build`           | Production build to `./dist/`                        |
+| `npm run preview`         | Preview production build locally                     |
+| `npm run check`           | Run astro check + ESLint + Prettier                  |
+| `npm run fix`             | Auto-fix ESLint + Prettier issues                    |
+| `npm test`                | Unit tests (Vitest)                                  |
+| `npm run test:e2e`        | End-to-end + visual tests (Playwright, builds first) |
+| `npm run test:e2e:update` | Regenerate the Linux visual baselines in Docker      |
 
 **Node.js requirement:** >= 22.22.3
 
@@ -46,7 +49,8 @@ This file is the single source of instructions for every coding agent. Codex rea
 src/
   assets/styles/tailwind.css   # Tailwind v4 config (themes, utilities, plugins); imports shadcn.css and site.css
   components/
-    site/          # The multnelis pages: SiteHeader, Hero, Profile, ProjectField, Principles, Closing, PathRow, Rail, SiteFooter, LanguageToggle
+    site/          # The multnelis pages: SiteHeader, Hero, Overture, Profile, ProjectField, Principles, Closing, PathRow, Rail, SiteFooter, LanguageToggle
+      rail/        # The commit graph's motion: geometry.ts (shape), timeline.ts (pure scroll → frame), controller.ts (the one writer), overture.ts (three.js, lazy)
     common/        # Shared: Image, Metadata, StructuredData, Analytics, ApplyColorMode
     ui/            # Template primitives: Button, Form, Headline, Timeline, WidgetWrapper (not used by the current pages)
     widgets/       # Template page sections: Hero, Features, Bento, Pricing, FAQs… (not used by the current pages)
@@ -60,6 +64,8 @@ src/
   navigation.ts        # Navigation structure
   types.d.ts           # TypeScript type definitions
 vendor/integration/    # Custom Astro integration for config loading
+e2e/                   # Playwright specs, visual baselines (Linux), serve.mjs (serves dist/ like GitHub Pages)
+docs/interactive-landing/  # The scroll narrative's discovery, blueprint, timeline, architecture and test plan
 ```
 
 ### Path Aliases
@@ -133,5 +139,6 @@ After changes, always verify:
 
 1. `npm run build` succeeds
 2. `npm run check` passes (astro check + ESLint + Prettier)
-3. Visual check in browser: `/` and `/contact`, in English and Vietnamese (`?lang=vi`), at 390px and 1440px
-4. Structured data describes the site it is on: the JSON-LD in `src/pages/index.astro` and `src/pages/contact.astro` is built from `src/config.yaml` and `src/data/site.ts`; anything you add there must be true and visible on the page
+3. `npm test` and `npm run test:e2e` pass; after a deliberate visual change, regenerate the baselines with `npm run test:e2e:update` and review them
+4. Visual check in browser: `/` and `/contact`, in English and Vietnamese (`?lang=vi`), at 390px and 1440px, scrolling down and back up, and once with reduced motion
+5. Structured data describes the site it is on: the JSON-LD in `src/pages/index.astro` and `src/pages/contact.astro` is built from `src/config.yaml` and `src/data/site.ts`; anything you add there must be true and visible on the page

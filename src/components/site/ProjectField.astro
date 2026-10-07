@@ -33,7 +33,7 @@ const headingId = `project-${slug}`;
   <div class="field">
     <div class="grid">
       <div class="main">
-        <div class="head" data-pulse-lane={lane}>
+        <div class="head" data-pulse-lane={lane} data-arrive="0">
           <span class="tile" aria-hidden="true">
             {mark === 'undercroft' && <Icon name="undercroft" class="mark" />}
             {mark === 'ymir' && <img class="mark" src={ymirMark.src} width="56" height="56" alt="" />}
@@ -51,7 +51,7 @@ const headingId = `project-${slug}`;
             </p>
           </div>
         </div>
-        <p class="tagline" data-i18n={`project.${slug}.tagline`}>{tagline.en}</p>
+        <p class="tagline" data-arrive="1" data-i18n={`project.${slug}.tagline`}>{tagline.en}</p>
         <p class="detail" data-i18n={`project.${slug}.detail`}>{detail.en}</p>
 
         <h3 class="uses-title" id={`${slug}-uses`} data-i18n="ui.useCases">Use cases</h3>
