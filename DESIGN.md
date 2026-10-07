@@ -183,7 +183,7 @@ The site is the team's git history read top to bottom, and it shows the team thr
 
 The material is flat and printed. White ground, near-black ink, no shadows, no gradients, no glass. Hierarchy comes from three things only: the wide, heavy display face; the lane colours owning whole regions rather than accents; and hairline rules. The three faces have strict jobs (Anybody wide for headings and the wordmark, Hanken Grotesk for reading, JetBrains Mono for refs, handles, facts and metadata) so the mono face reads as "data from the repository" wherever it appears.
 
-Motion is one signature, not a mood: the rail draws itself as sections enter the viewport, nodes pop after the line arrives, and pointing at a project (its entry in the profile's index, its name in its field or on the contact page) pulses its lane along the whole page. Under `prefers-reduced-motion` the graph is simply already drawn.
+Motion is one signature, not a mood: scroll replays the history. The rail is drawn like a pen moving down the page, exactly as far as the reader has read, and a commit lands when the line reaches it; scrolling back up unwinds it. On arrival the visible part of the rail draws itself in. Text never moves or hides: only the graph is animated. Pointing at a project (its entry in the profile's index, its name in its field or on the contact page) pulses its lane along the whole page. Under `prefers-reduced-motion` the graph is simply already drawn. The plan and its reasoning are in `docs/interactive-landing/`.
 
 **Key Characteristics:**
 
@@ -192,7 +192,7 @@ Motion is one signature, not a mood: the rail draws itself as sections enter the
 - Anybody at width 125 and weight 700–800 for every heading; tight tracking (-0.02em); balanced wrapping.
 - JetBrains Mono reserved for repository facts: handles, refs, tags, state, the branch chip, the language switch.
 - Flat surfaces, hairline dividers, small radii (4–7px) on controls; circles only for avatars and lane dots.
-- One motion grammar: draw-on-scroll, node pop, lane pulse when a project is pointed at (hover or keyboard focus); all static under reduced motion.
+- One motion grammar, driven by scroll position: lanes draw down to the reader like a pen, commits land as the line reaches them; lane pulse when a project is pointed at (hover or keyboard focus); text never animates; all static under reduced motion.
 
 ## Colors
 
@@ -332,7 +332,7 @@ Inherit colour, 1px underline offset 0.2em, underline colour 45% of currentColor
 
 ### Rail (signature)
 
-An `aria-hidden` SVG per section built from measured layout. Lane order on the rail: main, Undercroft (`u`), Ymir (`y`), Text Transporter (`t`). Section kinds (`data-kind`): `hero` (lanes converge into the first big node), `fork` (one project lane forks off main to the anchor; `data-lane`), `merge` (the `data-merge` lanes bend in to a node on main and back out; with no lanes it is a plain commit on main, as the profile is), `through` (main and the `data-through` lanes pass straight down with no node), and `end` (every lane merges into the last big node). Any kind may list lanes in `data-through` that continue vertically without touching the commit. Nodes: regular r 8 with a 3px white ring (6 / 2.5 on phones); big r 14 / ring 4 (10 / 3) for the first and last commit; fork dot r 4.5 (3) on main where a project branches. Curve reach: fork 168px above the anchor (96 on phones), merge bends ±76px around the anchor (44), the hero lanes run 190px before converging (112). Draw-on: `stroke-dashoffset` 600ms on `cubic-bezier(0.19, 1, 0.22, 1)` when the section is 12% in view (`rootMargin -8%`), nodes scale 0.6→1 and fade in 220ms after. Pulse: any element with `data-pulse-lane` (an index row, a field's head, a contact row; each contains a link, so keyboard focus reaches it) sets `body[data-pulse]`; hover and focus are tracked separately and the hovered lane wins, so leaving one keeps the other, and `lane-pulse` runs 900ms ease-in-out infinite to 1.75× stroke. Reduced motion (or `?static`): `html.is-static`, lanes fully drawn, the pulse becomes a static 1.75× stroke.
+An `aria-hidden` SVG per section built from measured layout. Lane order on the rail: main, Undercroft (`u`), Ymir (`y`), Text Transporter (`t`). Section kinds (`data-kind`): `hero` (lanes converge into the first big node), `fork` (one project lane forks off main to the anchor; `data-lane`), `merge` (the `data-merge` lanes bend in to a node on main and back out; with no lanes it is a plain commit on main, as the profile is), `through` (main and the `data-through` lanes pass straight down with no node), and `end` (every lane merges into the last big node). Any kind may list lanes in `data-through` that continue vertically without touching the commit. Nodes: regular r 8 with a 3px white ring (6 / 2.5 on phones); big r 14 / ring 4 (10 / 3) for the first and last commit; fork dot r 4.5 (3) on main where a project branches. Curve reach: fork 168px above the anchor (96 on phones), merge bends ±76px around the anchor (44), the hero lanes run 190px before converging (112). Replay: the pen belongs 85% down the viewport, sliding to its bottom over the last viewport of scroll so the footer's commit lands as the page bottoms out. It follows the scroll with a 140ms time constant, so a wheel step is drawn as one stroke, and it always settles where the scroll says; a jump of more than a viewport (a link, the scrollbar) draws out only its last screen. On load it starts at the top of the screen, so the visible rail draws itself in. Each lane's stroke is drawn down to the pen (`stroke-dashoffset`, written per frame, never transitioned); a node scales 0.6→1 and fades in over the 4% of the viewport after the pen reaches it, on `--ease`. Below the pen the rail is empty: no hairline, no placeholder. Measured layout is cached in document coordinates and refreshed only on load, font load, resize and `multnelis:lang`; the timeline (`src/components/site/rail/timeline.ts`) is pure, and one controller (`src/components/site/rail/controller.ts`) is the only writer of the rail's strokes and nodes. Pulse: any element with `data-pulse-lane` (an index row, a field's head, a contact row; each contains a link, so keyboard focus reaches it) sets `body[data-pulse]`; hover and focus are tracked separately and the hovered lane wins, so leaving one keeps the other, and `lane-pulse` runs 900ms ease-in-out infinite to 1.75× stroke. Reduced motion (or `?static`): `html.is-static`, set by an inline script in the layout's head before first paint; lanes fully drawn, the pulse becomes a static 1.75× stroke.
 
 ### Navigation
 
@@ -356,6 +356,7 @@ English is server-rendered. Every translatable text node carries `data-i18n="<ke
 - **Do** keep controls on the 4–7px radius scale with a 1px Ink or Hair border and no fill at rest; fill with Ink only for the solid button and the pressed segment.
 - **Do** add new strings to `src/data/site.ts` with both `en` and `vi` and mark the node with `data-i18n` (or `data-i18n-alt` / `data-i18n-aria`).
 - **Do** gate any new motion on `html.is-static` and `prefers-reduced-motion`, and use `--ease` (`cubic-bezier(0.19, 1, 0.22, 1)`) for movement.
+- **Do** drive any scroll-linked motion from the rail controller's frame (add it to `timeline.ts`) rather than giving it its own observer or transition.
 - **Do** put a heading between rows in its own `data-kind="through"` section listing every live lane in `data-through`, so the graph never breaks between commits.
 - **Do** keep people off the site: no names, handles, avatars or bios; the team speaks through its projects.
 - **Do** write mono arrow links as `<a><span>label</span>&nbsp;→</a>` with the anchor nowrap and the span free to wrap (the Nowrap-Anchor Rule).
@@ -367,6 +368,9 @@ English is server-rendered. Every translatable text node carries `data-i18n="<ke
 - **Don't** add shadows, gradients, blur or translucent panels; the world is flat print.
 - **Don't** introduce a fourth accent or a dark theme; the site is light-only by configuration.
 - **Don't** style the rail from a component; its paths are script-built and its rules live in the global `site.css`.
+- **Don't** add a second scroll listener, IntersectionObserver or CSS transition on the rail's strokes or nodes; one owner writes them.
+- **Don't** animate, hide or fade text on scroll; content is always readable, only the graph moves.
+- **Don't** use depth, perspective or 3D; it was tried as a hero overture and rejected.
 - **Don't** put prose in the mono face or set Anybody at normal width.
 - **Don't** add copy that is not backed by a public repository (no user counts, testimonials, clients), and never name a private repository.
 - **Don't** hardcode a colour or font: reference `--ink`, `--ink-2`, `--hair`, `--paper`, `--lane-u` / `--lane-y` / `--lane-t`, `--display` / `--body` / `--mono`.

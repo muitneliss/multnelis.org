@@ -36,6 +36,11 @@ const { language, textDirection } = I18N;
     <Font cssVariable="--font-jetbrains" preload={[{ subset: 'latin' }]} />
     <CustomStyles />
     <ApplyColorMode />
+    <!-- Under reduced motion (or ?static) the graph is drawn in full: decided before first paint. -->
+    <script is:inline>
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches || /[?&#]static/.test(location.search + location.hash))
+        document.documentElement.classList.add('is-static');
+    </script>
     <Metadata {...metadata} />
     <SiteVerification />
     <Analytics />
