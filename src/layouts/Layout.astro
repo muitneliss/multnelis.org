@@ -36,21 +36,10 @@ const { language, textDirection } = I18N;
     <Font cssVariable="--font-jetbrains" preload={[{ subset: 'latin' }]} />
     <CustomStyles />
     <ApplyColorMode />
-    <!--
-      Motion mode, decided before first paint so nothing flashes: is-static under
-      reduced motion (or ?static), otherwise is-live, plus has-overture when the
-      hero's 3D overture can run (WebGL, and the visitor has not asked to save data).
-    -->
+    <!-- Under reduced motion (or ?static) the graph is drawn in full: decided before first paint. -->
     <script is:inline>
-      (function () {
-        const html = document.documentElement;
-        const still =
-          matchMedia('(prefers-reduced-motion: reduce)').matches || /[?&#]static/.test(location.search + location.hash);
-        if (still) return html.classList.add('is-static');
-        html.classList.add('is-live');
-        const saveData = navigator.connection && navigator.connection.saveData;
-        if (!saveData && 'WebGL2RenderingContext' in window) html.classList.add('has-overture');
-      })();
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches || /[?&#]static/.test(location.search + location.hash))
+        document.documentElement.classList.add('is-static');
     </script>
     <Metadata {...metadata} />
     <SiteVerification />

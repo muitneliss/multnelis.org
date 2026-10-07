@@ -2,7 +2,7 @@
   The commit graph's shape for one section: which lanes run where, and where
   the commits sit. Pure: it takes the section's measured height and anchor and
   returns, for each lane, the SVG path data and the same path as a polyline,
-  so the flat rail, the scroll timeline and the 3D overture share one shape.
+  so the rail that is drawn and the timeline that measures it share one shape.
 */
 
 /** `m` is main; `u`, `y`, `t` are the project lanes (see src/data/site.ts). */

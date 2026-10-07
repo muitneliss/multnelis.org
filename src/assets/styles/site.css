@@ -149,11 +149,7 @@ h3 {
   The rail is drawn as far as the reader has scrolled: the controller
   (src/components/site/rail/controller.ts) writes each stroke's dash offset
   and each node's landing on every frame, so nothing here transitions them.
-  Under the hero's 3D overture the flat rail waits at --rail-opacity.
 */
-.rail {
-  opacity: var(--rail-opacity, 1);
-}
 .rail path {
   fill: none;
   stroke-width: var(--sw);
@@ -161,32 +157,9 @@ h3 {
   stroke-linejoin: round;
   transition: stroke-width 220ms ease;
 }
-/* History not yet read: the lane's shape as a hairline, filled with colour as the head passes. */
-.rail .ghost {
-  stroke: color-mix(in srgb, var(--ink) 14%, var(--paper));
-  stroke-width: 1.5px;
-}
 .rail .node {
   transform-box: fill-box;
   transform-origin: center;
-}
-html.is-static .rail .ghost {
-  display: none;
-}
-
-/*
-  A scene's heading arrives after its commit lands. Script hides it until the
-  controller's first frame takes over (is-driven); if the script never runs,
-  the fallback shows it, so content is never lost to a failed load.
-*/
-html.is-live:not(.is-driven) [data-arrive] {
-  opacity: 0;
-  animation: arrive-fallback 1ms 3s forwards;
-}
-@keyframes arrive-fallback {
-  to {
-    opacity: 1;
-  }
 }
 
 .lane-m {

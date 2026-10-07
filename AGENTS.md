@@ -49,8 +49,8 @@ This file is the single source of instructions for every coding agent. Codex rea
 src/
   assets/styles/tailwind.css   # Tailwind v4 config (themes, utilities, plugins); imports shadcn.css and site.css
   components/
-    site/          # The multnelis pages: SiteHeader, Hero, Overture, Profile, ProjectField, Principles, Closing, PathRow, Rail, SiteFooter, LanguageToggle
-      rail/        # The commit graph's motion: geometry.ts (shape), timeline.ts (pure scroll → frame), controller.ts (the one writer), overture.ts (three.js, lazy)
+    site/          # The multnelis pages: SiteHeader, Hero, Profile, ProjectField, Principles, Closing, PathRow, Rail, SiteFooter, LanguageToggle
+      rail/        # The commit graph's motion: geometry.ts (shape), timeline.ts (pure scroll → frame), controller.ts (the one writer)
     common/        # Shared: Image, Metadata, StructuredData, Analytics, ApplyColorMode
     ui/            # Template primitives: Button, Form, Headline, Timeline, WidgetWrapper (not used by the current pages)
     widgets/       # Template page sections: Hero, Features, Bento, Pricing, FAQs… (not used by the current pages)

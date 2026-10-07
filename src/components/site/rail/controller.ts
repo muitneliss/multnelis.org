@@ -1,13 +1,12 @@
 /*
-  The one owner of the graph's motion. It measures the page into document
+  The one owner of the rail's motion. It measures the page into document
   coordinates (on load, font load, resize and language change, never while
-  scrolling), and on each animation frame turns the scroll position into a
-  frame through the pure timeline and writes it: lane strokes, commit nodes,
-  arriving headings, and the overture's 3D view. Nothing else writes these.
+  scrolling) and, on animation frames, moves the pen toward where the scroll
+  says it belongs and writes what the pure timeline draws there: lane strokes
+  and commit nodes. Nothing else writes these.
 */
 import { type Branch, type Lane, type RailNode, type SectionKind, railGeometry, sectionShape } from './geometry';
-import { type Layout, type PathTrack, TIMELINE, computeFrame } from './timeline';
-import type { Overture } from './overture';
+import { type Layout, type PathTrack, computeFrame, drawHead, followHead } from './timeline';
 
 const NS = 'http://www.w3.org/2000/svg';
 const COLOR: Record<Lane, string> = { m: 'var(--ink)', u: 'var(--lane-u)', y: 'var(--lane-y)', t: 'var(--lane-t)' };
@@ -20,7 +19,7 @@ const mk = (name: string, attrs: Record<string, string | number>) => {
   return el;
 };
 
-/** Document y of an element's top, ignoring transforms (arriving elements are translated). */
+/** Document y of an element's top. */
 function docTop(el: HTMLElement) {
   let y = 0;
   for (let e: HTMLElement | null = el; e; e = e.offsetParent as HTMLElement | null) y += e.offsetTop;
@@ -67,31 +66,23 @@ const lanes = (s: string | undefined) => (s || '').split(',').filter(Boolean) as
 export function startRail() {
   const still = html.classList.contains('is-static');
   const sections = Array.from(document.querySelectorAll<HTMLElement>('.gs'));
-  const band = document.querySelector<HTMLElement>('[data-overture]');
 
   let layout: Layout | null = null;
-  let geometry = railGeometry(120);
   let pathEls: SVGPathElement[] = [];
   let nodeEls: SVGGElement[] = [];
-  let arriveEls: HTMLElement[] = [];
-  const forced = new Set<HTMLElement>();
   /* Last written values, so a frame only touches what changed. */
   let written: Float32Array = new Float32Array(0);
-
-  let overture: Overture | null = null;
-  let overtureState: 'idle' | 'loading' | 'ready' | 'failed' = 'idle';
+  /* The pen: where the drawing currently ends, in document y. It starts at the top of the screen, so the rail draws itself in on arrival. */
+  let pen = NaN;
+  let lastFrame = 0;
 
   function measure() {
     const W = parseFloat(getComputedStyle(html).getPropertyValue('--rail')) || 120;
     const g = railGeometry(W);
-    geometry = g;
     const paths: PathTrack[] = [];
     const nodes: RailNode[] = [];
-    const arrivals: Layout['arrivals'] = [];
     pathEls = [];
     nodeEls = [];
-    arriveEls = [];
-    let pivot: { x: number; y: number } | null = null;
 
     for (const sec of sections) {
       const svg = sec.querySelector<SVGSVGElement>(':scope > svg.rail');
@@ -110,13 +101,12 @@ export function startRail() {
         hollow: sec.hasAttribute('data-hollow'),
       });
 
-      const ghosts = shape.paths.map((p) => mk('path', { class: 'ghost', d: p.d }));
       const strokes = shape.paths.map((p) => mk('path', { class: 'lane-' + p.lane, d: p.d }) as SVGPathElement);
       const dots = shape.nodes.map((n) => nodeElement(g, n) as SVGGElement);
       svg.setAttribute('viewBox', `0 0 ${W} ${Math.round(H)}`);
       svg.setAttribute('width', String(W));
       svg.setAttribute('height', String(Math.round(H)));
-      svg.replaceChildren(...ghosts, ...strokes, ...dots);
+      svg.replaceChildren(...strokes, ...dots);
 
       shape.paths.forEach((p, i) => {
         const t = track(p.lane, p.points, top);
@@ -127,59 +117,23 @@ export function startRail() {
       shape.nodes.forEach((n, i) => {
         nodes.push({ ...n, y: n.y + top });
         nodeEls.push(dots[i]);
-        if (sec.dataset.kind === 'hero' && n.size === 'big') pivot = { x: n.x, y: n.y + top };
       });
-      for (const el of sec.querySelectorAll<HTMLElement>('[data-arrive]')) {
-        arrivals.push({ y: A + top, order: Number(el.dataset.arrive) || 0 });
-        arriveEls.push(el);
-      }
     }
 
-    const showOverture = !still && band && pivot && html.classList.contains('has-overture');
-    layout = {
-      docHeight: html.scrollHeight,
-      paths,
-      nodes,
-      arrivals,
-      overture: showOverture
-        ? { band: { top: docTop(band), height: band.offsetHeight }, pivot: pivot!, laneSpan: g.x.t - g.x.m }
-        : null,
-    };
-    written = new Float32Array(paths.length + nodes.length + arrivals.length).fill(NaN);
-    overture?.setLayout(layout, g);
+    layout = { docHeight: html.scrollHeight, paths, nodes };
+    written = new Float32Array(paths.length + nodes.length).fill(NaN);
   }
 
-  const viewport = () => ({
-    scrollY: window.scrollY,
-    width: html.clientWidth,
-    height: html.clientHeight,
-    phone: geometry.phone,
-  });
-
-  function loadOverture() {
-    overtureState = 'loading';
-    import('./overture')
-      .then(({ mountOverture }) => {
-        overture = mountOverture(band!);
-        overture.setLayout(layout!, geometry);
-        overtureState = 'ready';
-        schedule();
-      })
-      .catch(() => {
-        /* No WebGL or the chunk failed: the page falls back to the flat rail. */
-        overtureState = 'failed';
-        html.classList.remove('has-overture');
-        html.style.removeProperty('--rail-opacity');
-        schedule(true);
-      });
-  }
-
-  function render() {
+  function render(now: number) {
     if (!layout || still) return;
-    const view = viewport();
-    const frame = computeFrame(layout, view, false);
-    let w = 0;
+    const view = { scrollY: window.scrollY, height: html.clientHeight };
+    const target = drawHead(view, layout.docHeight);
+    if (Number.isNaN(pen)) pen = view.scrollY;
+    pen = followHead(pen, target, lastFrame ? now - lastFrame : 0, view.height);
+    lastFrame = pen === target ? 0 : now;
 
+    const frame = computeFrame(layout, pen, view.height);
+    let w = 0;
     layout.paths.forEach((p, i) => {
       const d = frame.drawn[i];
       if (written[w] !== d) {
@@ -189,7 +143,6 @@ export function startRail() {
       }
       w++;
     });
-
     frame.nodes.forEach((t, i) => {
       if (written[w] !== t) {
         written[w] = t;
@@ -199,29 +152,8 @@ export function startRail() {
       w++;
     });
 
-    const rise = view.phone ? TIMELINE.arrive.distancePhone : TIMELINE.arrive.distance;
-    frame.arrivals.forEach((t0, i) => {
-      const el = arriveEls[i];
-      const t = forced.has(el) ? 1 : t0;
-      if (written[w] !== t) {
-        written[w] = t;
-        el.style.translate = t >= 1 ? '' : `0 ${((1 - t) * rise).toFixed(2)}px`;
-        el.style.opacity = t >= 1 ? '' : String(t);
-      }
-      w++;
-    });
-    html.classList.add('is-driven');
-
-    const o = frame.overture;
-    if (o) {
-      /* The flat rail waits under the 3D view and is fully drawn before the view fades off it. */
-      html.style.setProperty('--rail-opacity', o.canvas < 1 ? '1' : '0');
-      if (o.progress < 1 && overtureState === 'idle') loadOverture();
-      overture?.render(o, view);
-    } else {
-      html.style.removeProperty('--rail-opacity');
-      overture?.render(null, view);
-    }
+    /* Until the pen arrives, keep drawing. */
+    if (pen !== target) schedule();
   }
 
   let queued = false;
@@ -230,29 +162,15 @@ export function startRail() {
     dirty ||= remeasure;
     if (queued) return;
     queued = true;
-    requestAnimationFrame(() => {
+    requestAnimationFrame((now) => {
       queued = false;
       if (dirty) {
         dirty = false;
         measure();
       }
-      render();
+      render(now);
     });
   }
-
-  /* A focused element inside an arriving heading (a repository chip reached by Tab) is shown in place. */
-  document.addEventListener('focusin', (e) => {
-    const el = (e.target as HTMLElement).closest<HTMLElement>('[data-arrive]');
-    if (!el) return;
-    forced.add(el);
-    schedule();
-  });
-  document.addEventListener('focusout', (e) => {
-    const el = (e.target as HTMLElement).closest<HTMLElement>('[data-arrive]');
-    if (!el) return;
-    forced.delete(el);
-    schedule();
-  });
 
   schedule(true);
   window.addEventListener('scroll', () => schedule(), { passive: true });

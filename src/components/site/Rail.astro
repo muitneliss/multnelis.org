@@ -11,7 +11,7 @@
 <script>
   import { startRail } from './rail/controller';
 
-  /* Draw-on-scroll, landing commits and the overture: one controller owns them all. */
+  /* The rail draws itself as far as the reader has scrolled; one controller owns it. */
   startRail();
 
   /* Point at a project, by hover or keyboard focus: its lane pulses on the whole

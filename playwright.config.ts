@@ -13,11 +13,10 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
   updateSnapshots: process.env.CI ? 'none' : 'missing',
-  expect: { toHaveScreenshot: { maxDiffPixelRatio: 0.01 } },
+  // The pen eases toward the scroll position; on a busy machine frames come slowly, so allow it time to settle.
+  expect: { timeout: 10_000, toHaveScreenshot: { maxDiffPixelRatio: 0.01 } },
   use: {
     baseURL: `http://127.0.0.1:${PORT}`,
-    // Headless Chromium has no GPU: the overture's WebGL runs on SwiftShader.
-    launchOptions: { args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] },
   },
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } } },
