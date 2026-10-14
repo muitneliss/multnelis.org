@@ -7,6 +7,7 @@ import { Icon } from 'astro-icon/components';
 import Rail from '~/components/site/Rail.astro';
 import ymirMark from '~/assets/images/ymir.svg';
 import textTransporterMark from '~/assets/images/text-transporter.svg';
+import kannaMark from '~/assets/images/kanna.png';
 import { type Project, lanes } from '~/data/site';
 
 export interface Props {
@@ -42,6 +43,7 @@ const headingId = `project-${slug}`;
                 <img class="mark" src={textTransporterMark.src} width="56" height="56" alt="" />
               )
             }
+            {mark === 'kanna' && <img class="mark" src={kannaMark.src} width="56" height="56" alt="" />}
           </span>
           <div>
             <h2 id={headingId} data-anchor>{name}</h2>
@@ -129,6 +131,9 @@ const headingId = `project-${slug}`;
   .p-t .field {
     background: var(--lane-t);
   }
+  .p-k .field {
+    background: var(--lane-k);
+  }
   .p-u .field ::selection {
     background: #fff;
     color: var(--lane-u);
@@ -140,6 +145,10 @@ const headingId = `project-${slug}`;
   .p-t .field ::selection {
     background: #fff;
     color: var(--lane-t);
+  }
+  .p-k .field ::selection {
+    background: #fff;
+    color: var(--lane-k);
   }
 
   .grid {
@@ -214,6 +223,9 @@ const headingId = `project-${slug}`;
   }
   .p-t .chip:hover {
     color: var(--lane-t);
+  }
+  .p-k .chip:hover {
+    color: var(--lane-k);
   }
   .status {
     font-size: 0.8125rem;

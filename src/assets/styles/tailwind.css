@@ -29,6 +29,7 @@
   --color-lane-vermilion: var(--aw-color-lane-vermilion);
   --color-lane-cobalt: var(--aw-color-lane-cobalt);
   --color-lane-jade: var(--aw-color-lane-jade);
+  --color-lane-rose: var(--aw-color-lane-rose);
 
   --font-sans:
     var(--aw-font-sans, ui-sans-serif), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',

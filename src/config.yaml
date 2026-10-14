@@ -11,7 +11,7 @@ metadata:
   title:
     default: multnelis
     template: '%s — multnelis'
-  description: 'multnelis is an engineering team in Ho Chi Minh City shipping its tools in the open: Undercroft, Ymir, and Text Transporter.'
+  description: 'multnelis is an engineering team in Ho Chi Minh City shipping its tools in the open: Undercroft, Ymir, Text Transporter, and Kanna.'
   robots:
     index: true
     follow: true

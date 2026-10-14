@@ -9,7 +9,13 @@ import { type Branch, type Lane, type RailNode, type SectionKind, railGeometry, 
 import { type Layout, type PathTrack, computeFrame, drawHead, followHead } from './timeline';
 
 const NS = 'http://www.w3.org/2000/svg';
-const COLOR: Record<Lane, string> = { m: 'var(--ink)', u: 'var(--lane-u)', y: 'var(--lane-y)', t: 'var(--lane-t)' };
+const COLOR: Record<Lane, string> = {
+  m: 'var(--ink)',
+  u: 'var(--lane-u)',
+  y: 'var(--lane-y)',
+  t: 'var(--lane-t)',
+  k: 'var(--lane-k)',
+};
 
 const html = document.documentElement;
 
