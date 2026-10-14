@@ -1,7 +1,8 @@
 // Every word on the site lives here. The site is the team's profile told
 // through its public projects: no people are shown. Do not add claims that are
 // not backed by a public repository (no testimonials, counts of users,
-// clients, funding, hiring), and do not list private repositories.
+// clients, funding, hiring), and do not list private repositories. Kanna's
+// repository is linked under a team member's personal account (see PRODUCT.md).
 //
 // English is server-rendered. The Vietnamese strings are emitted as a JSON
 // dictionary (see `viDictionary`) and swapped in by the language toggle, so
@@ -12,8 +13,8 @@ export interface Bilingual {
   vi: string;
 }
 
-/** Rail lane keys, one per project: `u` Undercroft, `y` Ymir, `t` Text Transporter. `m` is main. */
-export type Lane = 'u' | 'y' | 't';
+/** Rail lane keys, one per project: `u` Undercroft, `y` Ymir, `t` Text Transporter, `k` Kanna. `m` is main. */
+export type Lane = 'u' | 'y' | 't' | 'k';
 
 export interface UseCase {
   title: Bilingual;
@@ -38,7 +39,7 @@ export interface Project {
   status?: string;
   lane: Lane;
   /** The project's own mark. */
-  mark: 'undercroft' | 'ymir' | 'text-transporter';
+  mark: 'undercroft' | 'ymir' | 'text-transporter' | 'kanna';
 }
 
 export const brand = {
@@ -59,8 +60,8 @@ export const statement: Bilingual = {
 };
 
 export const supporting: Bilingual = {
-  en: 'multnelis is based in Ho Chi Minh City. We publish three tools we use in our own work: a data platform you host yourself, a harness that gets any repository ready for coding agents, and a notes board that moves text between machines.',
-  vi: 'multnelis ở Sài Gòn. Chúng tôi công khai mã nguồn của ba công cụ mình dùng trong công việc: một nền tảng dữ liệu bạn tự host, một bộ quy tắc giúp mọi repository sẵn sàng cho coding agent, và một bảng ghi chú chuyển văn bản giữa các máy.',
+  en: 'multnelis is based in Ho Chi Minh City. We publish four tools we use in our own work: a data platform you host yourself, a harness that gets any repository ready for coding agents, a notes board that moves text between machines, and a web workspace for running coding agents.',
+  vi: 'multnelis ở Sài Gòn. Chúng tôi công khai mã nguồn của bốn công cụ mình dùng trong công việc: một nền tảng dữ liệu bạn tự host, một bộ quy tắc giúp mọi repository sẵn sàng cho coding agent, một bảng ghi chú chuyển văn bản giữa các máy, và một không gian làm việc trên web để chạy coding agent.',
 };
 
 export const actions = {
@@ -219,6 +220,56 @@ export const projects: Project[] = [
     lane: 't',
     mark: 'text-transporter',
   },
+  {
+    slug: 'kanna',
+    name: 'Kanna',
+    track: { en: 'Agent tooling', vi: 'Công cụ cho coding agent' },
+    tagline: {
+      en: 'Run Claude Code and Codex from a web workspace built for long sessions.',
+      vi: 'Chạy Claude Code và Codex trong một không gian làm việc trên web, dành cho những phiên làm việc dài.',
+    },
+    detail: {
+      en: 'Kanna is a web UI for the Claude Code and Codex CLIs that you run on your own machine. Tool calls, diffs and plans read as one transcript; every chat is kept in an append-only log and can be resumed; each piece of work can get its own git worktree. It runs on macOS and Linux and installs with Bun.',
+      vi: 'Kanna là giao diện web cho Claude Code CLI và Codex CLI, chạy ngay trên máy của bạn. Tool call, diff và plan hiện thành một transcript dễ đọc; mọi cuộc chat được lưu trong log chỉ ghi thêm và có thể tiếp tục; mỗi phần việc có thể có git worktree riêng. Nó chạy trên macOS và Linux, cài bằng Bun.',
+    },
+    useCases: [
+      {
+        title: { en: 'Give every task its own branch', vi: 'Mỗi việc một branch riêng' },
+        text: {
+          en: 'On a kanban board, one card is one branch, one git worktree and one chat, so agents on different cards never touch each other’s files.',
+          vi: 'Trên bảng kanban, một thẻ là một branch, một git worktree và một cuộc chat, nên các agent ở những thẻ khác nhau không đụng vào tệp của nhau.',
+        },
+      },
+      {
+        title: { en: 'Work toward a goal unattended', vi: 'Làm tới đích khi bạn vắng mặt' },
+        text: {
+          en: 'Give a loop a goal and a verify command, and it keeps handing out the next step until the command passes. Recurring prompts run on a cron schedule.',
+          vi: 'Đưa cho một vòng lặp mục tiêu và một lệnh kiểm tra, nó sẽ giao bước kế tiếp cho tới khi lệnh đó chạy qua. Các prompt định kỳ chạy theo lịch cron.',
+        },
+      },
+      {
+        title: { en: 'Delegate to named subagents', vi: 'Giao việc cho subagent có tên' },
+        text: {
+          en: 'Define subagents with their own instructions; the main agent hands them work, in the background if you like, and picks up the result.',
+          vi: 'Định nghĩa subagent với hướng dẫn riêng; agent chính giao việc cho chúng, chạy nền nếu bạn muốn, rồi nhận lại kết quả.',
+        },
+      },
+      {
+        title: { en: 'Choose the model per chat', vi: 'Chọn model cho từng cuộc chat' },
+        text: {
+          en: 'Switch between Claude, Codex and OpenRouter per chat, and rotate a pool of Claude accounts when one reaches its rate limit.',
+          vi: 'Đổi giữa Claude, Codex và OpenRouter cho từng cuộc chat, và xoay vòng nhiều tài khoản Claude khi một tài khoản chạm giới hạn.',
+        },
+      },
+    ],
+    tags: 'TypeScript · Bun · React · Claude Code · Codex · MCP',
+    repo: { label: 'cuongtranba/kanna', url: 'https://github.com/cuongtranba/kanna' },
+    site: { label: 'kanna-wiki.lowbit.link', url: 'https://kanna-wiki.lowbit.link' },
+    start: { key: 'install', value: 'bun install -g @cuongtran001/kanna' },
+    status: 'released',
+    lane: 'k',
+    mark: 'kanna',
+  },
 ];
 
 /** How the team works, each principle pointing at the repositories that show it. */
@@ -247,8 +298,8 @@ export const principles = {
       key: 'ship',
       title: { en: 'Ship small, in the open.', vi: 'Phát hành từng phần nhỏ, công khai.' },
       text: {
-        en: 'Work lands through pull requests with CI, and Undercroft and Ymir cut every release with release-please, changelog included.',
-        vi: 'Mọi thay đổi đi qua pull request có CI, và Undercroft cùng Ymir ra mỗi phiên bản bằng release-please, kèm changelog.',
+        en: 'Work lands through pull requests with CI, and Undercroft, Ymir and Kanna cut every release with release-please, changelog included.',
+        vi: 'Mọi thay đổi đi qua pull request có CI, và Undercroft, Ymir cùng Kanna ra mỗi phiên bản bằng release-please, kèm changelog.',
       },
       proof: 'pull requests · release-please',
     },
@@ -279,7 +330,7 @@ export const contact = {
   action: { en: 'Email us', vi: 'Gửi email cho chúng tôi' } satisfies Bilingual,
   projects: { en: 'Project questions and issues', vi: 'Câu hỏi và báo lỗi theo dự án' } satisfies Bilingual,
   metaTitle: 'Contact — multnelis',
-  metaDescription: 'Write to contact@multnelis.org, or open an issue on Undercroft, Ymir, or Text Transporter.',
+  metaDescription: 'Write to contact@multnelis.org, or open an issue on Undercroft, Ymir, Text Transporter, or Kanna.',
 };
 
 /** Rendered as "multnelis · <place> · github.com/muitneliss · contact@multnelis.org". */

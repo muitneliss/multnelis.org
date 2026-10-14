@@ -2,7 +2,7 @@
 
 The site of **multnelis**, an engineering team in Ho Chi Minh City that builds the tools it works with and ships them in the open. Live at [multnelis.org](https://multnelis.org).
 
-It is a team profile told through the team's public projects, with no individual people on it. The page is a git commit graph: main is the team, each project (Undercroft, Ymir, Text Transporter) branches off it in its own colour, and every lane merges back at "How we work" and at the footer. Scroll replays that history: each lane is drawn like a pen moving down the page, exactly as far as the visitor has read, and a commit lands when the line reaches it (see `docs/interactive-landing/`).
+It is a team profile told through the team's public projects, with no individual people on it. The page is a git commit graph: main is the team, each project (Undercroft, Ymir, Text Transporter, Kanna) branches off it in its own colour, and every lane merges back at "How we work" and at the footer. Scroll replays that history: each lane is drawn like a pen moving down the page, exactly as far as the visitor has read, and a commit lands when the line reaches it (see `docs/interactive-landing/`).
 
 ## Stack
 
@@ -23,7 +23,7 @@ It is a team profile told through the team's public projects, with no individual
 | `src/components/site/rail/` | The graph's shape, the scroll timeline, and the one controller that draws it                    |
 | `e2e/`                      | Playwright end-to-end and visual tests, and a static server that serves `dist/` like Pages      |
 | `docs/interactive-landing/` | The scroll narrative: discovery, scene blueprint, timeline, architecture, test plan             |
-| `src/assets/images/`        | Project marks (Ymir, Text Transporter) and the social preview; Undercroft's is an icon.         |
+| `src/assets/images/`        | Project marks (Ymir, Text Transporter, Kanna) and the social preview; Undercroft's is an icon.  |
 | `src/assets/favicons/`      | The multnelis mark (three lanes merging into one node).                                         |
 | `brand/`                    | Mark concepts and the social-preview composition (`og.html`, rendered to `out/og.png`).         |
 | `mockups/`                  | The design rounds that led to this page; `b-graph.html` is the chosen direction.                |

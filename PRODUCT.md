@@ -20,13 +20,14 @@ A company profile for the multnelis team, told through its public projects rathe
 
 ## Positioning
 
-An engineering team in Ho Chi Minh City that builds the tools it works with and ships them in the open: a self-hostable data platform (Undercroft), a harness generator for coding agents (Ymir), and a notes board that moves text between machines (Text Transporter). Presented as a team, not as individuals, and not as an agency selling services.
+An engineering team in Ho Chi Minh City that builds the tools it works with and ships them in the open: a self-hostable data platform (Undercroft), a harness generator for coding agents (Ymir), a notes board that moves text between machines (Text Transporter), and a web workspace for running Claude Code and Codex (Kanna). Presented as a team, not as individuals, and not as an agency selling services.
 
 ## Operating Context
 
 - GitHub organisation: https://github.com/muitneliss (spelled m-u-i-t, two "s"). Domain and brand: multnelis.org (spelled m-u-l-t, one "s"), the domain the team actually registered at Cloudflare on 2026-09-22. The page uses the domain spelling everywhere; the org URL is linked as-is. Do not "correct" one to the other.
 - No people are shown (user decision, September 2026): no member names, handles, avatars or bios, on any page or in structured data.
-- Projects shown: public repositories only (user decision, September 2026): undercroft, ymir, text-transporter. Private repositories are never named or described, here or on the site, since this repository is public. symphony-its-everdred is excluded because it is a fork with no commits from the team; cli-proxy-api-service and the Stirling-PDF fork are excluded as deployment config and an unmodified fork.
+- Projects shown: public repositories only (user decision, September 2026): undercroft, ymir, text-transporter, kanna. Private repositories are never named or described, here or on the site, since this repository is public. symphony-its-everdred is excluded because it is a fork with no commits from the team; cli-proxy-api-service and the Stirling-PDF fork are excluded as deployment config and an unmodified fork.
+- Kanna is linked at its home, github.com/cuongtranba/kanna, a team member's account: the one exception to the no-handles rule (user decision, October 2026). It is a fork with most of its commits from the team; the page describes what it does, not its origin (user decision).
 - Hosting: GitHub Pages with a CNAME file. DNS for multnelis.org is not yet configured.
 
 ## Capabilities and Constraints
@@ -41,7 +42,7 @@ An engineering team in Ho Chi Minh City that builds the tools it works with and 
 ## Brand Commitments
 
 - Name: "multnelis" (lowercase on the page, matching the domain).
-- Project marks are reused as-is: Undercroft's arch mark (`src/assets/icons/undercroft.svg`, single ink, 32x32), Ymir's frost-rune tile (`src/assets/images/ymir.svg`) and Text Transporter's sticky-note icon (`src/assets/images/text-transporter.svg`, copied from the repository's `app/icon.svg`).
+- Project marks are reused as-is: Undercroft's arch mark (`src/assets/icons/undercroft.svg`, single ink, 32x32), Ymir's frost-rune tile (`src/assets/images/ymir.svg`) and Text Transporter's sticky-note icon (`src/assets/images/text-transporter.svg`, copied from the repository's `app/icon.svg`), and Kanna's flower mark, copied from the repository's `public/icon-512.png` and downscaled to `src/assets/images/kanna.png`.
 - The org has no logo yet; the GitHub org avatar is an auto-generated identicon and is not a brand asset.
 
 ## Evidence on Hand
@@ -51,6 +52,7 @@ Project facts:
 - **Undercroft**: immutable, content-addressed raw lake (S3/MinIO) plus declarative YAML connectors, one generic Postgres table, dbt models on top, multi-tenant with AES-256-GCM sealed credentials. HubSpot, Xero, Gmail and Drive sources; search folded for Vietnamese tone marks; first-party BI; a CLI and an MCP server that act with the signed-in person's permissions. MIT. Pre-alpha, released with release-please. Homepage undercroft.lowbit.link.
 - **Ymir**: agent skill that explores a codebase, runs a Socratic interview, and emits a harness spec (`.ymir/harness-profile.yaml`, `.ymir/harness-playbook.md`); `ymir apply` generates rules, lint, CI, wiki, CLAUDE.md/AGENT.md. Works with Claude Code, Cursor, Codex via skills.sh (`npx skills@latest add muitneliss/ymir`). Released with release-please; `ymir apply` backs up what it overwrites and `ymir revert` undoes it. No licence file.
 - **Text Transporter**: "Type a name. Whatever you paste there follows you to any machine." Sticky-note boards at a chosen name: colours, pins, search and filters, Markdown with syntax-highlighted code. Next.js 15, React 19, SQLite (one file), published as the container image `ghcr.io/muitneliss/text-transporter`. Public, no licence file, no releases.
+- **Kanna**: web UI for the Claude Code and Codex CLIs, run locally (Bun, macOS/Linux). Claude, Codex or OpenRouter per chat, with a Claude OAuth account pool. Kanban boards where a card is a branch, a worktree and a chat; loops (a goal plus a verify command), cron, named subagents, generative UI. Published on npm as `@cuongtran001/kanna` (`bun install -g @cuongtran001/kanna`), docs at kanna-wiki.lowbit.link. Released with release-please. Its LICENSE is MIT with a carve-out, so the page states no licence. Telemetry is on by default, so the page makes no privacy claim.
 
 Absent, must not be fabricated: testimonials, user counts, download numbers, company clients, funding, and a team founding story beyond "org created April 2025".
 

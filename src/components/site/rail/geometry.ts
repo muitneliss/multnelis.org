@@ -5,8 +5,8 @@
   so the rail that is drawn and the timeline that measures it share one shape.
 */
 
-/** `m` is main; `u`, `y`, `t` are the project lanes (see src/data/site.ts). */
-export type Lane = 'm' | 'u' | 'y' | 't';
+/** `m` is main; `u`, `y`, `t`, `k` are the project lanes (see src/data/site.ts). */
+export type Lane = 'm' | 'u' | 'y' | 't' | 'k';
 export type Branch = Exclude<Lane, 'm'>;
 
 export type SectionKind = 'hero' | 'fork' | 'merge' | 'through' | 'end';
@@ -45,14 +45,20 @@ export interface RailShape {
 }
 
 /** Farthest lane first, so the nearest draws on top. */
-const FAR_TO_NEAR: Branch[] = ['t', 'y', 'u'];
+const FAR_TO_NEAR: Branch[] = ['k', 't', 'y', 'u'];
 
 export function railGeometry(width: number) {
   const phone = width < 80;
   return {
     width,
     phone,
-    x: { m: width * 0.2, u: width * 0.4, y: width * 0.6, t: width * 0.8 } as Record<Lane, number>,
+    x: {
+      m: width / 6,
+      u: (width * 2) / 6,
+      y: (width * 3) / 6,
+      t: (width * 4) / 6,
+      k: (width * 5) / 6,
+    } as Record<Lane, number>,
     /** Commit radius and white ring; big is the first and last commit; fork is the dot on main. */
     r: phone ? 6 : 8,
     ring: phone ? 2.5 : 3,

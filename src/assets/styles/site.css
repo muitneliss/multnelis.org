@@ -13,6 +13,7 @@
   --lane-u: var(--aw-color-lane-vermilion); /* Undercroft */
   --lane-y: var(--aw-color-lane-cobalt); /* Ymir */
   --lane-t: var(--aw-color-lane-jade); /* Text Transporter */
+  --lane-k: var(--aw-color-lane-rose); /* Kanna */
 
   --rail: 120px;
   --gutter: 64px;
@@ -174,6 +175,9 @@ h3 {
 .lane-t {
   stroke: var(--lane-t);
 }
+.lane-k {
+  stroke: var(--lane-k);
+}
 
 /* A lane dot: a project's colour marking it in a list on white. */
 .dot {
@@ -192,6 +196,9 @@ h3 {
 .dot-t {
   background: var(--lane-t);
 }
+.dot-k {
+  background: var(--lane-k);
+}
 
 /* Pointing at a project (its index entry or its name) pulses its lane along the whole page. */
 @keyframes lane-pulse {
@@ -201,20 +208,23 @@ h3 {
 }
 body[data-pulse='u'] .lane-u,
 body[data-pulse='y'] .lane-y,
-body[data-pulse='t'] .lane-t {
+body[data-pulse='t'] .lane-t,
+body[data-pulse='k'] .lane-k {
   animation: lane-pulse 900ms ease-in-out infinite;
 }
 @media (prefers-reduced-motion: reduce) {
   body[data-pulse='u'] .lane-u,
   body[data-pulse='y'] .lane-y,
-  body[data-pulse='t'] .lane-t {
+  body[data-pulse='t'] .lane-t,
+  body[data-pulse='k'] .lane-k {
     animation: none;
     stroke-width: calc(var(--sw) * 1.75);
   }
 }
 html.is-static body[data-pulse='u'] .lane-u,
 html.is-static body[data-pulse='y'] .lane-y,
-html.is-static body[data-pulse='t'] .lane-t {
+html.is-static body[data-pulse='t'] .lane-t,
+html.is-static body[data-pulse='k'] .lane-k {
   animation: none;
   stroke-width: calc(var(--sw) * 1.75);
 }

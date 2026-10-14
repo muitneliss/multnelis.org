@@ -85,7 +85,7 @@ test('under reduced motion the whole history is drawn from the start', async ({ 
   await expect(page.locator('html')).toHaveClass(/is-static/);
   /* Nothing scrolled: the last commits are drawn as soon as the rail is built. */
   await expect.poll(() => opacity(page, '.end > svg.rail .node')).toBe(1);
-  await expect.poll(() => opacity(page, commit('#text-transporter'))).toBe(1);
+  await expect.poll(() => opacity(page, commit('#kanna'))).toBe(1);
 });
 
 test('Explore the projects leads to the project index', async ({ page }) => {

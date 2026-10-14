@@ -11,6 +11,7 @@ colors:
   lane-vermilion: '#c9461f'
   lane-cobalt: '#2457f5'
   lane-jade: '#168459'
+  lane-rose: '#be185d'
 typography:
   display:
     fontFamily: 'Anybody, sans-serif'
@@ -166,6 +167,10 @@ components:
     backgroundColor: '{colors.lane-jade}'
     textColor: '{colors.paper}'
     padding: '104px 64px 112px'
+  field-rose:
+    backgroundColor: '{colors.lane-rose}'
+    textColor: '{colors.paper}'
+    padding: '104px 64px 112px'
   mark-tile:
     backgroundColor: '{colors.paper}'
     rounded: '{rounded.tile}'
@@ -179,7 +184,7 @@ components:
 
 **Creative North Star: "The Commit Graph"**
 
-The site is the team's git history read top to bottom, and it shows the team through its work, never through its people. A rail of round-capped lanes runs down the left edge of every section: main is ink and stands for the team; each public project owns one colour that forks off main, carries the project's full-bleed field, and runs on until every lane bends back into main at "How we work" and merges for good in the footer. Time is the scroll axis; the statement is the first commit, the team profile is the second, the footer is the last. Remove every word and the page is still recognisable: one ink rail, three colour fields, a handful of ringed nodes. The `/contact` page is the same history in its compact register: the address is the first commit, and each project row forks that project's lane beside its name, white rather than full-bleed.
+The site is the team's git history read top to bottom, and it shows the team through its work, never through its people. A rail of round-capped lanes runs down the left edge of every section: main is ink and stands for the team; each public project owns one colour that forks off main, carries the project's full-bleed field, and runs on until every lane bends back into main at "How we work" and merges for good in the footer. Time is the scroll axis; the statement is the first commit, the team profile is the second, the footer is the last. Remove every word and the page is still recognisable: one ink rail, four colour fields, a handful of ringed nodes. The `/contact` page is the same history in its compact register: the address is the first commit, and each project row forks that project's lane beside its name, white rather than full-bleed.
 
 The material is flat and printed. White ground, near-black ink, no shadows, no gradients, no glass. Hierarchy comes from three things only: the wide, heavy display face; the lane colours owning whole regions rather than accents; and hairline rules. The three faces have strict jobs (Anybody wide for headings and the wordmark, Hanken Grotesk for reading, JetBrains Mono for refs, handles, facts and metadata) so the mono face reads as "data from the repository" wherever it appears.
 
@@ -187,7 +192,7 @@ Motion is one signature, not a mood: scroll replays the history. The rail is dra
 
 **Key Characteristics:**
 
-- White ground, ink text, three saturated lane colours used as full-bleed fields, never as tints or accents on white.
+- White ground, ink text, four saturated lane colours used as full-bleed fields, never as tints or accents on white.
 - A measured, script-built SVG rail (120px desktop / 48px mobile) with 6px round-capped strokes and white-ringed nodes; solid nodes for public commits, hollow for private.
 - Anybody at width 125 and weight 700–800 for every heading; tight tracking (-0.02em); balanced wrapping.
 - JetBrains Mono reserved for repository facts: handles, refs, tags, state, the branch chip, the language switch.
@@ -196,7 +201,7 @@ Motion is one signature, not a mood: scroll replays the history. The rail is dra
 
 ## Colors
 
-Ink on paper with three lane colours, each dark enough to carry white text at AA.
+Ink on paper with four lane colours, each dark enough to carry white text at AA.
 
 ### Primary
 
@@ -209,6 +214,7 @@ Ink on paper with three lane colours, each dark enough to carry white text at AA
 - **Vermilion** (`{colors.lane-vermilion}`): Undercroft's lane (`u`, `--lane-u`). Fills the project's whole field edge to edge (right of the rail), draws its lane on the rail, and marks it with a dot in the profile index and on its contact row.
 - **Cobalt** (`{colors.lane-cobalt}`): Ymir's lane (`y`, `--lane-y`). Same three jobs.
 - **Jade** (`{colors.lane-jade}`): Text Transporter's lane (`t`, `--lane-t`). Same three jobs.
+- **Rose** (`{colors.lane-rose}`): Kanna's lane (`k`, `--lane-k`). Same three jobs.
 
 ### Neutral
 
@@ -254,8 +260,8 @@ Ink on paper with three lane colours, each dark enough to carry white text at AA
 
 The page is a single column set to the right of the rail. Every section is a `.gs` graph section: `position: relative`, an absolutely positioned `svg.rail` on its left edge (width `--rail`), and content padded `calc(var(--rail) + var(--gutter))` on the left and `var(--gutter)` on the right. Project fields skip the column padding and instead `margin-left: var(--rail)` so their colour runs from the rail to the right edge of the viewport.
 
-- **Reading order (landing):** hero statement → team profile and the `What we build` index → one field per project (Undercroft, Ymir, Text Transporter) → `How we work` → the closing call to action → footer. **Contact:** hero with the address → `Projects` → one compact row per project → footer.
-- **Rail:** 120px desktop, 48px at ≤720px. Lanes sit at 20 / 40 / 60 / 80% of the rail width (main, Undercroft, Ymir, Text Transporter). Stroke 6px, 4px on phones.
+- **Reading order (landing):** hero statement → team profile and the `What we build` index → one field per project (Undercroft, Ymir, Text Transporter, Kanna) → `How we work` → the closing call to action → footer. **Contact:** hero with the address → `Projects` → one compact row per project → footer.
+- **Rail:** 120px desktop, 48px at ≤720px. Lanes sit at 1/6, 2/6, 3/6, 4/6 and 5/6 of the rail width (main, Undercroft, Ymir, Text Transporter, Kanna). Stroke 6px, 4px on phones.
 - **Gutter:** 64px desktop, 20px on phones.
 - **Vertical rhythm (desktop → ≤720px):** header row 22px → 16px padding; hero 112px top / 136px bottom → 56 / 88 (both pages); profile, project field and principles 104 / 112 → 56 / 64; closing 112 / 120 → 64 / 72; footer 128 / 120 → 72 / 80.
 - **Contact rhythm (desktop → ≤720px):** the hero's bottom padding is 88px → 56 (shorter than the landing hero, so the project rows follow the address closely); the heading section is 56px top / 28px bottom → 40 / 20; a project row is 40 / 44 → 28 / 32, the compact register of a field.
@@ -332,7 +338,7 @@ Inherit colour, 1px underline offset 0.2em, underline colour 45% of currentColor
 
 ### Rail (signature)
 
-An `aria-hidden` SVG per section built from measured layout. Lane order on the rail: main, Undercroft (`u`), Ymir (`y`), Text Transporter (`t`). Section kinds (`data-kind`): `hero` (lanes converge into the first big node), `fork` (one project lane forks off main to the anchor; `data-lane`), `merge` (the `data-merge` lanes bend in to a node on main and back out; with no lanes it is a plain commit on main, as the profile is), `through` (main and the `data-through` lanes pass straight down with no node), and `end` (every lane merges into the last big node). Any kind may list lanes in `data-through` that continue vertically without touching the commit. Nodes: regular r 8 with a 3px white ring (6 / 2.5 on phones); big r 14 / ring 4 (10 / 3) for the first and last commit; fork dot r 4.5 (3) on main where a project branches. Curve reach: fork 168px above the anchor (96 on phones), merge bends ±76px around the anchor (44), the hero lanes run 190px before converging (112). Replay: the pen belongs 85% down the viewport, sliding to its bottom over the last viewport of scroll so the footer's commit lands as the page bottoms out. It follows the scroll with a 140ms time constant, so a wheel step is drawn as one stroke, and it always settles where the scroll says; a jump of more than a viewport (a link, the scrollbar) draws out only its last screen. On load it starts at the top of the screen, so the visible rail draws itself in. Each lane's stroke is drawn down to the pen (`stroke-dashoffset`, written per frame, never transitioned); a node scales 0.6→1 and fades in over the 4% of the viewport after the pen reaches it, on `--ease`. Below the pen the rail is empty: no hairline, no placeholder. Measured layout is cached in document coordinates and refreshed only on load, font load, resize and `multnelis:lang`; the timeline (`src/components/site/rail/timeline.ts`) is pure, and one controller (`src/components/site/rail/controller.ts`) is the only writer of the rail's strokes and nodes. Pulse: any element with `data-pulse-lane` (an index row, a field's head, a contact row; each contains a link, so keyboard focus reaches it) sets `body[data-pulse]`; hover and focus are tracked separately and the hovered lane wins, so leaving one keeps the other, and `lane-pulse` runs 900ms ease-in-out infinite to 1.75× stroke. Reduced motion (or `?static`): `html.is-static`, set by an inline script in the layout's head before first paint; lanes fully drawn, the pulse becomes a static 1.75× stroke.
+An `aria-hidden` SVG per section built from measured layout. Lane order on the rail: main, Undercroft (`u`), Ymir (`y`), Text Transporter (`t`), Kanna (`k`). Section kinds (`data-kind`): `hero` (lanes converge into the first big node), `fork` (one project lane forks off main to the anchor; `data-lane`), `merge` (the `data-merge` lanes bend in to a node on main and back out; with no lanes it is a plain commit on main, as the profile is), `through` (main and the `data-through` lanes pass straight down with no node), and `end` (every lane merges into the last big node). Any kind may list lanes in `data-through` that continue vertically without touching the commit. Nodes: regular r 8 with a 3px white ring (6 / 2.5 on phones); big r 14 / ring 4 (10 / 3) for the first and last commit; fork dot r 4.5 (3) on main where a project branches. Curve reach: fork 168px above the anchor (96 on phones), merge bends ±76px around the anchor (44), the hero lanes run 190px before converging (112). Replay: the pen belongs 85% down the viewport, sliding to its bottom over the last viewport of scroll so the footer's commit lands as the page bottoms out. It follows the scroll with a 140ms time constant, so a wheel step is drawn as one stroke, and it always settles where the scroll says; a jump of more than a viewport (a link, the scrollbar) draws out only its last screen. On load it starts at the top of the screen, so the visible rail draws itself in. Each lane's stroke is drawn down to the pen (`stroke-dashoffset`, written per frame, never transitioned); a node scales 0.6→1 and fades in over the 4% of the viewport after the pen reaches it, on `--ease`. Below the pen the rail is empty: no hairline, no placeholder. Measured layout is cached in document coordinates and refreshed only on load, font load, resize and `multnelis:lang`; the timeline (`src/components/site/rail/timeline.ts`) is pure, and one controller (`src/components/site/rail/controller.ts`) is the only writer of the rail's strokes and nodes. Pulse: any element with `data-pulse-lane` (an index row, a field's head, a contact row; each contains a link, so keyboard focus reaches it) sets `body[data-pulse]`; hover and focus are tracked separately and the hovered lane wins, so leaving one keeps the other, and `lane-pulse` runs 900ms ease-in-out infinite to 1.75× stroke. Reduced motion (or `?static`): `html.is-static`, set by an inline script in the layout's head before first paint; lanes fully drawn, the pulse becomes a static 1.75× stroke.
 
 ### Navigation
 
@@ -366,11 +372,11 @@ English is server-rendered. Every translatable text node carries `data-i18n="<ke
 
 - **Don't** use a lane colour as a tint, link colour, heading colour, icon colour or border on white; lane colours own whole regions or rail strokes.
 - **Don't** add shadows, gradients, blur or translucent panels; the world is flat print.
-- **Don't** introduce a fourth accent or a dark theme; the site is light-only by configuration.
+- **Don't** introduce a fifth accent or a dark theme; the site is light-only by configuration.
 - **Don't** style the rail from a component; its paths are script-built and its rules live in the global `site.css`.
 - **Don't** add a second scroll listener, IntersectionObserver or CSS transition on the rail's strokes or nodes; one owner writes them.
 - **Don't** animate, hide or fade text on scroll; content is always readable, only the graph moves.
 - **Don't** use depth, perspective or 3D; it was tried as a hero overture and rejected.
 - **Don't** put prose in the mono face or set Anybody at normal width.
 - **Don't** add copy that is not backed by a public repository (no user counts, testimonials, clients), and never name a private repository.
-- **Don't** hardcode a colour or font: reference `--ink`, `--ink-2`, `--hair`, `--paper`, `--lane-u` / `--lane-y` / `--lane-t`, `--display` / `--body` / `--mono`.
+- **Don't** hardcode a colour or font: reference `--ink`, `--ink-2`, `--hair`, `--paper`, `--lane-u` / `--lane-y` / `--lane-t` / `--lane-k`, `--display` / `--body` / `--mono`.
