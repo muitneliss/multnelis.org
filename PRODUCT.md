@@ -25,14 +25,14 @@ An engineering team in Ho Chi Minh City that builds the tools it works with and 
 ## Operating Context
 
 - GitHub organisation: https://github.com/muitneliss (spelled m-u-i-t, two "s"). Domain and brand: multnelis.org (spelled m-u-l-t, one "s"), the domain the team actually registered at Cloudflare on 2026-09-22. The page uses the domain spelling everywhere; the org URL is linked as-is. Do not "correct" one to the other.
-- No people are shown (user decision, September 2026): no member names, handles, avatars or bios, on any page or in structured data.
+- No people are shown (user decision, September 2026): no member names, handles, avatars or bios, on any page or in structured data; the one exception is the Omninoise legal pages, which name Cuong Tran as maintainer because a terms document needs a named operator (user decision, October 2026).
 - Projects shown: public repositories only (user decision, September 2026): undercroft, ymir, text-transporter, kanna. Private repositories are never named or described, here or on the site, since this repository is public. symphony-its-everdred is excluded because it is a fork with no commits from the team; cli-proxy-api-service and the Stirling-PDF fork are excluded as deployment config and an unmodified fork.
 - Kanna is linked at its home, github.com/cuongtranba/kanna, a team member's account: the one exception to the no-handles rule (user decision, October 2026). It is a fork with most of its commits from the team; the page describes what it does, not its origin (user decision).
 - Hosting: GitHub Pages with a CNAME file. DNS for multnelis.org is not yet configured.
 
 ## Capabilities and Constraints
 
-- Two pages, the landing page and `/contact`; no blog. AstroWind blog routes are removed or disabled.
+- Two pages, the landing page and `/contact`, plus the unlinked, English-only legal pages `/omninoise/terms` and `/omninoise/privacy` (Omninoise is the team's private publishing studio; Meta, TikTok and Google app review need public Terms and Privacy URLs; the studio's own hostname is never named); no blog. AstroWind blog routes are removed or disabled.
 - Language: English default, Vietnamese toggle. Undecided: whether the toggle is client-side (one page, swapped strings) or a `/vi` route. Default reading: client-side toggle with strings in one dictionary, so the page stays a single URL.
 - Branding imagery (logo, favicon) was generated with the Codex CLI's image generation, per user instruction. The OG image is rendered from `brand/og.html`.
 - The site is versioned with release-please: merging to `main` deploys, and the release pull request records the version and changelog.

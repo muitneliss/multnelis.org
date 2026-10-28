@@ -8,10 +8,12 @@ import { brand } from '~/data/site';
 
 export interface Props {
   /** Which page this header is on; decides where the wordmark and the cross-link go. */
-  current?: 'home' | 'contact';
+  current?: 'home' | 'contact' | 'legal';
+  /** Pages with no Vietnamese text (the legal pages) leave the language switch out. */
+  toggle?: boolean;
 }
 
-const { current = 'home' } = Astro.props;
+const { current = 'home', toggle = true } = Astro.props;
 const home = current === 'home' ? '#top' : '/';
 ---
 
@@ -29,7 +31,7 @@ const home = current === 'home' ? '#top' : '/';
       </a>
     )
   }
-  <LanguageToggle />
+  {toggle && <LanguageToggle />}
 </header>
 
 <style>

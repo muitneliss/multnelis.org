@@ -19,6 +19,7 @@ It is a team profile told through the team's public projects, with no individual
 | `src/data/site.ts`          | Every word on the site, in English and Vietnamese: profile, projects and use cases, principles. |
 | `src/pages/index.astro`     | The landing page and its structured data.                                                       |
 | `src/pages/contact.astro`   | The contact page: one address, then each project with its issues and site.                      |
+| `src/pages/omninoise/`      | Terms and Privacy for Omninoise, the team's private publishing studio. English only, unlinked.  |
 | `src/components/site/`      | Header, hero, profile, rail (the commit graph), project fields, principles, footer, toggle      |
 | `src/components/site/rail/` | The graph's shape, the scroll timeline, and the one controller that draws it                    |
 | `e2e/`                      | Playwright end-to-end and visual tests, and a static server that serves `dist/` like Pages      |
