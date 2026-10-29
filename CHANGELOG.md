@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/muitneliss/multnelis.org/compare/v0.3.0...v0.4.0) (2026-10-29)
+
+
+### Features
+
+* add Omninoise Terms and Privacy pages ([#10](https://github.com/muitneliss/multnelis.org/issues/10)) ([993ebb6](https://github.com/muitneliss/multnelis.org/commit/993ebb6f81b7632260be16469ab92ca638696adf))
+
 ## [0.3.0](https://github.com/muitneliss/multnelis.org/compare/v0.2.0...v0.3.0) (2026-10-14)
 
 
