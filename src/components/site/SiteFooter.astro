@@ -1,9 +1,15 @@
 ---
 // The last commit: every project lane merges into main one final time.
 import Rail from '~/components/site/Rail.astro';
-import { brand, footer, lanes } from '~/data/site';
+import { brand, footer, lanes, type Lane } from '~/data/site';
 
-const merges = lanes.join(',');
+export interface Props {
+  /** Project lanes that merge here; a page with no project rows above it passes none. */
+  merge?: Lane[];
+}
+
+const { merge = lanes } = Astro.props;
+const merges = merge.join(',');
 ---
 
 <footer class="gs end" data-kind="end" data-merge={merges}>

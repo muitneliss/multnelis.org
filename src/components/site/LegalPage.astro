@@ -1,0 +1,145 @@
+---
+// A legal document laid out like the contact page: the lanes converge into the
+// first commit at the title, main runs down beside the text, and the footer is
+// the last commit. English only, so the page carries no language switch.
+import Layout from '~/layouts/Layout.astro';
+import Rail from '~/components/site/Rail.astro';
+import SiteHeader from '~/components/site/SiteHeader.astro';
+import SiteFooter from '~/components/site/SiteFooter.astro';
+
+export interface Props {
+  /** Document title, set in the page heading. */
+  title: string;
+  /** Used in the browser tab, search results and link previews. */
+  metaTitle: string;
+  description: string;
+  /** ISO date shown under the title. */
+  updated: string;
+}
+
+const { title, metaTitle, description, updated } = Astro.props;
+
+const metadata = {
+  title: metaTitle,
+  description,
+  openGraph: { type: 'website' },
+};
+---
+
+<Layout metadata={metadata}>
+  <main>
+    <section class="gs hero" id="top" data-kind="hero" aria-label={title}>
+      <Rail />
+      <SiteHeader current="legal" toggle={false} />
+      <div class="hero-body col">
+        <h1 data-anchor>{title}</h1>
+        <p class="meta mono">Omninoise · Last updated <time datetime={updated}>{updated}</time></p>
+      </div>
+    </section>
+
+    <section class="gs doc" data-kind="through" aria-label="Document">
+      <Rail />
+      <div class="col text">
+        <slot />
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter merge={[]} />
+</Layout>
+
+<style>
+  .hero-body {
+    padding-top: 112px;
+    padding-bottom: 56px;
+  }
+  h1 {
+    font-weight: 800;
+    font-size: clamp(2.125rem, 1.4rem + 2.2vw, 3.25rem);
+    line-height: 1;
+    max-width: 1140px;
+  }
+  .meta {
+    margin-top: 26px;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+  .doc {
+    border-top: 1px solid var(--hair);
+  }
+  .text {
+    padding-top: 56px;
+    padding-bottom: 96px;
+    max-width: calc(var(--rail) + var(--gutter) + 62ch + var(--gutter));
+    font-size: 1.125rem;
+    line-height: 1.55;
+  }
+  .text :global(h2) {
+    margin-top: 44px;
+    font-weight: 700;
+    font-size: 1.25rem;
+    line-height: 1.1;
+  }
+  .text :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .text :global(h3) {
+    margin-top: 30px;
+    font-weight: 700;
+    font-size: 1.0625rem;
+    line-height: 1.2;
+  }
+  .text :global(p),
+  .text :global(ul) {
+    margin-top: 14px;
+  }
+  .text :global(h2 + p),
+  .text :global(h2 + ul),
+  .text :global(h3 + p) {
+    margin-top: 12px;
+  }
+  .text :global(ul) {
+    padding-left: 1.25em;
+    list-style: disc;
+  }
+  .text :global(li + li) {
+    margin-top: 8px;
+  }
+  .text :global(a) {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+    transition: text-decoration-color 160ms ease;
+    overflow-wrap: anywhere;
+  }
+  .text :global(a:hover) {
+    text-decoration-color: currentColor;
+  }
+  .text :global(code) {
+    font-family: var(--mono);
+    font-feature-settings: 'calt' 0;
+    font-size: 0.9em;
+  }
+
+  @media (width <= 720px) {
+    .hero-body {
+      padding-top: 56px;
+      padding-bottom: 40px;
+    }
+    h1 {
+      font-size: 2.125rem;
+    }
+    .meta {
+      margin-top: 20px;
+    }
+    .text {
+      padding-top: 40px;
+      padding-bottom: 64px;
+      font-size: 1.0625rem;
+    }
+    .text :global(h2) {
+      margin-top: 36px;
+    }
+  }
+</style>
