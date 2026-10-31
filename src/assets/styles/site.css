@@ -14,6 +14,7 @@
   --lane-y: var(--aw-color-lane-cobalt); /* Ymir */
   --lane-t: var(--aw-color-lane-jade); /* Text Transporter */
   --lane-k: var(--aw-color-lane-rose); /* Kanna */
+  --lane-o: var(--aw-color-lane-violet); /* Omninoise */
 
   --rail: 120px;
   --gutter: 64px;
@@ -178,6 +179,9 @@ h3 {
 .lane-k {
   stroke: var(--lane-k);
 }
+.lane-o {
+  stroke: var(--lane-o);
+}
 
 /* A lane dot: a project's colour marking it in a list on white. */
 .dot {
@@ -199,6 +203,9 @@ h3 {
 .dot-k {
   background: var(--lane-k);
 }
+.dot-o {
+  background: var(--lane-o);
+}
 
 /* Pointing at a project (its index entry or its name) pulses its lane along the whole page. */
 @keyframes lane-pulse {
@@ -209,14 +216,16 @@ h3 {
 body[data-pulse='u'] .lane-u,
 body[data-pulse='y'] .lane-y,
 body[data-pulse='t'] .lane-t,
-body[data-pulse='k'] .lane-k {
+body[data-pulse='k'] .lane-k,
+body[data-pulse='o'] .lane-o {
   animation: lane-pulse 900ms ease-in-out infinite;
 }
 @media (prefers-reduced-motion: reduce) {
   body[data-pulse='u'] .lane-u,
   body[data-pulse='y'] .lane-y,
   body[data-pulse='t'] .lane-t,
-  body[data-pulse='k'] .lane-k {
+  body[data-pulse='k'] .lane-k,
+  body[data-pulse='o'] .lane-o {
     animation: none;
     stroke-width: calc(var(--sw) * 1.75);
   }
@@ -224,7 +233,8 @@ body[data-pulse='k'] .lane-k {
 html.is-static body[data-pulse='u'] .lane-u,
 html.is-static body[data-pulse='y'] .lane-y,
 html.is-static body[data-pulse='t'] .lane-t,
-html.is-static body[data-pulse='k'] .lane-k {
+html.is-static body[data-pulse='k'] .lane-k,
+html.is-static body[data-pulse='o'] .lane-o {
   animation: none;
   stroke-width: calc(var(--sw) * 1.75);
 }

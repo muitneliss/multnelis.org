@@ -5,8 +5,8 @@
   so the rail that is drawn and the timeline that measures it share one shape.
 */
 
-/** `m` is main; `u`, `y`, `t`, `k` are the project lanes (see src/data/site.ts). */
-export type Lane = 'm' | 'u' | 'y' | 't' | 'k';
+/** `m` is main; `u`, `y`, `t`, `k`, `o` are the project lanes (see src/data/site.ts). */
+export type Lane = 'm' | 'u' | 'y' | 't' | 'k' | 'o';
 export type Branch = Exclude<Lane, 'm'>;
 
 export type SectionKind = 'hero' | 'fork' | 'merge' | 'through' | 'end';
@@ -45,7 +45,7 @@ export interface RailShape {
 }
 
 /** Farthest lane first, so the nearest draws on top. */
-const FAR_TO_NEAR: Branch[] = ['k', 't', 'y', 'u'];
+const FAR_TO_NEAR: Branch[] = ['o', 'k', 't', 'y', 'u'];
 
 export function railGeometry(width: number) {
   const phone = width < 80;
@@ -53,11 +53,12 @@ export function railGeometry(width: number) {
     width,
     phone,
     x: {
-      m: width / 6,
-      u: (width * 2) / 6,
-      y: (width * 3) / 6,
-      t: (width * 4) / 6,
-      k: (width * 5) / 6,
+      m: width / 7,
+      u: (width * 2) / 7,
+      y: (width * 3) / 7,
+      t: (width * 4) / 7,
+      k: (width * 5) / 7,
+      o: (width * 6) / 7,
     } as Record<Lane, number>,
     /** Commit radius and white ring; big is the first and last commit; fork is the dot on main. */
     r: phone ? 6 : 8,
