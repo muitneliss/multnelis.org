@@ -8,6 +8,7 @@ import Rail from '~/components/site/Rail.astro';
 import ymirMark from '~/assets/images/ymir.svg';
 import textTransporterMark from '~/assets/images/text-transporter.svg';
 import kannaMark from '~/assets/images/kanna.png';
+import omninoiseMark from '~/assets/images/omninoise.svg';
 import { type Project, lanes } from '~/data/site';
 
 export interface Props {
@@ -44,6 +45,7 @@ const headingId = `project-${slug}`;
               )
             }
             {mark === 'kanna' && <img class="mark" src={kannaMark.src} width="56" height="56" alt="" />}
+            {mark === 'omninoise' && <img class="mark" src={omninoiseMark.src} width="56" height="56" alt="" />}
           </span>
           <div>
             <h2 id={headingId} data-anchor>{name}</h2>
@@ -134,6 +136,9 @@ const headingId = `project-${slug}`;
   .p-k .field {
     background: var(--lane-k);
   }
+  .p-o .field {
+    background: var(--lane-o);
+  }
   .p-u .field ::selection {
     background: #fff;
     color: var(--lane-u);
@@ -149,6 +154,10 @@ const headingId = `project-${slug}`;
   .p-k .field ::selection {
     background: #fff;
     color: var(--lane-k);
+  }
+  .p-o .field ::selection {
+    background: #fff;
+    color: var(--lane-o);
   }
 
   .grid {
@@ -226,6 +235,9 @@ const headingId = `project-${slug}`;
   }
   .p-k .chip:hover {
     color: var(--lane-k);
+  }
+  .p-o .chip:hover {
+    color: var(--lane-o);
   }
   .status {
     font-size: 0.8125rem;

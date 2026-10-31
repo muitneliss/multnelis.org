@@ -15,6 +15,7 @@ const COLOR: Record<Lane, string> = {
   y: 'var(--lane-y)',
   t: 'var(--lane-t)',
   k: 'var(--lane-k)',
+  o: 'var(--lane-o)',
 };
 
 const html = document.documentElement;

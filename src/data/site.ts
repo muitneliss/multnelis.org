@@ -1,8 +1,9 @@
 // Every word on the site lives here. The site is the team's profile told
 // through its public projects: no people are shown. Do not add claims that are
 // not backed by a public repository (no testimonials, counts of users,
-// clients, funding, hiring), and do not list private repositories. Kanna's
-// repository is linked under a team member's personal account (see PRODUCT.md).
+// clients, funding, hiring), and do not list private repositories. Kanna's and
+// Omninoise's repositories are linked under a team member's personal account
+// (see PRODUCT.md).
 //
 // English is server-rendered. The Vietnamese strings are emitted as a JSON
 // dictionary (see `viDictionary`) and swapped in by the language toggle, so
@@ -13,8 +14,8 @@ export interface Bilingual {
   vi: string;
 }
 
-/** Rail lane keys, one per project: `u` Undercroft, `y` Ymir, `t` Text Transporter, `k` Kanna. `m` is main. */
-export type Lane = 'u' | 'y' | 't' | 'k';
+/** Rail lane keys, one per project: `u` Undercroft, `y` Ymir, `t` Text Transporter, `k` Kanna, `o` Omninoise. `m` is main. */
+export type Lane = 'u' | 'y' | 't' | 'k' | 'o';
 
 export interface UseCase {
   title: Bilingual;
@@ -39,7 +40,7 @@ export interface Project {
   status?: string;
   lane: Lane;
   /** The project's own mark. */
-  mark: 'undercroft' | 'ymir' | 'text-transporter' | 'kanna';
+  mark: 'undercroft' | 'ymir' | 'text-transporter' | 'kanna' | 'omninoise';
 }
 
 export const brand = {
@@ -60,8 +61,8 @@ export const statement: Bilingual = {
 };
 
 export const supporting: Bilingual = {
-  en: 'multnelis is based in Ho Chi Minh City. We publish four tools we use in our own work: a data platform you host yourself, a harness that gets any repository ready for coding agents, a notes board that moves text between machines, and a web workspace for running coding agents.',
-  vi: 'multnelis ở Sài Gòn. Chúng tôi công khai mã nguồn của bốn công cụ mình dùng trong công việc: một nền tảng dữ liệu bạn tự host, một bộ quy tắc giúp mọi repository sẵn sàng cho coding agent, một bảng ghi chú chuyển văn bản giữa các máy, và một không gian làm việc trên web để chạy coding agent.',
+  en: 'multnelis is based in Ho Chi Minh City. We publish five tools we use in our own work: a data platform you host yourself, a harness that gets any repository ready for coding agents, a notes board that moves text between machines, a web workspace for running coding agents, and a social media scheduler you host yourself.',
+  vi: 'multnelis ở Sài Gòn. Chúng tôi công khai mã nguồn của năm công cụ mình dùng trong công việc: một nền tảng dữ liệu bạn tự host, một bộ quy tắc giúp mọi repository sẵn sàng cho coding agent, một bảng ghi chú chuyển văn bản giữa các máy, một không gian làm việc trên web để chạy coding agent, và một công cụ lên lịch đăng bài mạng xã hội bạn tự host.',
 };
 
 export const actions = {
@@ -270,6 +271,54 @@ export const projects: Project[] = [
     lane: 'k',
     mark: 'kanna',
   },
+  {
+    slug: 'omninoise',
+    name: 'Omninoise',
+    track: { en: 'Publishing', vi: 'Xuất bản nội dung' },
+    tagline: {
+      en: 'Schedule and publish your social media posts from a server you host yourself.',
+      vi: 'Lên lịch và đăng bài lên mạng xã hội từ một máy chủ do chính bạn vận hành.',
+    },
+    detail: {
+      en: 'Omninoise plans, schedules and publishes posts to TikTok, Facebook, YouTube, Instagram, Threads and other channels, with a calendar, a media library, analytics and team accounts. It is built on the open-source Postiz; our work is the rewrite that runs it on Postgres alone, with no Redis or Temporal. One application container and one Postgres container are the whole deployment.',
+      vi: 'Omninoise lên kế hoạch, lên lịch và đăng bài lên TikTok, Facebook, YouTube, Instagram, Threads cùng các kênh khác, với lịch đăng bài, thư viện media, thống kê và tài khoản nhóm. Nó được xây trên Postiz mã nguồn mở; phần việc của chúng tôi là bản viết lại để chạy chỉ với Postgres, không cần Redis hay Temporal. Một container ứng dụng và một container Postgres là toàn bộ cách triển khai.',
+    },
+    useCases: [
+      {
+        title: { en: 'Plan every channel in one calendar', vi: 'Lên kế hoạch mọi kênh trên một lịch' },
+        text: {
+          en: 'Draft a post once, pick its channels and its time, and Omninoise publishes it when the time comes.',
+          vi: 'Soạn bài một lần, chọn kênh và giờ đăng, rồi Omninoise sẽ đăng đúng giờ.',
+        },
+      },
+      {
+        title: { en: 'Run it with one database', vi: 'Chạy chỉ với một cơ sở dữ liệu' },
+        text: {
+          en: 'The job queue, the cache and the rate limits all live in Postgres, so there is no Redis, Temporal or Elasticsearch to operate.',
+          vi: 'Hàng đợi công việc, cache và giới hạn tần suất đều nằm trong Postgres, nên không có Redis, Temporal hay Elasticsearch phải vận hành.',
+        },
+      },
+      {
+        title: { en: 'Work as a team', vi: 'Làm việc theo nhóm' },
+        text: {
+          en: 'Invite teammates to a shared account, keep the media in one library, and read how the posts performed in analytics.',
+          vi: 'Mời đồng đội vào một tài khoản chung, giữ media trong một thư viện, và xem bài đăng hiệu quả ra sao trong phần thống kê.',
+        },
+      },
+      {
+        title: { en: 'Let agents schedule for you', vi: 'Để agent lên lịch giúp bạn' },
+        text: {
+          en: 'A public API and an MCP server let your own tools and coding agents create and schedule posts.',
+          vi: 'Một API công khai và một MCP server cho phép công cụ của bạn và coding agent tạo và lên lịch bài đăng.',
+        },
+      },
+    ],
+    tags: 'TypeScript · NestJS · React · Prisma · Postgres',
+    repo: { label: 'cuongtranba/omninoise', url: 'https://github.com/cuongtranba/omninoise' },
+    license: 'AGPL-3.0',
+    lane: 'o',
+    mark: 'omninoise',
+  },
 ];
 
 /** How the team works, each principle pointing at the repositories that show it. */
@@ -330,7 +379,8 @@ export const contact = {
   action: { en: 'Email us', vi: 'Gửi email cho chúng tôi' } satisfies Bilingual,
   projects: { en: 'Project questions and issues', vi: 'Câu hỏi và báo lỗi theo dự án' } satisfies Bilingual,
   metaTitle: 'Contact — multnelis',
-  metaDescription: 'Write to contact@multnelis.org, or open an issue on Undercroft, Ymir, Text Transporter, or Kanna.',
+  metaDescription:
+    'Write to contact@multnelis.org, or open an issue on Undercroft, Ymir, Text Transporter, Kanna, or Omninoise.',
 };
 
 /** Rendered as "multnelis · <place> · github.com/muitneliss · contact@multnelis.org". */
