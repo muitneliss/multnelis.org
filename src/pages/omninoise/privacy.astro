@@ -6,36 +6,42 @@ import { brand } from '~/data/site';
 <LegalPage
   title="Privacy Policy"
   metaTitle="Omninoise Privacy Policy"
-  description="What data Omninoise, the multnelis team's private publishing studio, handles when it connects to TikTok, Meta and YouTube, and how to have it removed."
-  updated="2026-10-28"
+  description="What data Omninoise, the multnelis team's publishing app, handles when it connects to TikTok, Meta and YouTube, and how to have it removed."
+  updated="2026-11-06"
 >
   <p>
-    Omninoise is a private, self-hosted publishing tool operated by the multnelis team (<a href="/">{brand.domain}</a>),
-    Ho Chi Minh City, Vietnam, and maintained by Cuong Tran (“the Operator”). It is used by the Operator, and by invited
-    team members, to publish the Operator’s own content to the Operator’s own social accounts. This policy explains what
-    data the Service handles and why.
+    Omninoise is a publishing app operated by the multnelis team (<a href="/">{brand.domain}</a>), Ho Chi Minh City,
+    Vietnam, and maintained by Cuong Tran (“the Operator”). Creators use it to publish their own content to their own
+    social accounts. This policy explains what data the Service handles and why.
   </p>
 
   <h2>1. Data we access</h2>
-  <p>When an account is connected through a platform’s API, the Service may access:</p>
+  <p>
+    When you sign up, the Service stores your email address, your name and a hashed password, or the Google account you
+    sign in with. When you connect an account through a platform’s API, the Service may access:
+  </p>
   <ul>
     <li>Basic profile information: display name, avatar, and the account or open ID.</li>
     <li>OAuth access and refresh tokens issued by the platform.</li>
-    <li>Content and media that the Operator uploads for publishing.</li>
+    <li>Content and media that you upload for publishing.</li>
     <li>Post IDs, publishing status, and post analytics such as views and likes, when the platform provides them.</li>
   </ul>
 
   <h2>2. How we use it</h2>
   <p>
-    The data is used only to publish the Operator’s own content to the Operator’s own accounts and to show how that
-    content performs. It is not used for advertising, profiling or any other purpose.
+    The data is used only to publish your content to the accounts you connect and to show how that content performs. It
+    is not used for advertising, profiling or any other purpose.
   </p>
 
   <h2>3. Storage and sharing</h2>
   <ul>
     <li>Data is stored on a self-hosted server operated by the team.</li>
     <li>We do not sell data.</li>
-    <li>We do not share data with anyone, except with the destination platform when a post is published.</li>
+    <li>
+      We do not share data with anyone, except with the destination platform when a post is published and with the
+      service that delivers the app’s account emails, such as sign-up confirmation.
+    </li>
+    <li>Each Omninoise account sees only its own posts and connected accounts.</li>
     <li>
       There is no advertising and no tracking. This page sets no cookies and runs no analytics. The Service’s login uses
       only essential session cookies.
@@ -44,14 +50,15 @@ import { brand } from '~/data/site';
 
   <h2>4. Retention</h2>
   <p>
-    Data is kept until the account is disconnected or deletion is requested. When an account is disconnected, its tokens
-    are removed.
+    Data is kept until you delete your Omninoise account or ask us to delete it, and is then deleted within 30 days.
+    Disconnecting a social account stops the Service from using it.
   </p>
 
   <h2>5. Deletion and revoking access</h2>
-  <p>You can stop the Service accessing an account, and have the data removed, in any of these ways:</p>
+  <p>You can stop the Service using an account, or have your data removed, in any of these ways:</p>
   <ul>
-    <li>Disconnect the account in Omninoise.</li>
+    <li>Disconnect the account in Omninoise. This stops the Service from using it.</li>
+    <li>Delete your Omninoise account. This deletes its data.</li>
     <li>Revoke the app in the platform’s own settings (TikTok, Facebook, Google).</li>
     <li>Email <a href={`mailto:${brand.email}`}>{brand.email}</a> and ask for deletion.</li>
   </ul>
@@ -62,16 +69,16 @@ import { brand } from '~/data/site';
     Omninoise connects to TikTok through TikTok’s Login Kit and developer APIs. It requests the scopes{' '}
     <code>user.info.basic</code>, <code>user.info.profile</code>, <code>user.info.stats</code>,{' '}
     <code>video.list</code>, <code>video.upload</code> and <code>video.publish</code>. They are used only to read the
-    connected account’s basic profile and stats, to list its own videos, and to upload and publish videos that the
-    Operator chooses. To revoke access, remove Omninoise in TikTok under Settings and privacy, then Security and
-    permissions, then Apps and services, or email us.
+    connected account’s basic profile and stats, to list its own videos, and to upload and publish the videos you
+    choose, with the settings you choose. To revoke access, remove Omninoise in TikTok under Settings and privacy, then
+    Security and permissions, then Apps and services, or email us.
   </p>
 
   <h2>7. Meta (Facebook, Instagram, Threads)</h2>
   <p>
-    Omninoise requests Meta permissions to list the Pages and Instagram professional accounts the Operator administers,
-    to publish posts to them and to Threads, and to read their engagement and insights. They are used only to publish to
-    Pages and accounts the Operator administers, and to show how those posts perform.
+    Omninoise requests Meta permissions to list the Pages and Instagram professional accounts you administer, to publish
+    posts to them and to Threads, and to read their engagement and insights. They are used only to publish to Pages and
+    accounts you administer, and to show how those posts perform.
   </p>
   <h3>Data deletion instructions</h3>
   <p>
@@ -82,9 +89,8 @@ import { brand } from '~/data/site';
 
   <h2>8. Google and YouTube</h2>
   <p>
-    Omninoise uses YouTube API Services to upload and manage the Operator’s own videos and to read analytics for the
-    Operator’s own channel. It asks for access only to the channel the Operator connects, and uses that access only for
-    those purposes.
+    Omninoise uses YouTube API Services to upload and manage your videos and to read analytics for your channel. It asks
+    for access only to the channel you connect, and uses that access only for those purposes.
   </p>
   <p>
     Omninoise’s use and transfer to any other app of information received from Google APIs adheres to the{' '}
@@ -104,8 +110,8 @@ import { brand } from '~/data/site';
 
   <h2>10. Security</h2>
   <p>
-    All access uses HTTPS, and access to the Service is restricted to the Operator and invited team members. No system
-    is perfectly secure, but we limit what we store and who can reach it.
+    All access uses HTTPS, and each account can reach only its own workspace. No system is perfectly secure, but we
+    limit what we store and who can reach it.
   </p>
 
   <h2>11. Changes</h2>

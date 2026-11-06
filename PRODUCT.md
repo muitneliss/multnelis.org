@@ -32,7 +32,7 @@ An engineering team in Ho Chi Minh City that builds the tools it works with and 
 
 ## Capabilities and Constraints
 
-- Two pages, the landing page and `/contact`, plus the unlinked, English-only legal pages `/omninoise/terms` and `/omninoise/privacy` (Omninoise is the team's private publishing studio; Meta, TikTok and Google app review need public Terms and Privacy URLs; the studio's own hostname is never named); no blog. AstroWind blog routes are removed or disabled.
+- Two pages, the landing page and `/contact`, plus the unlinked, English-only Omninoise pages: the product page `/omninoise`, which links to the app's sign-up at omninoise.multnelis.org and its source, and the legal pages `/omninoise/terms` and `/omninoise/privacy` (Omninoise is the team's publishing app, open to creators since November 2026; Meta, TikTok and Google app review need public Terms and Privacy URLs); no blog. AstroWind blog routes are removed or disabled.
 - Language: English default, Vietnamese toggle. Undecided: whether the toggle is client-side (one page, swapped strings) or a `/vi` route. Default reading: client-side toggle with strings in one dictionary, so the page stays a single URL.
 - Branding imagery (logo, favicon) was generated with the Codex CLI's image generation, per user instruction. The OG image is rendered from `brand/og.html`.
 - The site is versioned with release-please: merging to `main` deploys, and the release pull request records the version and changelog.

@@ -1,0 +1,53 @@
+---
+import LegalPage from '~/components/site/LegalPage.astro';
+import { brand } from '~/data/site';
+
+const app = 'https://omninoise.multnelis.org';
+const repo = 'https://github.com/cuongtranba/omninoise';
+---
+
+<LegalPage
+  title="Omninoise"
+  metaTitle="Omninoise: schedule your videos and posts to every platform"
+  description="Omninoise is a publishing app from the multnelis team. Creators use it to schedule videos and image posts to TikTok, YouTube, Instagram, Facebook and Threads from one calendar."
+>
+  <p>
+    Omninoise is a web app from the multnelis team for creators who publish the same work on several platforms. Connect
+    your accounts once, upload a video or a set of images, and schedule it for each platform from one calendar.
+  </p>
+  <p><a href={app}>Sign up at omninoise.multnelis.org</a>. It is free.</p>
+
+  <h2>What it does</h2>
+  <ul>
+    <li>Connects your TikTok, YouTube, Instagram, Facebook and Threads accounts.</li>
+    <li>Lets you write one post and adjust its caption and settings for each platform before it goes out.</li>
+    <li>
+      On TikTok, you choose who can see each post from the options your account allows, decide whether others can
+      comment, duet or stitch, and disclose promotional content. Nothing is sent to TikTok until you press Post.
+    </li>
+    <li>Keeps your drafts and lets you move posts on the calendar.</li>
+    <li>Shows each post’s status once it is published, and its views and likes where the platform provides them.</li>
+  </ul>
+
+  <h2>Platforms</h2>
+  <p>
+    TikTok and YouTube are open to every account. For now, Facebook, Instagram and Threads work only for accounts the
+    team has added.
+  </p>
+
+  <h2>Your accounts and data</h2>
+  <p>
+    Omninoise stores the access tokens each platform issues and the media you upload. It uses them only to publish your
+    posts and to show how they perform. Disconnecting an account, or removing the app in the platform’s settings, stops
+    Omninoise from using it. Delete your Omninoise account, or email us, and your data is deleted within 30 days. The
+    details are in the <a href="/omninoise/privacy">Privacy Policy</a>, and the rules for using the app are in the <a
+      href="/omninoise/terms">Terms of Service</a
+    >.
+  </p>
+
+  <h2>Open source</h2>
+  <p>Omninoise is open-source software under the AGPL-3.0 licence. The code is at <a href={repo}>{repo}</a>.</p>
+
+  <h2>Contact</h2>
+  <p>Questions, problems or deletion requests: <a href={`mailto:${brand.email}`}>{brand.email}</a>.</p>
+</LegalPage>
