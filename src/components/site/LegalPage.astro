@@ -1,7 +1,8 @@
 ---
 // A legal document laid out like the contact page: the lanes converge into the
 // first commit at the title, main runs down beside the text, and the footer is
-// the last commit. English only, so the page carries no language switch.
+// the last commit. English only, so the page carries no language switch. The
+// Omninoise product page reuses it without a date.
 import Layout from '~/layouts/Layout.astro';
 import Rail from '~/components/site/Rail.astro';
 import SiteHeader from '~/components/site/SiteHeader.astro';
@@ -13,8 +14,8 @@ export interface Props {
   /** Used in the browser tab, search results and link previews. */
   metaTitle: string;
   description: string;
-  /** ISO date shown under the title. */
-  updated: string;
+  /** ISO date shown under the title; pages without one show only the product name. */
+  updated?: string;
 }
 
 const { title, metaTitle, description, updated } = Astro.props;
@@ -33,7 +34,16 @@ const metadata = {
       <SiteHeader current="legal" toggle={false} />
       <div class="hero-body col">
         <h1 data-anchor>{title}</h1>
-        <p class="meta mono">Omninoise · Last updated <time datetime={updated}>{updated}</time></p>
+        <p class="meta mono">
+          Omninoise{
+            updated && (
+              <>
+                {' '}
+                · Last updated <time datetime={updated}>{updated}</time>
+              </>
+            )
+          }
+        </p>
       </div>
     </section>
 
